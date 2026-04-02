@@ -1,8 +1,7 @@
-package com.auctionSystem.controller;
-import com.auctionSystem.data.model.User;
-import com.auctionSystem.dtos.LoginRequest;
-import com.auctionSystem.dtos.UserResponse;
-import com.auctionSystem.service.UserService;
+package com.nhom4project.auctionweb.Controller;
+import com.nhom4project.auctionweb.data.model.User;
+import com.nhom4project.auctionweb.dtos.LoginRequest;
+import com.nhom4project.auctionweb.dtos.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

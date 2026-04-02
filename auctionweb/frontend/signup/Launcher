@@ -1,8 +1,0 @@
-package frontend.signup;
-
-public class Launcher {
-    public static void main(String[] args) {
-        // This bypasses the JavaFX runtime check
-        signup.main(args); 
-    }
-}
