@@ -1,0 +1,35 @@
+.signup-dialog-pane {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f2f7fd;
+    -fx-border-color: #a7c4eb;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a3e5f;
+}
+
+.text-field, .password-field {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #aec7e8;
+    -fx-background-color: #ffffff;
+    -fx-padding: 8 10 8 10;
+}
+
+.button {
+    -fx-background-color: linear-gradient(to bottom, #58a6ff, #1f6feb);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+}
+
+.button:disabled {
+    -fx-background-color: #90b4df;
+    -fx-text-fill: #f8fafc;
+}
