@@ -1,6 +1,9 @@
 package frontend.signin;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -8,66 +11,86 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
+import java.io.IOException;
 
 public class SigninController {
-    // FXML injection - các field này được tự động gán từ FXML
     @FXML
-    private TextField userNameField; // Input field cho username
+    private TextField userNameField;
 
     @FXML
-    private PasswordField passwordField; // Input field cho password
+    private PasswordField passwordField;
 
     @FXML
-    private Button signinButton; // Button Sign In - disabled khi input không hợp lệ
+    private Button signinButton;
 
     @FXML
-    private Label statusLabel; // Label hiển thị thông báo lỗi
+    private Label statusLabel;
 
-    // Phương thức được gọi sau khi FXML được load hoàn toàn
     @FXML
     public void initialize() {
-        updateButtonState(); // Cập nhật trạng thái button ban đầu
-
-        // Lắng nghe sự thay đổi của username field
+        updateButtonState();
         userNameField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
-
-        // Lắng nghe sự thay đổi của password field
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
     }
 
-    // Logic kiểm tra và cập nhật trạng thái button Sign In
     private void updateButtonState() {
-        // Button chỉ enable khi cả username và password đều có nội dung
         boolean disable = userNameField.getText().trim().isEmpty() || passwordField.getText().isEmpty();
         signinButton.setDisable(disable);
-
-        // Xóa thông báo lỗi khi user đang nhập
         if (disable) {
             statusLabel.setText("");
         }
     }
 
-    // Xử lý sự kiện khi click button Sign In
+    // --- PHẦN SỬA ĐỔI CHÍNH TẠI ĐÂY ---
     @FXML
     private void onSignIn(ActionEvent event) {
-        // Hiện tại chỉ hiển thị thông báo thành công (sẽ thay bằng logic backend sau)
-        statusLabel.setText("Đăng nhập thành công!");
-        System.out.println("Signin: " + userNameField.getText() + " / " + passwordField.getText());
+        // 1. Giả lập kiểm tra đăng nhập (Sau này bạn sẽ kết nối Database ở đây)
+        String username = userNameField.getText();
+        String password = passwordField.getText();
 
-        // Đóng cửa sổ sau khi xử lý xong
-        closeWindow(event);
+        if (username.equals("admin") && password.equals("123456")) {
+            statusLabel.setText("Đăng nhập thành công! Đang chuyển hướng...");
+            
+            // 2. Gọi hàm chuyển sang màn hình Dashboard
+            switchToDashboard(event);
+        } else {
+            statusLabel.setText("Sai tài khoản hoặc mật khẩu!");
+            statusLabel.setStyle("-fx-text-fill: red;");
+        }
     }
 
-    // Xử lý sự kiện khi click button Cancel
+    private void switchToDashboard(ActionEvent event) {
+        try {
+            // 3. Tải file FXML của Dashboard (cái "vỏ" chứa Menu và khu vực hiển thị động)
+            // Đảm bảo đường dẫn file Dashboard.fxml chính xác trong project của bạn
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
+            Parent dashboardRoot = loader.load();
+
+            // 4. Tạo một Scene mới cho Dashboard
+            Scene dashboardScene = new Scene(dashboardRoot);
+            
+            // 5. Lấy Stage hiện tại (cửa sổ Signin) và thay thế nội dung
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(dashboardScene);
+            currentStage.setTitle("Hệ thống Quản lý - Dashboard");
+            currentStage.centerOnScreen(); // Đưa cửa sổ ra giữa màn hình
+            
+            // Hiển thị Dashboard
+            currentStage.show();
+
+        } catch (IOException e) {
+            statusLabel.setText("Lỗi: Không thể tải giao diện Dashboard.");
+            e.printStackTrace();
+        }
+    }
+    // ----------------------------------
+
     @FXML
     private void onCancel(ActionEvent event) {
-        // Đóng cửa sổ
         closeWindow(event);
     }
 
-    // Phương thức helper để đóng cửa sổ
     private void closeWindow(ActionEvent event) {
-        // Lấy Stage từ event source
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
