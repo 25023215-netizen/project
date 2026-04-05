@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<!-- Root container: StackPane để center nội dung trong cửa sổ -->
+<StackPane fx:controller="frontend.auction.AuctionListController"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../style/auctionlist.css"
+           style="-fx-background-color: linear-gradient(to bottom right, #ecfdf5, #f0fdf4);">
+    <!-- Card chính chứa toàn bộ danh sách đấu giá -->
+    <VBox alignment="CENTER" spacing="25" styleClass="form-card">
+        <!-- Header section: Tiêu đề -->
+        <VBox alignment="CENTER" spacing="10">
+            <Label text="Danh sách phiên đấu giá" styleClass="title-label"/>
+        </VBox>
+        <!-- Table container: Chứa bảng danh sách đấu giá -->
+        <VBox spacing="15" styleClass="table-container">
+            <TableView fx:id="auctionTable" VBox.vgrow="ALWAYS" styleClass="auction-table">
+                <columns>
+                    <TableColumn fx:id="colId" text="Mã" prefWidth="60" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colName" text="Tên sản phẩm" prefWidth="280"/>
+                    <TableColumn fx:id="colPrice" text="Giá cao nhất (VNĐ)" prefWidth="180" style="-fx-alignment: CENTER-RIGHT;"/>
+                    <TableColumn fx:id="colEndTime" text="Thời gian kết thúc" prefWidth="180" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colStatus" text="Trạng thái" prefWidth="120" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colAction" text="Hành động" prefWidth="120" style="-fx-alignment: CENTER;"/>
+                </columns>
+            </TableView>
+        </VBox>
+        <!-- Button container: Chứa các button hành động -->
+        <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container">
+            <Button text="Làm mới" styleClass="primary-button"/>
+            <Button text="Đóng" onAction="#onClose" styleClass="secondary-button"/>
+        </HBox>
+    </VBox>
+</StackPane>
