@@ -14,44 +14,26 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 
 public class SigninController {
-    @FXML
-    private TextField userNameField;
-
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private Button signinButton;
-
-    @FXML
-    private Label statusLabel;
+    @FXML private TextField userNameField;
+    @FXML private PasswordField passwordField;
+    @FXML private Button signinButton;
+    @FXML private Label statusLabel;
 
     @FXML
     public void initialize() {
-        updateButtonState();
-        userNameField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
-        passwordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        signinButton.setDisable(true);
+        userNameField.textProperty().addListener((o, oldV, newV) -> updateButtonState());
+        passwordField.textProperty().addListener((o, oldV, newV) -> updateButtonState());
     }
 
     private void updateButtonState() {
         boolean disable = userNameField.getText().trim().isEmpty() || passwordField.getText().isEmpty();
         signinButton.setDisable(disable);
-        if (disable) {
-            statusLabel.setText("");
-        }
     }
 
-    // --- PHẦN SỬA ĐỔI CHÍNH TẠI ĐÂY ---
     @FXML
     private void onSignIn(ActionEvent event) {
-        // 1. Giả lập kiểm tra đăng nhập (Sau này bạn sẽ kết nối Database ở đây)
-        String username = userNameField.getText();
-        String password = passwordField.getText();
-
-        if (username.equals("admin") && password.equals("123456")) {
-            statusLabel.setText("Đăng nhập thành công! Đang chuyển hướng...");
-            
-            // 2. Gọi hàm chuyển sang màn hình Dashboard
+        if (userNameField.getText().equals("admin") && passwordField.getText().equals("123456")) {
             switchToDashboard(event);
         } else {
             statusLabel.setText("Sai tài khoản hoặc mật khẩu!");
@@ -61,37 +43,21 @@ public class SigninController {
 
     private void switchToDashboard(ActionEvent event) {
         try {
-            // 3. Tải file FXML của Dashboard (cái "vỏ" chứa Menu và khu vực hiển thị động)
-            // Đảm bảo đường dẫn file Dashboard.fxml chính xác trong project của bạn
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
-            Parent dashboardRoot = loader.load();
-
-            // 4. Tạo một Scene mới cho Dashboard
-            Scene dashboardScene = new Scene(dashboardRoot);
-            
-            // 5. Lấy Stage hiện tại (cửa sổ Signin) và thay thế nội dung
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.setScene(dashboardScene);
-            currentStage.setTitle("Hệ thống Quản lý - Dashboard");
-            currentStage.centerOnScreen(); // Đưa cửa sổ ra giữa màn hình
-            
-            // Hiển thị Dashboard
-            currentStage.show();
-
+            // Lưu ý: Tên file phải khớp chính xác (dashboard.fxml)
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Hệ thống Quản lý - Dashboard");
+            stage.centerOnScreen();
+            stage.show();
         } catch (IOException e) {
-            statusLabel.setText("Lỗi: Không thể tải giao diện Dashboard.");
+            statusLabel.setText("Lỗi nạp Dashboard!");
             e.printStackTrace();
         }
     }
-    // ----------------------------------
 
     @FXML
     private void onCancel(ActionEvent event) {
-        closeWindow(event);
-    }
-
-    private void closeWindow(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
     }
 }

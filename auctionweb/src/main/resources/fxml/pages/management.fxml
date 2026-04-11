@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="frontend.dashboard.ManagementController"
+      stylesheets="@../../style/dashboard.css"> <padding>
+        <Insets bottom="25" left="25" right="25" top="25" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="DANH SÁCH NGƯỜI DÙNG" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField promptText="Tìm kiếm tên..." prefWidth="250" style="-fx-background-radius: 15; -fx-padding: 8 15;"/>
+        <Button style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;" text=" Thêm mới">
+            <graphic>
+                <FontAwesomeIconView glyphName="USER_PLUS" fill="WHITE" size="1.2em"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <TableView fx:id="userTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10; -fx-overflow-x: hidden;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="80" />
+            <TableColumn fx:id="colUser" text="Tài khoản" prefWidth="150" />
+            <TableColumn fx:id="colName" text="Họ tên" prefWidth="250" />
+            <TableColumn fx:id="colRole" text="Vai trò" prefWidth="150" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+</VBox>

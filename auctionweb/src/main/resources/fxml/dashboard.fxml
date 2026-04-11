@@ -2,13 +2,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="mainContainer" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DashboardController">
+<BorderPane fx:id="mainContainer" prefHeight="600.0" prefWidth="800.0" 
+            xmlns="http://javafx.com/javafx/8" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="frontend.dashboard.DashboardController">
     
     <left>
         <VBox spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
             <Label text="MENU" textFill="WHITE" style="-fx-font-weight: bold;"/>
-            <Button text="Trang chủ" onAction="#showHome" maxWidth="Infinity"/>
-            <Button text="Quản lý" onAction="#showManagement" maxWidth="Infinity"/>
+            <Button fx:id="btnHome" text="Trang chủ" onAction="#onMenuHomeClick" maxWidth="Infinity"/>
+            <Button fx:id="btnSignup" text="Quản lý" onAction="#onMenuSignupClick" maxWidth="Infinity"/>
             <Button text="Đăng xuất" onAction="#handleLogout" maxWidth="Infinity"/>
         </VBox>
     </left>
@@ -22,8 +25,6 @@
 
     <center>
         <StackPane fx:id="contentArea" style="-fx-background-color: #ffffff;">
-            <Label text="Chào mừng bạn đến với hệ thống!" />
-        </StackPane>
+            </StackPane>
     </center>
-    
 </BorderPane>
