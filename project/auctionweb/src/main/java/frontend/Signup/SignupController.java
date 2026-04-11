@@ -12,6 +12,12 @@ import javafx.event.ActionEvent;
 public class SignupController {
     // FXML injection - các field này được tự động gán từ FXML
     @FXML
+    private TextField fullNameField;
+
+    @FXML
+    private TextField emailField;
+
+    @FXML
     private TextField userNameField; // Input field cho username
 
     @FXML
@@ -32,20 +38,36 @@ public class SignupController {
         updateButtonState(); // Cập nhật trạng thái button ban đầu
 
         // Lắng nghe sự thay đổi của username field
-        userNameField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        if (fullNameField != null) fullNameField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        if (emailField != null) emailField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        if (userNameField != null) userNameField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
 
         // Lắng nghe sự thay đổi của password field
-        passwordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        if (passwordField != null) passwordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
 
         // Lắng nghe sự thay đổi của confirm password field
-        confirmPasswordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        if (confirmPasswordField != null) confirmPasswordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
     }
 
     // Logic kiểm tra validation phức tạp cho signup form
     private void updateButtonState() {
-        String username = userNameField.getText().trim();
-        String password = passwordField.getText();
-        String confirm = confirmPasswordField.getText();
+        String fullname = fullNameField != null ? fullNameField.getText().trim() : "";
+        String email = emailField != null ? emailField.getText().trim() : "";
+        String username = userNameField != null ? userNameField.getText().trim() : "";
+        String password = passwordField != null ? passwordField.getText() : "";
+        String confirm = confirmPasswordField != null ? confirmPasswordField.getText() : "";
+
+        if (fullname.isEmpty() || email.isEmpty()) {
+            statusLabel.setText("Vui lòng điền đầy đủ thông tin");
+            signUpButton.setDisable(true);
+            return;
+        }
+
+        if (!email.contains("@")) {
+            statusLabel.setText("Email không hợp lệ");
+            signUpButton.setDisable(true);
+            return;
+        }
 
         // Kiểm tra username không rỗng
         if (username.isEmpty()) {
@@ -69,8 +91,8 @@ public class SignupController {
         }
 
         // Kiểm tra độ dài password tối thiểu
-        if (password.length() < 6) {
-            statusLabel.setText("Password phải có ít nhất 6 ký tự");
+        if (password.length() < 8) {
+            statusLabel.setText("Password phải có ít nhất 8 ký tự");
             signUpButton.setDisable(true);
             return;
         }
@@ -90,11 +112,58 @@ public class SignupController {
     // Xử lý sự kiện khi click button Sign Up
     @FXML
     private void onSignUp(ActionEvent event) {
-        // In thông tin đăng ký ra console (sẽ thay bằng logic backend sau)
-        System.out.println("Signup: " + userNameField.getText() + " / " + passwordField.getText());
+        String fullname = fullNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String username = userNameField.getText().trim();
+        String password = passwordField.getText();
 
-        // Đóng cửa sổ sau khi xử lý xong
-        closeWindow(event);
+        signUpButton.setDisable(true);
+        statusLabel.setText("Đang xử lý...");
+
+        // Create JSON payload
+        String jsonPayload = String.format(
+            "{\"username\":\"%s\", \"password\":\"%s\", \"fullname\":\"%s\", \"email\":\"%s\"}",
+            username.replace("\"", "\\\""),
+            password.replace("\"", "\\\""),
+            fullname.replace("\"", "\\\""),
+            email.replace("\"", "\\\"")
+        );
+
+        java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create("http://localhost:8080/api/auth/signup"))
+                .header("Content-Type", "application/json")
+                .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonPayload))
+                .build();
+
+        client.sendAsync(request, java.net.http.HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    javafx.application.Platform.runLater(() -> {
+                        if (response.statusCode() == 200) {
+                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                            alert.setTitle("Đăng ký thành công");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Tài khoản của bạn đã được đăng ký thành công!");
+                            alert.showAndWait();
+                            closeWindow(event);
+                        } else {
+                            statusLabel.setText("Lỗi: " + response.body());
+                            signUpButton.setDisable(false);
+                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                            alert.setTitle("Đăng ký thất bại");
+                            alert.setHeaderText(null);
+                            alert.setContentText(response.body());
+                            alert.showAndWait();
+                        }
+                    });
+                    return response;
+                }).exceptionally(e -> {
+                    javafx.application.Platform.runLater(() -> {
+                        statusLabel.setText("Lỗi kết nối tới Server");
+                        signUpButton.setDisable(false);
+                    });
+                    return null;
+                });
     }
 
     // Xử lý sự kiện khi click button Cancel
@@ -102,6 +171,21 @@ public class SignupController {
     private void onCancel(ActionEvent event) {
         // Đóng cửa sổ
         closeWindow(event);
+    }
+
+    // Xử lý sự kiện chuyển sang trang Đăng nhập
+    @FXML
+    private void onGoToSignIn(ActionEvent event) {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/style/signin.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Đăng nhập người dùng");
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Phương thức helper để đóng cửa sổ

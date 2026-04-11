@@ -1,2 +1,2 @@
 #!/bin/bash
-./mvnw.cmd -Djavafx.mainClass=frontend.signup.Signup javafx:run
+./mvnw.cmd -Djavafx.mainClass=frontend.Signup.Signup javafx:run
