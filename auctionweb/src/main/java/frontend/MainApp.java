@@ -9,8 +9,12 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Luôn bắt đầu từ màn hình Signin
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
+
+        // FIX: load cùng package
+        Parent root = FXMLLoader.load(
+                getClass().getResource("/frontend/signin/signin.fxml")
+        );
+
         primaryStage.setTitle("Hệ thống quản lý - Đăng nhập");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
