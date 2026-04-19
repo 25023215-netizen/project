@@ -32,5 +32,10 @@
             <Button fx:id="signinButton" text="Sign In" onAction="#onSignIn" disable="true" styleClass="primary-button"/>
             <Button text="Cancel" onAction="#onCancel" styleClass="secondary-button"/>
         </HBox>
+        <!-- Chuyển hướng sang màn hình Đăng ký -->
+        <HBox alignment="CENTER" style="-fx-padding: 0 0 10 0;">
+            <Label text="Lần đầu tham gia? "/>
+            <Hyperlink text="Đăng ký ngay" onAction="#onGoToSignUp"/>
+        </HBox>
     </VBox>
 </StackPane>

@@ -65,6 +65,21 @@ public class SigninController {
         closeWindow(event);
     }
 
+    // Xử lý sự kiện chuyển sang trang Đăng ký
+    @FXML
+    private void onGoToSignUp(ActionEvent event) {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/style/signup.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Đăng ký người dùng");
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Phương thức helper để đóng cửa sổ
     private void closeWindow(ActionEvent event) {
         // Lấy Stage từ event source
