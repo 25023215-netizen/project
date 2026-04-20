@@ -2,34 +2,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
-<VBox spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+<VBox spacing="20" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="frontend.dashboard.ManagementController"
-      stylesheets="@../../style/dashboard.css"> <padding>
-        <Insets bottom="25" left="25" right="25" top="25" />
+      style="-fx-background-color: transparent;">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
+    <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="15">
-        <Label text="DANH SÁCH NGƯỜI DÙNG" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-        <Region HBox.hgrow="ALWAYS" />
-        <TextField promptText="Tìm kiếm tên..." prefWidth="250" style="-fx-background-radius: 15; -fx-padding: 8 15;"/>
-        <Button style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;" text=" Thêm mới">
-            <graphic>
-                <FontAwesomeIconView glyphName="USER_PLUS" fill="WHITE" size="1.2em"/>
-            </graphic>
-        </Button>
+        <Label text="👥 QUẢN LÝ NGƯỜI DÙNG" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField promptText="🔍 Tìm kiếm tên..." prefWidth="250"
+                   style="-fx-background-radius: 20; -fx-padding: 10 18; -fx-border-radius: 20; -fx-border-color: #e2e8f0; -fx-background-color: white;"/>
+        <Button text="➕ Thêm mới" style="-fx-background-color: linear-gradient(to right, #22c55e, #16a34a); -fx-text-fill: white; -fx-background-radius: 12; -fx-padding: 10 20; -fx-font-weight: bold; -fx-cursor: hand;"/>
     </HBox>
 
-    <TableView fx:id="userTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10; -fx-overflow-x: hidden;">
+    <!-- Table -->
+    <TableView fx:id="userTable" VBox.vgrow="ALWAYS"
+               style="-fx-background-radius: 12; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 4);">
         <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="80" />
-            <TableColumn fx:id="colUser" text="Tài khoản" prefWidth="150" />
-            <TableColumn fx:id="colName" text="Họ tên" prefWidth="250" />
-            <TableColumn fx:id="colRole" text="Vai trò" prefWidth="150" />
+            <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+            <TableColumn fx:id="colUser" text="Tài khoản" prefWidth="150"/>
+            <TableColumn fx:id="colName" text="Họ tên" prefWidth="250"/>
+            <TableColumn fx:id="colRole" text="Vai trò" prefWidth="150"/>
         </columns>
         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
         </columnResizePolicy>
     </TableView>
 </VBox>

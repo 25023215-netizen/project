@@ -9,33 +9,40 @@
     <!-- Card chính chứa toàn bộ form đăng ký -->
     <VBox alignment="CENTER" spacing="25" styleClass="form-card">
         <!-- Header section: Tiêu đề -->
-        <VBox alignment="CENTER" spacing="10">
-            <Label text="Create Account" styleClass="title-label"/>
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="📝" style="-fx-font-size: 36px;"/>
+            <Label text="Tạo tài khoản" styleClass="title-label"/>
+            <Label text="Điền thông tin để đăng ký" styleClass="subtitle-label"/>
         </VBox>
         <!-- Form container: Chứa các input fields -->
         <VBox spacing="15" styleClass="form-container">
             <!-- Username field -->
             <VBox spacing="5">
-                <Label text="Username" styleClass="field-label"/>
-                <TextField fx:id="userNameField" promptText="Choose a username" styleClass="input-field"/>
+                <Label text="Tên đăng nhập" styleClass="field-label"/>
+                <TextField fx:id="userNameField" promptText="Nhập tên đăng nhập (ít nhất 4 ký tự)" styleClass="input-field"/>
             </VBox>
             <!-- Password field -->
             <VBox spacing="5">
-                <Label text="Password" styleClass="field-label"/>
-                <PasswordField fx:id="passwordField" promptText="Create a password" styleClass="input-field"/>
+                <Label text="Mật khẩu" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu (ít nhất 6 ký tự)" styleClass="input-field"/>
             </VBox>
             <!-- Confirm password field -->
             <VBox spacing="5">
-                <Label text="Confirm Password" styleClass="field-label"/>
-                <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password" styleClass="input-field"/>
+                <Label text="Xác nhận mật khẩu" styleClass="field-label"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Nhập lại mật khẩu" styleClass="input-field"/>
             </VBox>
             <!-- Status label: Hiển thị thông báo lỗi hoặc thành công -->
             <Label fx:id="statusLabel" styleClass="error-label"/>
         </VBox>
         <!-- Button container: Chứa các button hành động -->
         <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container">
-            <Button fx:id="signUpButton" text="Sign Up" onAction="#onSignUp" disable="true" styleClass="primary-button"/>
-            <Button text="Cancel" onAction="#onCancel" styleClass="secondary-button"/>
+            <Button text="Hủy" onAction="#onCancel" styleClass="secondary-button"/>
+            <Button fx:id="signUpButton" text="Đăng ký" onAction="#onSignUp" disable="true" styleClass="primary-button"/>
+        </HBox>
+        <!-- Link quay lại đăng nhập -->
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="Đã có tài khoản?" style="-fx-text-fill: #64748b; -fx-font-size: 13px;"/>
+            <Hyperlink fx:id="loginLink" text="Đăng nhập" onAction="#onGoToLogin" style="-fx-font-size: 13px; -fx-text-fill: #f59e0b;"/>
         </HBox>
     </VBox>
 </StackPane>

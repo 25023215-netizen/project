@@ -1,30 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 
-<BorderPane fx:id="mainContainer" prefHeight="600.0" prefWidth="800.0" 
-            xmlns="http://javafx.com/javafx/8" 
-            xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="frontend.dashboard.DashboardController">
-    
+<BorderPane fx:id="mainContainer" prefHeight="700.0" prefWidth="1100.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="frontend.dashboard.DashboardController"
+            stylesheets="@../style/dashboard.css">
+
+    <!-- ====== SIDEBAR LEFT ====== -->
     <left>
-        <VBox spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
-            <Label text="MENU" textFill="WHITE" style="-fx-font-weight: bold;"/>
-            <Button fx:id="btnHome" text="Trang chủ" onAction="#onMenuHomeClick" maxWidth="Infinity"/>
-            <Button fx:id="btnSignup" text="Quản lý" onAction="#onMenuSignupClick" maxWidth="Infinity"/>
-            <Button text="Đăng xuất" onAction="#handleLogout" maxWidth="Infinity"/>
+        <VBox spacing="5" styleClass="sidebar" prefWidth="220">
+            <padding>
+                <Insets top="20" right="10" bottom="20" left="10"/>
+            </padding>
+
+            <!-- Logo / Tiêu đề -->
+            <VBox alignment="CENTER" spacing="5" styleClass="sidebar-header">
+                <padding>
+                    <Insets bottom="20"/>
+                </padding>
+                <Label text="⚡ AUCTION" styleClass="logo-text"/>
+                <Label text="Hệ thống đấu giá" styleClass="logo-subtitle"/>
+            </VBox>
+
+            <Separator styleClass="sidebar-separator"/>
+
+            <!-- Menu items -->
+            <VBox spacing="4" styleClass="menu-group">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <Label text="CHÍNH" styleClass="menu-section-label"/>
+                <Button fx:id="btnHome" text="🏠  Trang chủ" onAction="#onMenuHomeClick" maxWidth="Infinity" styleClass="menu-btn, menu-btn-active"/>
+                <Button fx:id="btnAuctions" text="🔨  Phiên đấu giá" onAction="#onMenuAuctionsClick" maxWidth="Infinity" styleClass="menu-btn"/>
+                <Button fx:id="btnBidding" text="💰  Đặt giá" onAction="#onMenuBiddingClick" maxWidth="Infinity" styleClass="menu-btn"/>
+            </VBox>
+
+            <VBox spacing="4" styleClass="menu-group">
+                <padding>
+                    <Insets top="15"/>
+                </padding>
+                <Label text="HỆ THỐNG" styleClass="menu-section-label"/>
+                <Button fx:id="btnManagement" text="👥  Quản lý" onAction="#onMenuManagementClick" maxWidth="Infinity" styleClass="menu-btn"/>
+            </VBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Đăng xuất -->
+            <Separator styleClass="sidebar-separator"/>
+            <Button text="🚪  Đăng xuất" onAction="#handleLogout" maxWidth="Infinity" styleClass="menu-btn, logout-btn"/>
         </VBox>
     </left>
 
+    <!-- ====== TOP BAR ====== -->
     <top>
-        <HBox alignment="CENTER_RIGHT" spacing="20" style="-fx-background-color: #ecf0f1; -fx-padding: 10;">
-            <Label fx:id="lblUsername" text="Người dùng: Admin" />
-            <Label fx:id="lblBalance" text="Số dư: 1,000,000 VNĐ" />
+        <HBox alignment="CENTER_RIGHT" spacing="20" styleClass="topbar">
+            <padding>
+                <Insets top="12" right="25" bottom="12" left="25"/>
+            </padding>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblUsername" text="👤 Admin" styleClass="topbar-info"/>
+            <Label fx:id="lblBalance" text="💵 Số dư: 10,000,000 VNĐ" styleClass="topbar-balance"/>
         </HBox>
     </top>
 
+    <!-- ====== CONTENT AREA ====== -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: #ffffff;">
-            </StackPane>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <padding>
+                <Insets top="20" right="25" bottom="20" left="25"/>
+            </padding>
+        </StackPane>
     </center>
 </BorderPane>

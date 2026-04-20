@@ -1,75 +1,158 @@
-// DashboardController.java
-package frontend.dashboard;
+/* ============================== */
+/*   DASHBOARD - AUCTION SYSTEM   */
+/* ============================== */
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import java.io.IOException;
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-background-color: #f1f5f9;
+}
 
-public class DashboardController {
+/* ====== SIDEBAR ====== */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 15, 0, 5, 0);
+}
 
-    @FXML
-    private StackPane contentArea;
+.sidebar-header {
+    -fx-padding: 5 0 10 0;
+}
 
-    @FXML
-    private Button btnHome;
+.logo-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f8fafc;
+}
 
-    @FXML
-    private Button btnSignup;
+.logo-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #94a3b8;
+}
 
-    @FXML
-    public void initialize() {
-        // Khởi tạo icon và áp dụng style class từ CSS
-        setupMenuButtons();
-    }
+.sidebar-separator {
+    -fx-background: #334155;
+    -fx-max-height: 1;
+}
 
-    private void setupMenuButtons() {
-        // 1. Cấu hình nút Home
-        FontAwesomeIconView homeIcon = new FontAwesomeIconView(FontAwesomeIcon.HOME);
-        homeIcon.setSize("1.5em");
-        // Gán class "glyph-icon" nếu bạn muốn tùy chỉnh riêng icon trong CSS
-        homeIcon.getStyleClass().add("glyph-icon");
+.menu-section-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #64748b;
+    -fx-padding: 5 8 5 8;
+}
 
-        btnHome.setGraphic(homeIcon);
-        // Đảm bảo nút nhận đúng class .menu-button trong file dashboard.css
-        btnHome.getStyleClass().add("menu-button");
+.menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+    -fx-padding: 10 16;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+}
 
-        // 2. Cấu hình nút Quản lý (Signup)
-        FontAwesomeIconView userIcon = new FontAwesomeIconView(FontAwesomeIcon.USER_PLUS);
-        userIcon.setSize("1.5em");
-        userIcon.getStyleClass().add("glyph-icon");
+.menu-btn:hover {
+    -fx-background-color: rgba(148, 163, 184, 0.15);
+    -fx-text-fill: #f1f5f9;
+}
 
-        btnSignup.setGraphic(userIcon);
-        btnSignup.getStyleClass().add("menu-button");
-    }
+.menu-btn-active {
+    -fx-background-color: linear-gradient(to right, #3b82f6, #6366f1);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.3), 8, 0, 0, 3);
+}
 
-    private void changeView(String fxmlPath) {
-        try {
-            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+.menu-btn-active:hover {
+    -fx-background-color: linear-gradient(to right, #2563eb, #4f46e5);
+    -fx-text-fill: white;
+}
 
-            // Nếu bạn muốn nội dung con tự động có hiệu ứng đổ bóng (card)
-            // view.getStyleClass().add("card");
+.logout-btn {
+    -fx-text-fill: #f87171;
+}
 
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Lỗi load FXML: " + fxmlPath);
-        }
-    }
+.logout-btn:hover {
+    -fx-background-color: rgba(248, 113, 113, 0.15);
+    -fx-text-fill: #fca5a5;
+}
 
-    @FXML
-    private void onMenuSignupClick() {
-        changeView("/fxml/signup.fxml");
-    }
+/* ====== TOP BAR ====== */
+.topbar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
+}
 
-    @FXML
-    private void onMenuHomeClick() {
-        changeView("/fxml/home.fxml");
-    }
-    
+.topbar-info {
+    -fx-font-size: 14px;
+    -fx-text-fill: #475569;
+    -fx-font-weight: 500;
+}
+
+.topbar-balance {
+    -fx-font-size: 14px;
+    -fx-text-fill: #16a34a;
+    -fx-font-weight: bold;
+    -fx-background-color: #f0fdf4;
+    -fx-padding: 6 14;
+    -fx-background-radius: 20;
+}
+
+/* ====== CONTENT AREA ====== */
+.content-area {
+    -fx-background-color: #f1f5f9;
+}
+
+/* ====== TABLE STYLES ====== */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f8fafc;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+    -fx-padding: 10 8;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f1f5f9;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #eff6ff;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #dbeafe;
+}
+
+.table-view .table-row-cell:selected .text {
+    -fx-fill: #1e293b;
+}
+
+.table-view .table-cell {
+    -fx-font-size: 13px;
+    -fx-text-fill: #334155;
+    -fx-padding: 10 8;
+}
+
+/* ====== GENERAL CARD ====== */
+.card {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 4);
+    -fx-padding: 20;
+    -fx-background-radius: 16;
 }

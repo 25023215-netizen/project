@@ -6,17 +6,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.net.URL;
+
 public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        // FIX: load cùng package
-        Parent root = FXMLLoader.load(
-                getClass().getResource("/frontend/signin/signin.fxml")
-        );
+        URL fxml = getClass().getResource("/fxml/signin.fxml");
 
-        primaryStage.setTitle("Hệ thống quản lý - Đăng nhập");
-        primaryStage.setScene(new Scene(root));
+        if (fxml == null) {
+            throw new RuntimeException("Không tìm thấy signin.fxml!");
+        }
+
+        Parent root = FXMLLoader.load(fxml);
+
+        Scene scene = new Scene(root, 520, 600);
+        primaryStage.setTitle("Hệ thống Đấu giá - Đăng nhập");
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(true);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 

@@ -1,8 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" style="-fx-background-color: white;">
-    <Label text="CHÀO MỪNG ĐẾN VỚI HỆ THỐNG" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-    <Label text="Vui lòng chọn chức năng ở menu bên trái." />
+<VBox alignment="TOP_CENTER" spacing="30" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      style="-fx-background-color: transparent;">
+    <padding>
+        <Insets top="40" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <!-- Welcome header -->
+    <VBox alignment="CENTER" spacing="8" styleClass="welcome-header">
+        <Label text="🎯 Chào mừng đến với Hệ thống Đấu giá" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <Label text="Quản lý phiên đấu giá, đặt giá và theo dõi kết quả dễ dàng" style="-fx-font-size: 15px; -fx-text-fill: #64748b;"/>
+    </VBox>
+
+    <!-- Stats cards -->
+    <HBox spacing="20" alignment="CENTER">
+        <!-- Card 1 -->
+        <VBox alignment="CENTER" spacing="8" prefWidth="200" prefHeight="120"
+              style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2); -fx-background-radius: 16; -fx-padding: 20;">
+            <Label text="🔨" style="-fx-font-size: 28px;"/>
+            <Label text="12" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Phiên đấu giá" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.85);"/>
+        </VBox>
+        <!-- Card 2 -->
+        <VBox alignment="CENTER" spacing="8" prefWidth="200" prefHeight="120"
+              style="-fx-background-color: linear-gradient(to bottom right, #f093fb, #f5576c); -fx-background-radius: 16; -fx-padding: 20;">
+            <Label text="💰" style="-fx-font-size: 28px;"/>
+            <Label text="48" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Lượt đặt giá" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.85);"/>
+        </VBox>
+        <!-- Card 3 -->
+        <VBox alignment="CENTER" spacing="8" prefWidth="200" prefHeight="120"
+              style="-fx-background-color: linear-gradient(to bottom right, #4facfe, #00f2fe); -fx-background-radius: 16; -fx-padding: 20;">
+            <Label text="👥" style="-fx-font-size: 28px;"/>
+            <Label text="156" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Người dùng" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.85);"/>
+        </VBox>
+        <!-- Card 4 -->
+        <VBox alignment="CENTER" spacing="8" prefWidth="200" prefHeight="120"
+              style="-fx-background-color: linear-gradient(to bottom right, #43e97b, #38f9d7); -fx-background-radius: 16; -fx-padding: 20;">
+            <Label text="✅" style="-fx-font-size: 28px;"/>
+            <Label text="8" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Đã hoàn thành" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.85);"/>
+        </VBox>
+    </HBox>
+
+    <!-- Quick actions -->
+    <VBox spacing="15">
+        <Label text="⚡ Hành động nhanh" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <HBox spacing="15">
+            <Button text="➕ Tạo phiên đấu giá mới" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 12; -fx-padding: 12 24; -fx-font-size: 14px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            <Button text="📋 Xem danh sách đấu giá" style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 12; -fx-padding: 12 24; -fx-font-size: 14px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            <Button text="📊 Báo cáo thống kê" style="-fx-background-color: #06b6d4; -fx-text-fill: white; -fx-background-radius: 12; -fx-padding: 12 24; -fx-font-size: 14px; -fx-cursor: hand; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Recent activity -->
+    <VBox spacing="12" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 4);">
+        <Label text="📌 Hoạt động gần đây" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <Separator/>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 8 0;">
+            <Label text="🟢" style="-fx-font-size: 10px;"/>
+            <Label text="Nguyễn Văn A đặt giá 5,500,000 VNĐ cho 'iPhone 15 Pro Max'" style="-fx-font-size: 14px; -fx-text-fill: #374151;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="2 phút trước" style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 8 0;">
+            <Label text="🟢" style="-fx-font-size: 10px;"/>
+            <Label text="Trần Thị B tạo phiên đấu giá mới 'MacBook Pro M3'" style="-fx-font-size: 14px; -fx-text-fill: #374151;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="15 phút trước" style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 8 0;">
+            <Label text="🔴" style="-fx-font-size: 10px;"/>
+            <Label text="Phiên đấu giá 'Samsung Galaxy S24' đã kết thúc" style="-fx-font-size: 14px; -fx-text-fill: #374151;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="1 giờ trước" style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 8 0;">
+            <Label text="🟡" style="-fx-font-size: 10px;"/>
+            <Label text="Lê Văn C đăng ký tài khoản mới" style="-fx-font-size: 14px; -fx-text-fill: #374151;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="3 giờ trước" style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+        </HBox>
+    </VBox>
 </VBox>

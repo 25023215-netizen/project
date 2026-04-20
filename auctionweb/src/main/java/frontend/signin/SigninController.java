@@ -5,19 +5,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
-import java.io.IOException;
 
 public class SigninController {
     @FXML private TextField userNameField;
     @FXML private PasswordField passwordField;
     @FXML private Button signinButton;
     @FXML private Label statusLabel;
+    @FXML private Hyperlink signupLink;
 
     @FXML
     public void initialize() {
@@ -33,25 +34,42 @@ public class SigninController {
 
     @FXML
     private void onSignIn(ActionEvent event) {
-        if (userNameField.getText().equals("admin") && passwordField.getText().equals("123456")) {
+        String username = userNameField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        if (username.equals("admin") && password.equals("123456")) {
             switchToDashboard(event);
         } else {
-            statusLabel.setText("Sai tài khoản hoặc mật khẩu!");
-            statusLabel.setStyle("-fx-text-fill: red;");
+            statusLabel.setText("⚠️ Sai tài khoản hoặc mật khẩu!");
+            statusLabel.setStyle("-fx-text-fill: #dc2626;");
         }
     }
 
     private void switchToDashboard(ActionEvent event) {
         try {
-            // Lưu ý: Tên file phải khớp chính xác (dashboard.fxml)
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Hệ thống Quản lý - Dashboard");
+            stage.setTitle("Hệ thống Đấu giá - Dashboard");
+            stage.setMaximized(true);
             stage.centerOnScreen();
             stage.show();
-        } catch (IOException e) {
-            statusLabel.setText("Lỗi nạp Dashboard!");
+        } catch (Exception e) {
+            statusLabel.setText("Lỗi nạp Dashboard! " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onGoToSignup(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"));
+            Stage stage = (Stage) signupLink.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Hệ thống Đấu giá - Đăng ký");
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            statusLabel.setText("Lỗi nạp trang đăng ký!");
             e.printStackTrace();
         }
     }

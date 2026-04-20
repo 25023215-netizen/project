@@ -9,28 +9,35 @@
     <!-- Card chính chứa toàn bộ form -->
     <VBox alignment="CENTER" spacing="25" styleClass="form-card">
         <!-- Header section với title -->
-        <VBox alignment="CENTER" spacing="10">
-            <Label text="Welcome Back" styleClass="title-label"/>
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="⚡" style="-fx-font-size: 36px;"/>
+            <Label text="AUCTION SYSTEM" styleClass="title-label"/>
+            <Label text="Đăng nhập để tiếp tục" styleClass="subtitle-label"/>
         </VBox>
         <!-- Container chứa các input fields -->
         <VBox spacing="15" styleClass="form-container">
             <!-- Username field với label -->
             <VBox spacing="5">
-                <Label text="Username" styleClass="field-label"/>
-                <TextField fx:id="userNameField" promptText="Enter your username" styleClass="input-field"/>
+                <Label text="Tài khoản" styleClass="field-label"/>
+                <TextField fx:id="userNameField" promptText="Nhập tên đăng nhập" styleClass="input-field"/>
             </VBox>
             <!-- Password field với label -->
             <VBox spacing="5">
-                <Label text="Password" styleClass="field-label"/>
-                <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="input-field"/>
+                <Label text="Mật khẩu" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu" styleClass="input-field"/>
             </VBox>
             <!-- Label hiển thị lỗi validation -->
             <Label fx:id="statusLabel" styleClass="error-label"/>
         </VBox>
         <!-- Container chứa các buttons -->
         <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container">
-            <Button fx:id="signinButton" text="Sign In" onAction="#onSignIn" disable="true" styleClass="primary-button"/>
-            <Button text="Cancel" onAction="#onCancel" styleClass="secondary-button"/>
+            <Button text="Hủy" onAction="#onCancel" styleClass="secondary-button"/>
+            <Button fx:id="signinButton" text="Đăng nhập" onAction="#onSignIn" disable="true" styleClass="primary-button"/>
+        </HBox>
+        <!-- Link đăng ký -->
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="Chưa có tài khoản?" style="-fx-text-fill: #64748b; -fx-font-size: 13px;"/>
+            <Hyperlink fx:id="signupLink" text="Đăng ký ngay" onAction="#onGoToSignup" style="-fx-font-size: 13px; -fx-text-fill: #3b82f6;"/>
         </HBox>
     </VBox>
 </StackPane>

@@ -1,4 +1,4 @@
-package frontend.Signup;
+package frontend.signup;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
