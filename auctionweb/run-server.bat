@@ -7,38 +7,38 @@ echo.
 
 cd /d "%~dp0"
 
-:: [1/2] Check Java
-echo [1/2] Checking Java version...
+:: [1/3] Check Java
+echo [1/3] Checking Java version...
 where java >nul 2>&1
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Java not found! Please install JDK 17 or newer.
-    echo       Add Java to your PATH environment variable.
     pause
     exit /b 1
 )
 
-:: [2/2] Check Maven Wrapper
-if not exist "mvnw.cmd" (
-    echo [ERROR] File mvnw.cmd not found! 
-    echo       Please make sure you copied all files correctly.
+:: [2/3] Check Requirements
+if not exist ".mvn" (
+    echo [ERROR] Missing ".mvn" folder! Please copy all hidden files.
     pause
     exit /b 1
 )
 
-echo.
-echo ============================================================
-echo   Running Server... 
-echo   (First time may take a few minutes to download libraries)
-echo ============================================================
+:: [3/3] Running
+echo [3/3] Launching Spring Boot...
 echo.
 
-:: Run Spring Boot using Maven Wrapper
 call mvnw.cmd spring-boot:run
 
 if %ERRORLEVEL% neq 0 (
     echo.
-    echo [ERROR] Server stopped with error code %ERRORLEVEL%
-    echo       Check the logs above for details.
+    echo ============================================================
+    echo   [ERROR] Server failed to start (Code %ERRORLEVEL%).
+    echo.
+    echo   Try these steps:
+    echo   1. Run 'check-env.bat' to verify your Java version (Must be 17+).
+    echo   2. Delete the 'target' folder and try again.
+    echo   3. Make sure your folder path has NO spaces or special chars.
+    echo ============================================================
     pause
 )
 
