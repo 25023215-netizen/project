@@ -11,7 +11,7 @@ echo.
 :: ============================================================
 :: BUOC 1: Kiem tra Java
 :: ============================================================
-echo [1/2] Dang kiem tra Java...
+echo [1/3] Dang kiem tra Java...
 
 where java >nul 2>&1
 if %ERRORLEVEL% neq 0 (
@@ -31,9 +31,28 @@ echo       [OK] Java da duoc cai dat.
 echo.
 
 :: ============================================================
-:: BUOC 2: Kiem tra port 8080
+:: BUOC 2: Kiem tra cac file bi an
 :: ============================================================
-echo [2/2] Dang kiem tra port 8080...
+echo [2/3] Dang kiem tra thu muc chay Maven...
+if not exist "%~dp0\.mvn" (
+    echo [LOI] Khong tim thay thu muc ".mvn" !
+    echo       Kha nang cao ban copy hoac giai nen tren may khac bi thieu thu muc ".mvn" ^(folder nay thuong bi an tren win^).
+    echo       Maven bat buoc can thu muc nay de chay.
+    pause
+    exit /b 1
+)
+if "%JAVA_HOME%"=="" (
+    echo [CANH BAO] Ban chua cai bien moi truong JAVA_HOME, script co the khong the bien dich!
+    echo            Khuyen nghi len Google tim: "Cach cai dat JAVA_HOME cho Window".
+) else (
+    echo       JAVA_HOME = %JAVA_HOME%
+)
+echo.
+
+:: ============================================================
+:: BUOC 3: Kiem tra port 8080
+:: ============================================================
+echo [3/3] Dang kiem tra port 8080...
 
 netstat -ano | findstr ":8080 " | findstr "LISTENING" >nul 2>&1
 if %ERRORLEVEL% equ 0 (
