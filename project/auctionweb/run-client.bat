@@ -1,3 +1,0 @@
-@echo off
-echo Dang khoi dong Client (JavaFX App)...
-cmd /k mvnw.cmd -Djavafx.mainClass=frontend.Signup.Signup javafx:run
