@@ -95,6 +95,9 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
+                <configuration>
+                    <mainClass>frontend.Signup.Signup</mainClass>
+                </configuration>
             </plugin>
 
             <!-- ✅ Compiler -->
@@ -112,6 +115,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.nhom4project.auctionweb.Main</mainClass>
+                </configuration>
             </plugin>
 
         </plugins>
