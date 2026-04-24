@@ -27,7 +27,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody com.nhom4project.auctionweb.data.dto.SigninRequest signinRequest) {
         try {
-            com.nhom4project.auctionweb.data.model.Users user = userService.authenticate(signinRequest.getUsername(), signinRequest.getPassword());
+            com.nhom4project.auctionweb.data.model.User user = userService.authenticate(signinRequest.getUsername(), signinRequest.getPassword());
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
