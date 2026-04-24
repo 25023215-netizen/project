@@ -1,10 +1,27 @@
 package com.nhom4project.auctionweb.data.model;
 
-import jakarta.persistence.Entity; 
-import jakarta.persistence.Table;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
 @Entity
-@Table(name = "Seller")
-public class Seller extends Users {
+@DiscriminatorValue("SELLER")
+public class Seller extends User {
+    private String storeName;
+    private Double storeRating = 0.0;
 
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public Double getStoreRating() {
+        return storeRating;
+    }
+
+    public void setStoreRating(Double storeRating) {
+        this.storeRating = storeRating;
+    }
 }

@@ -1,10 +1,18 @@
 package com.nhom4project.auctionweb.data.model;
 
-import jakarta.persistence.Entity; 
-import jakarta.persistence.Table;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
 @Entity
-@Table(name = "Bidder")
-public class Bidder extends Users {
+@DiscriminatorValue("BIDDER")
+public class Bidder extends User {
+    private Double rating = 0.0;
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
 }

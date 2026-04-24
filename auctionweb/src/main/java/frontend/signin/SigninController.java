@@ -1,5 +1,7 @@
 package frontend.signin;
 
+import frontend.utils.BackendClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,83 +9,85 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
+import java.net.http.HttpResponse;
+import org.json.JSONObject;
 
 public class SigninController {
-    // FXML injection - các field này được tự động gán từ FXML
-    @FXML
-    private TextField userNameField; // Input field cho username
+    @FXML private TextField userNameField;
+    @FXML private PasswordField passwordField;
+    @FXML private Button signinButton;
+    @FXML private Label statusLabel;
 
-    @FXML
-    private PasswordField passwordField; // Input field cho password
-
-    @FXML
-    private Button signinButton; // Button Sign In - disabled khi input không hợp lệ
-
-    @FXML
-    private Label statusLabel; // Label hiển thị thông báo lỗi
-
-    // Phương thức được gọi sau khi FXML được load hoàn toàn
     @FXML
     public void initialize() {
-        updateButtonState(); // Cập nhật trạng thái button ban đầu
-
-        // Lắng nghe sự thay đổi của username field
-        userNameField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
-
-        // Lắng nghe sự thay đổi của password field
-        passwordField.textProperty().addListener((observable, oldValue, newValue) -> updateButtonState());
+        updateButtonState();
+        userNameField.textProperty().addListener((o, old, newVal) -> updateButtonState());
+        passwordField.textProperty().addListener((o, old, newVal) -> updateButtonState());
     }
 
-    // Logic kiểm tra và cập nhật trạng thái button Sign In
     private void updateButtonState() {
-        // Button chỉ enable khi cả username và password đều có nội dung
-        boolean disable = userNameField.getText().trim().isEmpty() || passwordField.getText().isEmpty();
-        signinButton.setDisable(disable);
-
-        // Xóa thông báo lỗi khi user đang nhập
-        if (disable) {
-            statusLabel.setText("");
-        }
+        signinButton.setDisable(userNameField.getText().trim().isEmpty() || passwordField.getText().isEmpty());
     }
 
-    // Xử lý sự kiện khi click button Sign In
     @FXML
     private void onSignIn(ActionEvent event) {
-        // Hiện tại chỉ hiển thị thông báo thành công (sẽ thay bằng logic backend sau)
-        statusLabel.setText("Đăng nhập thành công!");
-        System.out.println("Signin: " + userNameField.getText() + " / " + passwordField.getText());
+        String username = userNameField.getText();
+        String password = passwordField.getText();
+        statusLabel.setText("Đang đăng nhập...");
 
-        // Đóng cửa sổ sau khi xử lý xong
-        closeWindow(event);
+        new Thread(() -> {
+            try {
+                JSONObject loginData = new JSONObject();
+                loginData.put("username", username);
+                loginData.put("password", password);
+
+                HttpResponse<String> response = BackendClient.getInstance().post("/auth/signin", loginData.toString());
+
+                Platform.runLater(() -> {
+                    if (response.statusCode() == 200) {
+                        statusLabel.setText("Đăng nhập thành công!");
+                        goToDashboard(event);
+                    } else {
+                        statusLabel.setText("Lỗi: " + response.body());
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> statusLabel.setText("Lỗi kết nối: " + e.getMessage()));
+            }
+        }).start();
     }
 
-    // Xử lý sự kiện khi click button Cancel
-    @FXML
-    private void onCancel(ActionEvent event) {
-        // Đóng cửa sổ
-        closeWindow(event);
-    }
-
-    // Xử lý sự kiện chuyển sang trang Đăng ký
-    @FXML
-    private void onGoToSignUp(ActionEvent event) {
+    private void goToDashboard(ActionEvent event) {
         try {
-            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            javafx.scene.Scene scene = new javafx.scene.Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/style/signup.css").toExternalForm());
+            Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Đăng ký người dùng");
-        } catch (java.io.IOException e) {
+            stage.setTitle("Online Auction Dashboard");
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Phương thức helper để đóng cửa sổ
-    private void closeWindow(ActionEvent event) {
-        // Lấy Stage từ event source
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
+    @FXML
+    private void onCancel(ActionEvent event) {
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+    }
+
+    @FXML
+    private void onGoToSignUp(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng ký người dùng");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
