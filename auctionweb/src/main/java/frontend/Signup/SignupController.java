@@ -129,41 +129,35 @@ public class SignupController {
             email.replace("\"", "\\\"")
         );
 
-        java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                .uri(java.net.URI.create("http://localhost:8080/api/auth/signup"))
-                .header("Content-Type", "application/json")
-                .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonPayload))
-                .build();
-
-        client.sendAsync(request, java.net.http.HttpResponse.BodyHandlers.ofString())
-                .thenApply(response -> {
-                    javafx.application.Platform.runLater(() -> {
-                        if (response.statusCode() == 200) {
-                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-                            alert.setTitle("Đăng ký thành công");
-                            alert.setHeaderText(null);
-                            alert.setContentText("Tài khoản của bạn đã được đăng ký thành công!");
-                            alert.showAndWait();
-                            closeWindow(event);
-                        } else {
-                            statusLabel.setText("Lỗi: " + response.body());
-                            signUpButton.setDisable(false);
-                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-                            alert.setTitle("Đăng ký thất bại");
-                            alert.setHeaderText(null);
-                            alert.setContentText(response.body());
-                            alert.showAndWait();
-                        }
-                    });
-                    return response;
-                }).exceptionally(e -> {
-                    javafx.application.Platform.runLater(() -> {
-                        statusLabel.setText("Lỗi kết nối tới Server");
-                        signUpButton.setDisable(false);
-                    });
-                    return null;
-                });
+        // Gọi backend qua Singleton BackendClient
+        try {
+            java.net.http.HttpResponse<String> response = frontend.utils.BackendClient.getInstance().post("/auth/signup", jsonPayload);
+            
+            javafx.application.Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                    alert.setTitle("Đăng ký thành công");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Tài khoản của bạn đã được đăng ký thành công!");
+                    alert.showAndWait();
+                    closeWindow(event);
+                } else {
+                    statusLabel.setText("Lỗi: " + response.body());
+                    signUpButton.setDisable(false);
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                    alert.setTitle("Đăng ký thất bại");
+                    alert.setHeaderText(null);
+                    alert.setContentText(response.body());
+                    alert.showAndWait();
+                }
+            });
+        } catch (Exception e) {
+            javafx.application.Platform.runLater(() -> {
+                statusLabel.setText("Lỗi kết nối tới Server");
+                signUpButton.setDisable(false);
+            });
+            e.printStackTrace();
+        }
     }
 
     // Xử lý sự kiện khi click button Cancel

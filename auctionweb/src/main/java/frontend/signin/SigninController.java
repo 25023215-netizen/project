@@ -50,12 +50,30 @@ public class SigninController {
     // Xử lý sự kiện khi click button Sign In
     @FXML
     private void onSignIn(ActionEvent event) {
-        // Hiện tại chỉ hiển thị thông báo thành công (sẽ thay bằng logic backend sau)
-        statusLabel.setText("Đăng nhập thành công!");
-        System.out.println("Signin: " + userNameField.getText() + " / " + passwordField.getText());
+        String username = userNameField.getText().trim();
+        String password = passwordField.getText();
 
-        // Đóng cửa sổ sau khi xử lý xong
-        closeWindow(event);
+        try {
+            // Tạo JSON body đơn giản
+            String jsonBody = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, password);
+            
+            // Gọi backend qua Singleton BackendClient
+            java.net.http.HttpResponse<String> response = frontend.utils.BackendClient.getInstance().post("/auth/signin", jsonBody);
+
+            if (response.statusCode() == 200) {
+                statusLabel.setText("Đăng nhập thành công!");
+                statusLabel.setStyle("-fx-text-fill: green;");
+                System.out.println("Login success: " + response.body());
+                // Chuyển màn hình hoặc lưu thông tin user ở đây
+            } else {
+                statusLabel.setText("Lỗi: " + response.body());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        } catch (Exception e) {
+            statusLabel.setText("Không thể kết nối tới máy chủ!");
+            statusLabel.setStyle("-fx-text-fill: red;");
+            e.printStackTrace();
+        }
     }
 
     // Xử lý sự kiện khi click button Cancel

@@ -30,4 +30,12 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public Users authenticate(String username, String password) throws Exception {
+        Users user = userRepository.findByUsername(username);
+        if (user == null || !user.getPassword().equals(password)) {
+            throw new Exception("Invalid username or password!");
+        }
+        return user;
+    }
 }
