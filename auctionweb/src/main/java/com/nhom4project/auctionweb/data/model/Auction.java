@@ -7,28 +7,25 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "auction_sessions")
 public class Auction extends BaseEntity {
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String title;
 
-    @Column(nullable = false, length = 60)
+    @Column(length = 60)
     private String category;
 
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false, precision = 15, scale = 2)
+    @Column(precision = 15, scale = 2)
     private BigDecimal currentPrice;
 
-    @Column(nullable = false)
     private Integer bidCount = 0;
 
     private LocalDateTime startTime;
 
-    @Column(nullable = false)
     private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private AuctionStatus status = AuctionStatus.OPEN;
 
     @OneToOne
