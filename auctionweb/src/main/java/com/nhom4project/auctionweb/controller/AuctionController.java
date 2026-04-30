@@ -7,31 +7,58 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/auctions")
 public class AuctionController {
-
     @Autowired
     private AuctionService auctionService;
 
     @GetMapping
-    public List<Auction> getAllAuctions() {
-        return auctionService.getAllAuctions();
+    public List<Auction> listAuctions() {
+        return auctionService.listAuctions();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Auction> getAuction(@PathVariable Long id) {
-        Auction auction = auctionService.getAuctionById(id);
-        return auction != null ? ResponseEntity.ok(auction) : ResponseEntity.notFound().build();
+        return auctionService.getAuctionById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/start")
+    public ResponseEntity<?> startAuction(@PathVariable Long id) {
+        try {
+            auctionService.startAuction(id);
+            return ResponseEntity.ok("Auction started");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/{id}/bid")
-    public ResponseEntity<?> placeBid(@PathVariable Long id, @RequestParam Double amount, @RequestBody Bidder bidder) {
+    public ResponseEntity<?> placeBid(@PathVariable Long id,
+                                      @RequestParam Long bidderId,
+                                      @RequestParam BigDecimal amount) {
         try {
-            auctionService.placeBid(id, bidder, amount);
-            return ResponseEntity.ok("Bid placed successfully");
+            Bidder bidder = new Bidder();
+            bidder.setId(bidderId);
+            boolean success = auctionService.placeBid(id, bidder, amount);
+            return success
+                    ? ResponseEntity.ok("Bid placed successfully")
+                    : ResponseEntity.badRequest().body("Bid failed");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/end")
+    public ResponseEntity<?> endAuction(@PathVariable Long id) {
+        try {
+            auctionService.endAuction(id);
+            return ResponseEntity.ok("Auction ended");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
