@@ -6,10 +6,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-/**
- * BackendClient triển khai theo mẫu thiết kế Singleton.
- * Dùng để gửi các yêu cầu HTTP tới Spring Boot Backend.
- */
 public class BackendClient {
     private static final String BASE_URL = "http://localhost:8080/api";
     private static BackendClient instance;
