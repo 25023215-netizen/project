@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:controller="frontend.dashboard.DashboardController"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@../style/dashboard.css"
+            styleClass="dashboard-root">
+    <left>
+        <VBox spacing="20" styleClass="sidebar">
+            <VBox spacing="4">
+                <Label text="Auction Web" styleClass="brand-title"/>
+                <Label text="Quan ly dau gia" styleClass="brand-subtitle"/>
+            </VBox>
+            <VBox spacing="8" styleClass="nav-list">
+                <Button text="Dashboard" styleClass="nav-button-active"/>
+                <Button text="Auction List" styleClass="nav-button"/>
+                <Button text="My Bids" styleClass="nav-button"/>
+                <Button text="Settings" styleClass="nav-button"/>
+            </VBox>
+        </VBox>
+    </left>
+    <center>
+        <VBox spacing="18" styleClass="content">
+            <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Dashboard" styleClass="page-title"/>
+                    <Label text="Theo doi cac phien dau gia dang mo va sap dien ra" styleClass="page-subtitle"/>
+                </VBox>
+                <Button text="Refresh" onAction="#onRefresh" styleClass="primary-button"/>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Tong phien" styleClass="stat-label"/>
+                    <Label fx:id="totalAuctionsLabel" text="0" styleClass="stat-value"/>
+                </VBox>
+                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Dang chay" styleClass="stat-label"/>
+                    <Label fx:id="runningAuctionsLabel" text="0" styleClass="stat-value"/>
+                </VBox>
+                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Luot dat gia" styleClass="stat-label"/>
+                    <Label fx:id="totalBidLabel" text="0" styleClass="stat-value"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="12" styleClass="auction-panel" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="Auction List" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="searchField" promptText="Tim theo ten, loai, trang thai" styleClass="search-field"/>
+                </HBox>
+                <TableView fx:id="auctionTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="titleColumn" text="San pham" prefWidth="310"/>
+                        <TableColumn fx:id="categoryColumn" text="Loai" prefWidth="130"/>
+                        <TableColumn fx:id="priceColumn" text="Gia hien tai" prefWidth="170"/>
+                        <TableColumn fx:id="bidsColumn" text="Luot bid" prefWidth="90"/>
+                        <TableColumn fx:id="statusColumn" text="Trang thai" prefWidth="120"/>
+                        <TableColumn fx:id="endTimeColumn" text="Ket thuc" prefWidth="170"/>
+                    </columns>
+                </TableView>
+                <Label fx:id="statusLabel" text="" styleClass="status-label"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

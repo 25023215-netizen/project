@@ -54,8 +54,39 @@ public class SigninController {
         statusLabel.setText("Đăng nhập thành công!");
         System.out.println("Signin: " + userNameField.getText() + " / " + passwordField.getText());
 
+<<<<<<< Updated upstream
         // Đóng cửa sổ sau khi xử lý xong
         closeWindow(event);
+=======
+        try {
+            // Tạo JSON body đơn giản
+            String jsonBody = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, password);
+            
+            // Gọi backend qua Singleton BackendClient
+            java.net.http.HttpResponse<String> response = frontend.utils.BackendClient.getInstance().post("/auth/signin", jsonBody);
+
+            if (response.statusCode() == 200) {
+                statusLabel.setText("Đăng nhập thành công!");
+                statusLabel.setStyle("-fx-text-fill: green;");
+                System.out.println("Login success: " + response.body());
+                javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                javafx.scene.Scene scene = new javafx.scene.Scene(root, 1180, 760);
+                scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
+                stage.setScene(scene);
+                stage.setTitle("Auction Web - Dashboard");
+                stage.setMinWidth(980);
+                stage.setMinHeight(680);
+            } else {
+                statusLabel.setText("Lỗi: " + response.body());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        } catch (Exception e) {
+            statusLabel.setText("Không thể kết nối tới máy chủ!");
+            statusLabel.setStyle("-fx-text-fill: red;");
+            e.printStackTrace();
+        }
+>>>>>>> Stashed changes
     }
 
     // Xử lý sự kiện khi click button Cancel

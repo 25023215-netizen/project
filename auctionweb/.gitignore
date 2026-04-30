@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+<<<<<<< Updated upstream
+=======
+
+### H2 Database ###
+data/
+!src/main/java/**/data/
+!src/main/java/**/data/**
+>>>>>>> Stashed changes
