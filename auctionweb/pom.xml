@@ -20,6 +20,7 @@
     <!-- ✅ Java ổn định -->
     <properties>
         <java.version>17</java.version>
+        <javafx.mainClass>frontend.signin.Signin</javafx.mainClass>
     </properties>
 
     <dependencies>
@@ -108,7 +109,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>frontend.MainLauncher</mainClass>
+                    <mainClass>${javafx.mainClass}</mainClass>
                 </configuration>
             </plugin>
 
@@ -131,5 +132,32 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>signin</id>
+            <properties>
+                <javafx.mainClass>frontend.signin.Signin</javafx.mainClass>
+            </properties>
+        </profile>
+        <profile>
+            <id>dashboard</id>
+            <properties>
+                <javafx.mainClass>frontend.dashboard.Dashboard</javafx.mainClass>
+            </properties>
+        </profile>
+        <profile>
+            <id>auction-list</id>
+            <properties>
+                <javafx.mainClass>frontend.auction.AuctionList</javafx.mainClass>
+            </properties>
+        </profile>
+        <profile>
+            <id>signup</id>
+            <properties>
+                <javafx.mainClass>frontend.Signup.Signup</javafx.mainClass>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
