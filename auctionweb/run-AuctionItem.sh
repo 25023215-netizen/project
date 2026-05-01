@@ -1,2 +1,2 @@
 #!/bin/bash
-./mvnw.cmd -Djavafx.mainClass=frontend.auction.AuctionList javafx:run
+./mvnw.cmd -Pauction-list javafx:run

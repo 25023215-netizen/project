@@ -10,13 +10,19 @@ case "$MODE" in
     ./mvnw.cmd spring-boot:run
     ;;
   signin|client)
-    ./mvnw.cmd -Djavafx.mainClass=frontend.signin.Signin javafx:run
+    ./mvnw.cmd -Psignin javafx:run
     ;;
   dashboard)
-    ./mvnw.cmd -Djavafx.mainClass=frontend.dashboard.Dashboard javafx:run
+    ./mvnw.cmd -Pdashboard javafx:run
+    ;;
+  signup)
+    ./mvnw.cmd -Psignup javafx:run
+    ;;
+  auction-list)
+    ./mvnw.cmd -Pauction-list javafx:run
     ;;
   *)
-    echo "Usage: ./run.sh [server|signin|dashboard]"
+    echo "Usage: ./run.sh [server|signin|dashboard|signup|auction-list]"
     exit 1
     ;;
 esac
