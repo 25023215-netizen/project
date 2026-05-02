@@ -159,3 +159,35 @@
 .left-panel, .right-panel {
     -fx-padding: 0;
 }
+
+.timer-text {
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ef4444;
+    -fx-background-color: #fee2e2;
+    -fx-padding: 4 12;
+    -fx-background-radius: 6;
+}
+
+.user-status-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 12;
+    -fx-background-radius: 6;
+}
+
+.status-leading {
+    -fx-text-fill: #059669;
+    -fx-background-color: #d1fae5;
+}
+
+.status-outbid {
+    -fx-text-fill: #dc2626;
+    -fx-background-color: #fee2e2;
+}
+
+.status-not-bidder {
+    -fx-text-fill: #4b5563;
+    -fx-background-color: #f3f4f6;
+}

@@ -23,9 +23,13 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 
 /**
  * Controller cho màn hình chi tiết phiên đấu giá.
@@ -41,7 +45,9 @@ public class AuctionDetailController {
     @FXML private Label bidCountLabel;
     @FXML private Label statusLabel;
     @FXML private Label endTimeLabel;
+    @FXML private Label timerLabel;
     @FXML private Label winnerLabel;
+    @FXML private Label userStatusLabel;
     @FXML private Label messageLabel;
 
     @FXML private TextField bidAmountField;
@@ -61,6 +67,9 @@ public class AuctionDetailController {
     private final ObjectMapper mapper = new ObjectMapper();
     private XYChart.Series<Number, Number> priceSeries;
     private int chartPointIndex = 0;
+    private Timeline countdownTimeline;
+    private LocalDateTime auctionEndTime;
+    private boolean isFinishedAlertShown = false;
 
     /**
      * Được gọi trước khi hiển thị màn hình, truyền auction ID.
@@ -85,6 +94,46 @@ public class AuctionDetailController {
         boolean canBid = SessionManager.getInstance().isBidder();
         placeBidButton.setDisable(!canBid);
         autoBidButton.setDisable(!canBid);
+
+        if (!canBid) {
+            userStatusLabel.setText("Ban dang dang nhap voi quyen SELLER/ADMIN. Chi Bidder moi co the dat gia.");
+            userStatusLabel.getStyleClass().add("status-not-bidder");
+        }
+
+        setupCountdownTimer();
+    }
+
+    private void setupCountdownTimer() {
+        countdownTimeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1), event -> {
+            if (auctionEndTime != null) {
+                updateCountdownDisplay();
+            }
+        }));
+        countdownTimeline.setCycleCount(Timeline.INDEFINITE);
+        countdownTimeline.play();
+    }
+
+    private void updateCountdownDisplay() {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(auctionEndTime)) {
+            timerLabel.setText("00:00:00");
+            timerLabel.setStyle("-fx-text-fill: gray; -fx-background-color: #e5e7eb;");
+            return;
+        }
+
+        long totalSeconds = ChronoUnit.SECONDS.between(now, auctionEndTime);
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+
+        timerLabel.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+
+        // Nêu còn dưới 1 phút thì đổi màu đỏ đậm
+        if (totalSeconds < 60) {
+            timerLabel.setStyle("-fx-text-fill: white; -fx-background-color: #dc2626;");
+        } else {
+            timerLabel.setStyle(""); // Reset to CSS
+        }
     }
 
     /**
@@ -169,20 +218,57 @@ public class AuctionDetailController {
         statusLabel.setText(status);
         statusLabel.setStyle(getStatusStyle(status));
 
-        String endTime = node.path("endTime").asText("");
-        endTimeLabel.setText("Ket thuc: " + formatTime(endTime));
+        String endTimeStr = node.path("endTime").asText("");
+        endTimeLabel.setText("Ket thuc: " + formatTime(endTimeStr));
+        try {
+            auctionEndTime = LocalDateTime.parse(endTimeStr);
+        } catch (Exception ignored) {}
 
         JsonNode winner = node.path("winner");
+        Long currentUserId = SessionManager.getInstance().getUserId();
+        boolean isBidder = SessionManager.getInstance().isBidder();
+
         if (winner != null && !winner.isMissingNode() && !winner.isNull()) {
-            winnerLabel.setText("Nguoi dan dau: " + winner.path("username").asText(""));
+            Long winnerId = winner.path("id").asLong();
+            String winnerName = winner.path("username").asText("");
+            winnerLabel.setText("Nguoi dan dau: " + winnerName);
+
+            if (isBidder) {
+                userStatusLabel.getStyleClass().removeAll("status-leading", "status-outbid", "status-not-bidder");
+                if (currentUserId != null && currentUserId.equals(winnerId)) {
+                    userStatusLabel.setText("★ BAN DANG DAN DAU!");
+                    userStatusLabel.getStyleClass().add("status-leading");
+                } else {
+                    userStatusLabel.setText("⚠ BAN DA BI VUOT MAT! Hay dat gia cao hon!");
+                    userStatusLabel.getStyleClass().add("status-outbid");
+                }
+            }
         } else {
             winnerLabel.setText("Chua co nguoi dat gia");
+            if (isBidder) {
+                userStatusLabel.setText("Hay la nguoi dau tien dat gia!");
+                userStatusLabel.getStyleClass().removeAll("status-leading", "status-outbid");
+            }
         }
 
         // Disable bidding nếu auction không đang chạy
         boolean isRunning = "RUNNING".equals(status);
-        placeBidButton.setDisable(!isRunning || !SessionManager.getInstance().isBidder());
-        autoBidButton.setDisable(!isRunning || !SessionManager.getInstance().isBidder());
+        placeBidButton.setDisable(!isRunning || !isBidder);
+        autoBidButton.setDisable(!isRunning || !isBidder);
+
+        if ("FINISHED".equals(status) && !isFinishedAlertShown) {
+            isFinishedAlertShown = true;
+            Platform.runLater(() -> {
+                String msg = (winner != null && !winner.isNull()) 
+                    ? "Phien dau gia ket thuc! Nguoi thang: " + winner.path("username").asText()
+                    : "Phien dau gia ket thuc ma khong co nguoi mua.";
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Thong bao ket thuc");
+                alert.setHeaderText(null);
+                alert.setContentText(msg);
+                alert.show();
+            });
+        }
     }
 
     // ==================== Actions ====================
@@ -294,6 +380,7 @@ public class AuctionDetailController {
 
     @FXML
     private void onBack() {
+        if (countdownTimeline != null) countdownTimeline.stop();
         WebSocketClient.getInstance().stopPolling();
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));

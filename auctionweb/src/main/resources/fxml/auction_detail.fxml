@@ -37,8 +37,13 @@
                             <Label fx:id="bidCountLabel" text="0" styleClass="bid-count-text"/>
                         </VBox>
                     </HBox>
-                    <Label fx:id="endTimeLabel" text="Ket thuc: -" styleClass="info-label"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label fx:id="endTimeLabel" text="Ket thuc: -" styleClass="info-label"/>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="timerLabel" text="00:00:00" styleClass="timer-text"/>
+                    </HBox>
                     <Label fx:id="winnerLabel" text="" styleClass="winner-text"/>
+                    <Label fx:id="userStatusLabel" text="" styleClass="user-status-text"/>
                 </VBox>
 
                 <!-- Place Bid Card -->
