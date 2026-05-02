@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:controller="frontend.item.ItemManagementController"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@../style/item_management.css"
+            styleClass="item-root">
+
+    <top>
+        <HBox spacing="16" styleClass="item-topbar">
+            <Button text="Quay lai Dashboard" onAction="#onBack" styleClass="back-button"/>
+            <Label text="Quan ly san pham" styleClass="page-title" HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="20" styleClass="item-content">
+            <!-- Left: Form -->
+            <VBox spacing="14" prefWidth="380" styleClass="form-panel">
+                <Label text="Them san pham moi" styleClass="section-title"/>
+
+                <VBox spacing="4">
+                    <Label text="Loai san pham" styleClass="field-label"/>
+                    <ComboBox fx:id="typeCombo" maxWidth="Infinity" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Ten san pham" styleClass="field-label"/>
+                    <TextField fx:id="nameField" promptText="Nhap ten san pham" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Mo ta" styleClass="field-label"/>
+                    <TextArea fx:id="descField" promptText="Mo ta san pham" prefRowCount="3" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Gia khoi diem (VND)" styleClass="field-label"/>
+                    <TextField fx:id="priceField" promptText="Vi du: 1000000" styleClass="input-field"/>
+                </VBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label fx:id="extra1Label" text="Brand:" styleClass="field-label"/>
+                        <TextField fx:id="extra1Field" styleClass="input-field"/>
+                    </VBox>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label fx:id="extra2Label" text="Model:" styleClass="field-label"/>
+                        <TextField fx:id="extra2Field" styleClass="input-field"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="10">
+                    <Button text="Them san pham" onAction="#onAddItem" styleClass="primary-button"/>
+                    <Button text="Xoa san pham" onAction="#onDeleteItem" styleClass="danger-button"/>
+                </HBox>
+
+                <!-- Tạo phiên đấu giá -->
+                <Separator/>
+                <Label text="Tao phien dau gia" styleClass="section-title"/>
+                <VBox spacing="4">
+                    <Label text="Tieu de phien (de trong = ten san pham)" styleClass="field-label"/>
+                    <TextField fx:id="auctionTitleField" promptText="Tieu de phien dau gia" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="So ngay dau gia" styleClass="field-label"/>
+                    <TextField fx:id="auctionDaysField" text="3" styleClass="input-field"/>
+                </VBox>
+                <Button text="Tao phien dau gia" onAction="#onCreateAuction" styleClass="primary-button"/>
+
+                <Label fx:id="statusLabel" text="" styleClass="status-label"/>
+            </VBox>
+
+            <!-- Right: Table -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="table-panel">
+                <Label text="Danh sach san pham cua ban" styleClass="section-title"/>
+                <TableView fx:id="itemTable" VBox.vgrow="ALWAYS" styleClass="item-table">
+                    <columns>
+                        <TableColumn fx:id="nameColumn" text="Ten" prefWidth="200"/>
+                        <TableColumn fx:id="typeColumn" text="Loai" prefWidth="120"/>
+                        <TableColumn fx:id="priceColumn" text="Gia khoi diem" prefWidth="150"/>
+                        <TableColumn fx:id="descColumn" text="Mo ta" prefWidth="250"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

@@ -1,26 +1,22 @@
 package com.nhom4project.auctionweb.service;
 
 import com.nhom4project.auctionweb.data.model.Auction;
+import com.nhom4project.auctionweb.data.model.AuctionStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * AuctionManager triển khai theo mẫu thiết kế Singleton.
- * Quản lý trạng thái và thời gian của các phiên đấu giá đang diễn ra.
- */
 @Service
 public class AuctionManager {
     private static AuctionManager instance;
     private final Map<Long, Auction> activeAuctions = new ConcurrentHashMap<>();
 
-    // Constructor public cho Spring, nhưng chúng ta lưu trữ instance static
     public AuctionManager() {
         instance = this;
     }
 
-    public static AuctionManager getInstance() {
+    public static synchronized AuctionManager getInstance() {
         if (instance == null) {
             instance = new AuctionManager();
         }
@@ -28,8 +24,23 @@ public class AuctionManager {
     }
 
     public void registerAuction(Auction auction) {
-        activeAuctions.put(auction.getId(), auction);
-        System.out.println("Auction registered: " + auction.getId());
+        if (auction != null && auction.getId() != null) {
+            activeAuctions.put(auction.getId(), auction);
+        }
+    }
+
+    public void updateStatus(Long auctionId, AuctionStatus status) {
+        Auction auction = activeAuctions.get(auctionId);
+        if (auction != null) {
+            auction.setStatus(status);
+            if (status == AuctionStatus.FINISHED) {
+                activeAuctions.remove(auctionId);
+            }
+        }
+    }
+
+    public Auction getAuction(Long auctionId) {
+        return activeAuctions.get(auctionId);
     }
 
     public void removeAuction(Long auctionId) {

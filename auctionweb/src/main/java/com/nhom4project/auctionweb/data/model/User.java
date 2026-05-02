@@ -17,15 +17,17 @@ public abstract class User extends BaseEntity {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Username is required")
+    private String username;
+
+    @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Roles role;
-
-    @Column(unique = true, nullable = false)
-    private String username;
+    @Column(nullable = false)
+    private Roles role = Roles.BIDDER;
 
     public String getFullname() {
         return fullname;
@@ -43,6 +45,14 @@ public abstract class User extends BaseEntity {
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -57,13 +67,5 @@ public abstract class User extends BaseEntity {
 
     public void setRole(Roles role) {
         this.role = role;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 }

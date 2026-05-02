@@ -7,8 +7,8 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 /**
- * BackendClient triển khai theo mẫu thiết kế Singleton.
- * Dùng để gửi các yêu cầu HTTP tới Spring Boot Backend.
+ * Singleton HTTP client cho giao tiếp với Backend REST API.
+ * Design pattern: Singleton
  */
 public class BackendClient {
     private static final String BASE_URL = "http://localhost:8080/api";
@@ -42,6 +42,25 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .GET()
+                .build();
+
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public HttpResponse<String> put(String endpoint, String jsonBody) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + endpoint))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public HttpResponse<String> delete(String endpoint) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + endpoint))
+                .DELETE()
                 .build();
 
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
