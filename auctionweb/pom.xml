@@ -155,7 +155,7 @@
         <profile>
             <id>signup</id>
             <properties>
-                <javafx.mainClass>frontend.Signup.Signup</javafx.mainClass>
+                <javafx.mainClass>frontend.signup.Signup</javafx.mainClass>
             </properties>
         </profile>
     </profiles>

@@ -53,16 +53,21 @@ public class SignupController {
 
     @FXML
     private void onSignUp(ActionEvent event) {
+        String fullname = fullNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String username = userNameField.getText().trim();
+        String password = passwordField.getText();
+
         signUpButton.setDisable(true);
         statusLabel.setText("Đang đăng ký...");
 
         new Thread(() -> {
             try {
                 JSONObject payload = new JSONObject();
-                payload.put("fullname", fullNameField.getText().trim());
-                payload.put("email", emailField.getText().trim());
-                payload.put("username", userNameField.getText().trim());
-                payload.put("password", passwordField.getText());
+                payload.put("fullname", fullname);
+                payload.put("email", email);
+                payload.put("username", username);
+                payload.put("password", password);
 
                 HttpResponse<String> response = BackendClient.getInstance().post("/auth/signup", payload.toString());
 

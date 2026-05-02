@@ -56,7 +56,7 @@ public class DashboardController {
     @FXML
     private TableColumn<AuctionRow, String> endTimeColumn;
 
-    private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
+    private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();//ObservableList có thêm/bớt dữ liệu, giao diện sẽ tự động thay đổi theo mà không cần code ép nó cập nhật
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
