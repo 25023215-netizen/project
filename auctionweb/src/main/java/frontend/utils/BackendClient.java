@@ -59,7 +59,8 @@ public class BackendClient {
 
     private BackendClient() {
         this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(10))
+                .connectTimeout(Duration.ofSeconds(60))
+                .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
     }
 

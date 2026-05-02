@@ -1,19 +1,20 @@
 # Stage 1: Build the application
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests
+# Build and skip tests to save memory and time
+RUN mvn clean package -DskipTests -Djava.awt.headless=true
 
 # Stage 2: Run the application
-FROM eclipse-temurin:17-jre
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
-# Create directory for H2 database persistence (optional for ephemeral clouds)
+# Create directory for H2 database persistence
 RUN mkdir -p data
 
-# Port exposed by the application
+# Ensure the app runs in headless mode (no GUI needed for backend)
+ENV JAVA_OPTS="-Djava.awt.headless=true"
 EXPOSE 8080
 
-# Run the jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
