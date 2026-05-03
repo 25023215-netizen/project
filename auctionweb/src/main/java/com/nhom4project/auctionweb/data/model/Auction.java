@@ -1,12 +1,19 @@
 package com.nhom4project.auctionweb.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "auction_sessions")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Auction extends BaseEntity {
+    @Version
+    private Long version;
+
+    @Column(precision = 15, scale = 2)
+    private BigDecimal startingPrice;
     @Column(length = 200)
     private String title;
 
@@ -30,11 +37,34 @@ public class Auction extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "item_id")
+    @JsonIgnoreProperties({"seller"})
     private Item item;
 
     @ManyToOne
     @JoinColumn(name = "winner_id")
+    @JsonIgnoreProperties({"password", "email"})
     private Bidder winner;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    @JsonIgnoreProperties({"password", "email"})
+    private Seller seller;
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public BigDecimal getStartingPrice() {
+        return startingPrice;
+    }
+
+    public void setStartingPrice(BigDecimal startingPrice) {
+        this.startingPrice = startingPrice;
+    }
 
     public String getTitle() {
         if (title != null) {
@@ -126,5 +156,13 @@ public class Auction extends BaseEntity {
 
     public void setWinner(Bidder winner) {
         this.winner = winner;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 }

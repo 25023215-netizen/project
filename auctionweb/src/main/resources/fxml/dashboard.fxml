@@ -14,9 +14,8 @@
             </VBox>
             <VBox spacing="8" styleClass="nav-list">
                 <Button text="Dashboard" styleClass="nav-button-active"/>
-                <Button text="Auction List" styleClass="nav-button"/>
-                <Button text="My Bids" styleClass="nav-button"/>
-                <Button text="Settings" styleClass="nav-button"/>
+                <Button text="Quan ly san pham" fx:id="manageItemsButton" onAction="#onManageItems" styleClass="nav-button"/>
+                <Button text="Dang xuat" onAction="#onLogout" styleClass="nav-button"/>
             </VBox>
         </VBox>
     </left>
@@ -25,7 +24,7 @@
             <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
                 <VBox spacing="4" HBox.hgrow="ALWAYS">
                     <Label text="Dashboard" styleClass="page-title"/>
-                    <Label text="Theo doi cac phien dau gia dang mo va sap dien ra" styleClass="page-subtitle"/>
+                    <Label fx:id="userInfoLabel" text="" styleClass="page-subtitle"/>
                 </VBox>
                 <Button text="Refresh" onAction="#onRefresh" styleClass="primary-button"/>
             </HBox>
@@ -47,7 +46,7 @@
 
             <VBox spacing="12" styleClass="auction-panel" VBox.vgrow="ALWAYS">
                 <HBox alignment="CENTER_LEFT" spacing="12">
-                    <Label text="Auction List" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                    <Label text="Danh sach phien dau gia (nhan doi de xem chi tiet)" styleClass="section-title" HBox.hgrow="ALWAYS"/>
                     <TextField fx:id="searchField" promptText="Tim theo ten, loai, trang thai" styleClass="search-field"/>
                 </HBox>
                 <TableView fx:id="auctionTable" styleClass="auction-table" VBox.vgrow="ALWAYS">

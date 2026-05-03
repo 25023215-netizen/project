@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<BorderPane fx:controller="frontend.auction.AuctionDetailController"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@../style/auction_detail.css"
+            styleClass="detail-root">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox spacing="16" styleClass="detail-topbar">
+            <Button text="Quay lai" onAction="#onBack" styleClass="back-button"/>
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label fx:id="titleLabel" text="Dang tai..." styleClass="detail-title"/>
+                <Label fx:id="categoryLabel" text="" styleClass="detail-subtitle"/>
+            </VBox>
+            <Label fx:id="statusLabel" text="" styleClass="status-badge"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="20" styleClass="detail-content">
+            <!-- Left: Info + Bidding -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS" styleClass="left-panel">
+                <!-- Auction Info Card -->
+                <VBox spacing="10" styleClass="info-card">
+                    <Label fx:id="descriptionLabel" text="" wrapText="true" styleClass="desc-text"/>
+                    <HBox spacing="30">
+                        <VBox spacing="4">
+                            <Label text="Gia hien tai" styleClass="info-label"/>
+                            <Label fx:id="currentPriceLabel" text="0 VND" styleClass="price-text"/>
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Luot dat gia" styleClass="info-label"/>
+                            <Label fx:id="bidCountLabel" text="0" styleClass="bid-count-text"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label fx:id="endTimeLabel" text="Ket thuc: -" styleClass="info-label"/>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="timerLabel" text="00:00:00" styleClass="timer-text"/>
+                    </HBox>
+                    <Label fx:id="winnerLabel" text="" styleClass="winner-text"/>
+                    <Label fx:id="userStatusLabel" text="" styleClass="user-status-text"/>
+                </VBox>
+
+                <!-- Place Bid Card -->
+                <VBox spacing="10" styleClass="bid-card">
+                    <Label text="Dat gia" styleClass="section-title"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="bidAmountField" promptText="Nhap so tien (VND)" styleClass="bid-input" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="placeBidButton" text="Dat gia" onAction="#onPlaceBid" styleClass="bid-button"/>
+                    </HBox>
+                    <Label fx:id="messageLabel" text="" styleClass="message-label"/>
+                </VBox>
+
+                <!-- Auto-Bid Card -->
+                <VBox spacing="10" styleClass="autobid-card">
+                    <Label text="Dau gia tu dong (Auto-Bid)" styleClass="section-title"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Gia toi da" styleClass="info-label"/>
+                            <TextField fx:id="maxBidField" promptText="Max bid (VND)" styleClass="bid-input"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Buoc gia" styleClass="info-label"/>
+                            <TextField fx:id="incrementField" promptText="Increment (VND)" styleClass="bid-input"/>
+                        </VBox>
+                        <Button fx:id="autoBidButton" text="Kich hoat" onAction="#onAutoBid" styleClass="autobid-button"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Right: Chart + History -->
+            <VBox spacing="16" prefWidth="440" styleClass="right-panel">
+                <!-- Price Chart -->
+                <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
+                    <Label text="Bieu do gia (Realtime)" styleClass="section-title"/>
+                    <LineChart fx:id="priceChart" VBox.vgrow="ALWAYS" styleClass="price-chart">
+                        <xAxis><NumberAxis fx:id="xAxis" label="Bid #" autoRanging="true"/></xAxis>
+                        <yAxis><NumberAxis fx:id="yAxis" label="Gia (VND)" autoRanging="true"/></yAxis>
+                    </LineChart>
+                </VBox>
+
+                <!-- Bid History -->
+                <VBox spacing="8" styleClass="history-card" prefHeight="250">
+                    <Label text="Lich su dat gia" styleClass="section-title"/>
+                    <ListView fx:id="bidHistoryList" VBox.vgrow="ALWAYS" styleClass="history-list"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

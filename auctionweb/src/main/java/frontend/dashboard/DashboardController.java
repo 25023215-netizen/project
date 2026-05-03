@@ -1,64 +1,44 @@
 package frontend.dashboard;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import frontend.utils.BackendClient;
-import javafx.beans.property.SimpleStringProperty;
+import frontend.auction.AuctionDetailController;
+import frontend.model.AuctionRow;
+import frontend.service.DashboardService;
+import frontend.utils.NavigationManager;
+import frontend.utils.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
-import java.math.BigDecimal;
-import java.net.http.HttpResponse;
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
+/**
+ * Controller cho Dashboard chính.
+ * Hiển thị danh sách phiên đấu giá, thống kê, tìm kiếm.
+ * Click vào row để mở chi tiết phiên đấu giá.
+ */
 public class DashboardController {
-    @FXML
-    private Label totalAuctionsLabel;
+    @FXML private Label totalAuctionsLabel;
+    @FXML private Label runningAuctionsLabel;
+    @FXML private Label totalBidLabel;
+    @FXML private Label statusLabel;
+    @FXML private Label userInfoLabel;
+    @FXML private TextField searchField;
 
-    @FXML
-    private Label runningAuctionsLabel;
+    @FXML private TableView<AuctionRow> auctionTable;
+    @FXML private TableColumn<AuctionRow, String> titleColumn;
+    @FXML private TableColumn<AuctionRow, String> categoryColumn;
+    @FXML private TableColumn<AuctionRow, String> priceColumn;
+    @FXML private TableColumn<AuctionRow, String> bidsColumn;
+    @FXML private TableColumn<AuctionRow, String> statusColumn;
+    @FXML private TableColumn<AuctionRow, String> endTimeColumn;
 
-    @FXML
-    private Label totalBidLabel;
+    @FXML private Button manageItemsButton;
 
-    @FXML
-    private Label statusLabel;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private TableView<AuctionRow> auctionTable;
-
-    @FXML
-    private TableColumn<AuctionRow, String> titleColumn;
-
-    @FXML
-    private TableColumn<AuctionRow, String> categoryColumn;
-
-    @FXML
-    private TableColumn<AuctionRow, String> priceColumn;
-
-    @FXML
-    private TableColumn<AuctionRow, String> bidsColumn;
-
-    @FXML
-    private TableColumn<AuctionRow, String> statusColumn;
-
-    @FXML
-    private TableColumn<AuctionRow, String> endTimeColumn;
-
-    private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();//ObservableList có thêm/bớt dữ liệu, giao diện sẽ tự động thay đổi theo mà không cần code ép nó cập nhật
+    private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
-    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private final DashboardService dashboardService = new DashboardService();
 
     @FXML
     public void initialize() {
@@ -71,6 +51,24 @@ public class DashboardController {
 
         auctionTable.setItems(filteredAuctions);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
+
+        // Double-click vào row để mở chi tiết
+        auctionTable.setOnMouseClicked(this::onTableClick);
+
+        // Hiển thị thông tin user
+        if (SessionManager.getInstance().isLoggedIn()) {
+            if (userInfoLabel != null) {
+                userInfoLabel.setText("Xin chao, " + SessionManager.getInstance().getFullname()
+                        + " (" + SessionManager.getInstance().getRole() + ")");
+            }
+        }
+
+        // Chỉ hiện nút quản lý sản phẩm cho Seller
+        if (manageItemsButton != null) {
+            manageItemsButton.setVisible(SessionManager.getInstance().isSeller());
+            manageItemsButton.setManaged(SessionManager.getInstance().isSeller());
+        }
+
         loadAuctions();
     }
 
@@ -79,44 +77,68 @@ public class DashboardController {
         loadAuctions();
     }
 
-    private void loadAuctions() {
+    /**
+     * Mở màn hình quản lý sản phẩm (dành cho Seller).
+     */
+    @FXML
+    private void onManageItems() {
         try {
-            HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
-            if (response.statusCode() == 200) {
-                auctions.setAll(parseAuctions(response.body()));
-                statusLabel.setText("Da tai danh sach dau gia tu server.");
-            } else {
-                loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
-            }
+            Stage stage = (Stage) auctionTable.getScene().getWindow();
+            NavigationManager.switchScene(stage, "/fxml/item_management.fxml", "/style/item_management.css", "Quan ly san pham", 1180, 760);
         } catch (Exception e) {
-            loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
+            statusLabel.setText("Loi: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Đăng xuất và quay lại màn hình đăng nhập.
+     */
+    @FXML
+    private void onLogout() {
+        SessionManager.getInstance().clear();
+        try {
+            Stage stage = (Stage) auctionTable.getScene().getWindow();
+            NavigationManager.switchScene(stage, "/fxml/signin.fxml", "/style/signin.css", "Online Auction System - Sign In");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Double-click vào row -> mở chi tiết phiên đấu giá.
+     */
+    private void onTableClick(MouseEvent event) {
+        if (event.getClickCount() == 2) {
+            AuctionRow selected = auctionTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                openAuctionDetail(selected.getId());
+            }
+        }
+    }
+
+    private void openAuctionDetail(Long auctionId) {
+        try {
+            Stage stage = (Stage) auctionTable.getScene().getWindow();
+            AuctionDetailController controller = NavigationManager.switchScene(stage, "/fxml/auction_detail.fxml", "/style/auction_detail.css", "Chi tiet phien dau gia", 1180, 760);
+            controller.setAuctionId(auctionId);
+        } catch (Exception e) {
+            statusLabel.setText("Loi: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void loadAuctions() {
+        DashboardService.DashboardResult result = dashboardService.fetchAuctions();
+        auctions.setAll(result.auctions);
+        statusLabel.setText(result.message);
+        if (!result.success) {
+            statusLabel.setStyle("-fx-text-fill: red;");
+        } else {
+            statusLabel.setStyle("-fx-text-fill: black;");
         }
         applyFilter();
         updateStats();
-    }
-
-    private ObservableList<AuctionRow> parseAuctions(String body) throws Exception {
-        ObservableList<AuctionRow> rows = FXCollections.observableArrayList();
-        JsonNode root = new ObjectMapper().readTree(body);
-        for (JsonNode node : root) {
-            String title = node.path("title").asText();
-            String category = node.path("category").asText();
-            BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
-            String bidCount = String.valueOf(node.path("bidCount").asInt());
-            String status = node.path("status").asText();
-            String endTime = formatEndTime(node.path("endTime").asText());
-            rows.add(new AuctionRow(title, category, currencyFormat.format(price), bidCount, status, endTime));
-        }
-        return rows;
-    }
-
-    private void loadFallbackAuctions(String message) {
-        auctions.setAll(
-                new AuctionRow("iPhone 15 Pro Max 256GB", "Electronics", "25.000.000 VND", "18", "RUNNING", "Con 2 ngay"),
-                new AuctionRow("Tranh Son Dau - Ho Guom", "Art", "5.200.000 VND", "9", "RUNNING", "Con 3 ngay"),
-                new AuctionRow("Honda Wave Alpha 2023", "Vehicle", "15.000.000 VND", "4", "OPEN", "Con 4 ngay")
-        );
-        statusLabel.setText(message);
     }
 
     private void applyFilter() {
@@ -136,62 +158,11 @@ public class DashboardController {
                 .count();
         runningAuctionsLabel.setText(String.valueOf(runningCount));
         int totalBids = auctions.stream()
-                .mapToInt(row -> Integer.parseInt(row.bidsProperty().get()))
+                .mapToInt(row -> {
+                    try { return Integer.parseInt(row.bidsProperty().get()); }
+                    catch (NumberFormatException e) { return 0; }
+                })
                 .sum();
         totalBidLabel.setText(String.valueOf(totalBids));
-    }
-
-    private String formatEndTime(String value) {
-        if (value == null || value.isBlank()) {
-            return "-";
-        }
-        try {
-            LocalDateTime time = LocalDateTime.parse(value);
-            return time.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-        } catch (Exception ignored) {
-            return value;
-        }
-    }
-
-    public static class AuctionRow {
-        private final SimpleStringProperty title;
-        private final SimpleStringProperty category;
-        private final SimpleStringProperty price;
-        private final SimpleStringProperty bids;
-        private final SimpleStringProperty status;
-        private final SimpleStringProperty endTime;
-
-        public AuctionRow(String title, String category, String price, String bids, String status, String endTime) {
-            this.title = new SimpleStringProperty(title);
-            this.category = new SimpleStringProperty(category);
-            this.price = new SimpleStringProperty(price);
-            this.bids = new SimpleStringProperty(bids);
-            this.status = new SimpleStringProperty(status);
-            this.endTime = new SimpleStringProperty(endTime);
-        }
-
-        public SimpleStringProperty titleProperty() {
-            return title;
-        }
-
-        public SimpleStringProperty categoryProperty() {
-            return category;
-        }
-
-        public SimpleStringProperty priceProperty() {
-            return price;
-        }
-
-        public SimpleStringProperty bidsProperty() {
-            return bids;
-        }
-
-        public SimpleStringProperty statusProperty() {
-            return status;
-        }
-
-        public SimpleStringProperty endTimeProperty() {
-            return endTime;
-        }
     }
 }

@@ -20,7 +20,7 @@
     <!-- ✅ Java ổn định -->
     <properties>
         <java.version>17</java.version>
-        <javafx.mainClass>frontend.signin.Signin</javafx.mainClass>
+        <javafx.mainClass>frontend.MainLauncher</javafx.mainClass>
     </properties>
 
     <dependencies>
@@ -128,36 +128,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.nhom4project.auctionweb.Main</mainClass>
+                </configuration>
             </plugin>
 
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>signin</id>
-            <properties>
-                <javafx.mainClass>frontend.signin.Signin</javafx.mainClass>
-            </properties>
-        </profile>
-        <profile>
-            <id>dashboard</id>
-            <properties>
-                <javafx.mainClass>frontend.dashboard.Dashboard</javafx.mainClass>
-            </properties>
-        </profile>
-        <profile>
-            <id>auction-list</id>
-            <properties>
-                <javafx.mainClass>frontend.auction.AuctionList</javafx.mainClass>
-            </properties>
-        </profile>
-        <profile>
-            <id>signup</id>
-            <properties>
-                <javafx.mainClass>frontend.signup.Signup</javafx.mainClass>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>
