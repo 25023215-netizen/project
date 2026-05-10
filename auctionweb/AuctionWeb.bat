@@ -39,13 +39,13 @@ goto :full_start
 :client_only
 echo.
 echo [1/1] Dang khoi dong Giao dien...
-mvnw.cmd javafx:run
+mvnw.cmd javafx:run -DskipTests
 goto :end
 
 :full_start
 echo.
 echo [1/2] Dang khoi dong Backend Server (Cua so moi)...
-start "AuctionWeb Backend" cmd /c "mvnw.cmd spring-boot:run"
+start "AuctionWeb Backend" cmd /c "mvnw.cmd spring-boot:run -DskipTests"
 
 echo.
 echo Dang doi Backend khoi tao (10 giay)...
@@ -53,7 +53,7 @@ timeout /t 10 /nobreak >nul
 
 echo.
 echo [2/2] Dang khoi dong Giao dien...
-mvnw.cmd javafx:run
+mvnw.cmd javafx:run -DskipTests
 goto :end
 
 :end

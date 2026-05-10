@@ -1,7 +1,7 @@
-package com.nhom4project.auctionweb.service;
+package com.nhom4project.auctionweb.server.service;
 
-import com.nhom4project.auctionweb.data.model.*;
-import com.nhom4project.auctionweb.data.repository.*;
+import com.nhom4project.auctionweb.server.model.*;
+import com.nhom4project.auctionweb.server.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -295,3 +295,5 @@ class AuctionServiceTest {
         assertEquals(AuctionStatus.FINISHED, ended.getStatus());
     }
 }
+
+
