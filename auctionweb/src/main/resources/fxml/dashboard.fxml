@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:controller="frontend.dashboard.DashboardController"
+<BorderPane fx:controller="com.nhom4project.auctionweb.controller.frontend.DashboardController"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@../style/dashboard.css"
             styleClass="dashboard-root">
@@ -64,3 +64,5 @@
         </VBox>
     </center>
 </BorderPane>
+
+

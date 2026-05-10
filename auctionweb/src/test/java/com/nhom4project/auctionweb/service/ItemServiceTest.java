@@ -1,8 +1,8 @@
-package com.nhom4project.auctionweb.service;
+package com.nhom4project.auctionweb.server.service;
 
-import com.nhom4project.auctionweb.data.model.*;
-import com.nhom4project.auctionweb.data.repository.ItemRepository;
-import com.nhom4project.auctionweb.data.repository.UserRepository;
+import com.nhom4project.auctionweb.server.model.*;
+import com.nhom4project.auctionweb.server.repository.ItemRepository;
+import com.nhom4project.auctionweb.server.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -149,3 +149,5 @@ class ItemServiceTest {
         assertTrue(items.size() >= 2);
     }
 }
+
+
