@@ -1,0 +1,121 @@
+/* ===== Item Management Screen ===== */
+
+.item-root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #f4f7fb;
+}
+
+.item-topbar {
+    -fx-padding: 16 24;
+    -fx-background-color: #14213d;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.page-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #ffffff;
+}
+
+.back-button {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.back-button:hover {
+    -fx-background-color: rgba(255,255,255,0.25);
+}
+
+.item-content {
+    -fx-padding: 20;
+}
+
+.form-panel, .table-panel {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 10;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.06), 10, 0, 0, 3);
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #14213d;
+}
+
+.field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: 600;
+}
+
+.input-field {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-background-color: #ffffff;
+    -fx-padding: 9 12;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.danger-button {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: #dc2626;
+}
+
+.status-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+}
+
+/* Table */
+.item-table {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+}
+
+.item-table .column-header-background {
+    -fx-background-color: #eef2f7;
+}
+
+.item-table .column-header,
+.item-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 42;
+}
+
+.item-table .column-header .label {
+    -fx-text-fill: #334155;
+    -fx-font-weight: 700;
+}
+
+.item-table .table-row-cell {
+    -fx-cell-size: 44;
+}
