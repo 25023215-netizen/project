@@ -136,6 +136,30 @@ public class AuctionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    /**
+     * Dừng Auto-bid.
+     */
+    @PostMapping("/{id}/auto-bid/stop")
+    public ResponseEntity<?> stopAutoBid(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        try {
+            Long bidderId = Long.valueOf(body.get("bidderId").toString());
+            auctionService.stopAutoBid(id, bidderId);
+            return ResponseEntity.ok("Auto-bid stopped");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Lấy trạng thái Auto-bid của người dùng.
+     */
+    @GetMapping("/{id}/auto-bid/status")
+    public ResponseEntity<?> getAutoBidStatus(@PathVariable Long id, @RequestParam Long bidderId) {
+        return auctionService.getAutoBidConfig(id, bidderId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
 
 

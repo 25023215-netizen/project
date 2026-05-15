@@ -69,7 +69,9 @@
                             <TextField fx:id="incrementField" promptText="Increment (VND)" styleClass="bid-input"/>
                         </VBox>
                         <Button fx:id="autoBidButton" text="Kich hoat" onAction="#onAutoBid" styleClass="autobid-button"/>
+                        <Button fx:id="stopAutoBidButton" text="Dung Auto-bid" onAction="#onStopAutoBid" styleClass="stop-autobid-button" managed="false" visible="false"/>
                     </HBox>
+                    <Label fx:id="minBidLabel" text="Goi y: Dat tu - VND" styleClass="info-label" style="-fx-text-fill: #64748b;"/>
                 </VBox>
             </VBox>
 

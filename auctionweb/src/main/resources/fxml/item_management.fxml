@@ -61,8 +61,11 @@
                     <TextField fx:id="auctionTitleField" promptText="Tieu de phien dau gia" styleClass="input-field"/>
                 </VBox>
                 <VBox spacing="4">
-                    <Label text="So ngay dau gia" styleClass="field-label"/>
-                    <TextField fx:id="auctionDaysField" text="3" styleClass="input-field"/>
+                    <Label text="Thoi gian dau gia" styleClass="field-label"/>
+                    <HBox spacing="8">
+                        <TextField fx:id="durationValueField" text="3" prefWidth="100" styleClass="input-field"/>
+                        <ComboBox fx:id="durationUnitCombo" prefWidth="120" styleClass="input-field"/>
+                    </HBox>
                 </VBox>
                 <Button text="Tao phien dau gia" onAction="#onCreateAuction" styleClass="primary-button"/>
 
