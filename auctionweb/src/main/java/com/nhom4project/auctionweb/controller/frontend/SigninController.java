@@ -2,6 +2,7 @@ package com.nhom4project.auctionweb.controller.frontend;
 
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -138,8 +139,7 @@ public class SigninController {
             scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Auction Web - Dashboard");
-            stage.setMinWidth(980);
-            stage.setMinHeight(680);
+            WindowUtil.fitDashboard(stage);
             stage.show();
         } catch (Exception e) {
             statusLabel.setText("Khong the mo Dashboard!");

@@ -29,16 +29,16 @@
                 <Button text="Refresh" onAction="#onRefresh" styleClass="primary-button"/>
             </HBox>
 
-            <HBox spacing="16">
-                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <HBox spacing="16" fillHeight="true">
+                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                     <Label text="Tong phien" styleClass="stat-label"/>
                     <Label fx:id="totalAuctionsLabel" text="0" styleClass="stat-value"/>
                 </VBox>
-                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                     <Label text="Dang chay" styleClass="stat-label"/>
                     <Label fx:id="runningAuctionsLabel" text="0" styleClass="stat-value"/>
                 </VBox>
-                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                     <Label text="Luot dat gia" styleClass="stat-label"/>
                     <Label fx:id="totalBidLabel" text="0" styleClass="stat-value"/>
                 </VBox>
@@ -46,17 +46,17 @@
 
             <VBox spacing="12" styleClass="auction-panel" VBox.vgrow="ALWAYS">
                 <HBox alignment="CENTER_LEFT" spacing="12">
-                    <Label text="Danh sach phien dau gia (nhan doi de xem chi tiet)" styleClass="section-title" HBox.hgrow="ALWAYS"/>
-                    <TextField fx:id="searchField" promptText="Tim theo ten, loai, trang thai" styleClass="search-field"/>
+                    <Label text="Danh sach phien dau gia (nhan doi de xem chi tiet)" styleClass="section-title" HBox.hgrow="ALWAYS" wrapText="true"/>
+                    <TextField fx:id="searchField" promptText="Tim theo ten, loai, trang thai" styleClass="search-field" HBox.hgrow="NEVER"/>
                 </HBox>
                 <TableView fx:id="auctionTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="titleColumn" text="San pham" prefWidth="310"/>
-                        <TableColumn fx:id="categoryColumn" text="Loai" prefWidth="130"/>
-                        <TableColumn fx:id="priceColumn" text="Gia hien tai" prefWidth="170"/>
-                        <TableColumn fx:id="bidsColumn" text="Luot bid" prefWidth="90"/>
-                        <TableColumn fx:id="statusColumn" text="Trang thai" prefWidth="120"/>
-                        <TableColumn fx:id="endTimeColumn" text="Ket thuc" prefWidth="170"/>
+                        <TableColumn fx:id="titleColumn" text="San pham" prefWidth="260" minWidth="160"/>
+                        <TableColumn fx:id="categoryColumn" text="Loai" prefWidth="110" minWidth="80"/>
+                        <TableColumn fx:id="priceColumn" text="Gia hien tai" prefWidth="140" minWidth="110"/>
+                        <TableColumn fx:id="bidsColumn" text="Luot bid" prefWidth="80" minWidth="70"/>
+                        <TableColumn fx:id="statusColumn" text="Trang thai" prefWidth="105" minWidth="85"/>
+                        <TableColumn fx:id="endTimeColumn" text="Ket thuc" prefWidth="145" minWidth="115"/>
                     </columns>
                 </TableView>
                 <Label fx:id="statusLabel" text="" styleClass="status-label"/>

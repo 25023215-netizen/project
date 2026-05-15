@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -239,6 +240,8 @@ public class ItemManagementController {
             Scene scene = new Scene(root, 1180, 760);
             scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
             stage.setScene(scene);
+            stage.setTitle("Auction Web - Dashboard");
+            WindowUtil.fitDashboard(stage);
         } catch (Exception e) {
             e.printStackTrace();
         }
