@@ -102,14 +102,17 @@
     -fx-font-size: 14px;
 }
 
-.bid-button {
-    -fx-background-color: #2563eb;
+.bid-button, .autobid-button, .stop-autobid-button {
     -fx-text-fill: white;
     -fx-background-radius: 8;
     -fx-font-weight: bold;
-    -fx-padding: 10 24;
     -fx-cursor: hand;
     -fx-font-size: 14px;
+}
+
+.bid-button {
+    -fx-background-color: #2563eb;
+    -fx-padding: 10 24;
 }
 
 .bid-button:hover {
@@ -118,15 +121,20 @@
 
 .autobid-button {
     -fx-background-color: #7c3aed;
-    -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-font-weight: bold;
     -fx-padding: 10 20;
-    -fx-cursor: hand;
 }
 
 .autobid-button:hover {
     -fx-background-color: #6d28d9;
+}
+
+.stop-autobid-button {
+    -fx-background-color: #dc2626;
+    -fx-padding: 10 20;
+}
+
+.stop-autobid-button:hover {
+    -fx-background-color: #b91c1c;
 }
 
 .message-label {
