@@ -1,0 +1,160 @@
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.dashboard-root {
+    -fx-background-color: #f4f7fb;
+}
+
+.sidebar {
+    -fx-background-color: #14213d;
+    -fx-padding: 28 20;
+    -fx-pref-width: 230;
+}
+
+.brand-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #ffffff;
+}
+
+.brand-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #b8c2d6;
+}
+
+.nav-list {
+    -fx-padding: 10 0 0 0;
+}
+
+.nav-button,
+.nav-button-active {
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-pref-width: 190;
+    -fx-padding: 11 14;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-button-active {
+    -fx-background-color: #fca311;
+    -fx-text-fill: #111827;
+    -fx-font-weight: 700;
+}
+
+.content {
+    -fx-padding: 28;
+}
+
+.topbar {
+    -fx-padding: 0 0 4 0;
+}
+
+.page-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #14213d;
+}
+
+.page-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #64748b;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.stat-card,
+.auction-panel {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.06), 10, 0, 0, 3);
+}
+
+.stat-card {
+    -fx-padding: 18;
+    -fx-min-height: 105;
+}
+
+.stat-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+}
+
+.stat-value {
+    -fx-font-size: 30px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+}
+
+.auction-panel {
+    -fx-padding: 18;
+}
+
+.section-title {
+    -fx-font-size: 19px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #14213d;
+}
+
+.search-field {
+    -fx-pref-width: 280;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-background-color: #ffffff;
+    -fx-padding: 9 12;
+}
+
+.auction-table {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+}
+
+.auction-table .column-header-background {
+    -fx-background-color: #eef2f7;
+}
+
+.auction-table .column-header,
+.auction-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 42;
+}
+
+.auction-table .column-header .label {
+    -fx-text-fill: #334155;
+    -fx-font-weight: 700;
+}
+
+.auction-table .table-row-cell {
+    -fx-cell-size: 44;
+}
+
+.status-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+}

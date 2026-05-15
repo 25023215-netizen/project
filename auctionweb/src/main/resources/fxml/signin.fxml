@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <!-- Root container: StackPane để center nội dung -->
-<StackPane fx:controller="frontend.signin.SigninController"
+<StackPane fx:controller="com.nhom4project.auctionweb.controller.frontend.SigninController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signin.css"
            style="-fx-background-color: linear-gradient(to bottom right, #e3f2fd, #f3e5f5);">
@@ -14,6 +16,20 @@
         </VBox>
         <!-- Container chứa các input fields -->
         <VBox spacing="15" styleClass="form-container">
+            <!-- Role selection -->
+            <VBox spacing="5">
+                <Label text="Login as" styleClass="field-label"/>
+                <ComboBox fx:id="roleComboBox" styleClass="input-field" maxWidth="Infinity">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Bidder"/>
+                            <String fx:value="Seller"/>
+                            <String fx:value="Admin"/>
+                        </FXCollections>
+                    </items>
+                    <value><String fx:value="Bidder"/></value>
+                </ComboBox>
+            </VBox>
             <!-- Username field với label -->
             <VBox spacing="5">
                 <Label text="Username" styleClass="field-label"/>
