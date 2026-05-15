@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <!-- Root container: StackPane để center nội dung trong cửa sổ -->
-<StackPane fx:controller="frontend.signup.SignupController"
+<StackPane fx:controller="com.nhom4project.auctionweb.controller.frontend.SignupController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signup.css"
            style="-fx-background-color: linear-gradient(to bottom right, #fef3c7, #fde2e2);">
     <!-- Card chính chứa toàn bộ form đăng ký -->
-    <VBox alignment="CENTER" spacing="25" styleClass="form-card">
+    <VBox alignment="CENTER" spacing="20" styleClass="form-card">
         <!-- Header section: Tiêu đề -->
         <VBox alignment="CENTER" spacing="10">
             <Label text="Create Account" styleClass="title-label"/>
         </VBox>
         <!-- Form container: Chứa các input fields -->
-        <VBox spacing="15" styleClass="form-container">
+        <VBox spacing="12" styleClass="form-container">
+            <!-- Role selection (chỉ Bidder hoặc Seller) -->
+            <VBox spacing="5">
+                <Label text="Register as" styleClass="field-label"/>
+                <ComboBox fx:id="roleComboBox" styleClass="input-field" maxWidth="Infinity">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Bidder"/>
+                            <String fx:value="Seller"/>
+                        </FXCollections>
+                    </items>
+                    <value><String fx:value="Bidder"/></value>
+                </ComboBox>
+            </VBox>
             <!-- Fullname field -->
             <VBox spacing="5">
                 <Label text="Full Name" styleClass="field-label"/>
