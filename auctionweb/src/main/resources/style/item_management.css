@@ -34,6 +34,15 @@
     -fx-padding: 20;
 }
 
+.form-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.form-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
 .form-panel, .table-panel {
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;

@@ -17,8 +17,9 @@
     <center>
         <HBox spacing="20" styleClass="item-content">
             <!-- Left: Form -->
-            <VBox spacing="14" prefWidth="380" styleClass="form-panel">
-                <Label text="Them san pham moi" styleClass="section-title"/>
+            <ScrollPane prefWidth="420" maxHeight="Infinity" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll">
+                <VBox spacing="14" prefWidth="380" styleClass="form-panel">
+                    <Label text="Them san pham moi" styleClass="section-title"/>
 
                 <VBox spacing="4">
                     <Label text="Loai san pham" styleClass="field-label"/>
@@ -70,7 +71,8 @@
                 <Button text="Tao phien dau gia" onAction="#onCreateAuction" styleClass="primary-button"/>
 
                 <Label fx:id="statusLabel" text="" styleClass="status-label"/>
-            </VBox>
+                </VBox>
+            </ScrollPane>
 
             <!-- Right: Table -->
             <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="table-panel">
