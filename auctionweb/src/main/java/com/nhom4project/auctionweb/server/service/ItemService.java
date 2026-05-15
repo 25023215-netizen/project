@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * Service quản lý sản phẩm đấu giá (Item).
  * Sử dụng Factory Method pattern để tạo đúng loại Item.
  */
 @Service
+@Transactional
 public class ItemService {
 
     @Autowired

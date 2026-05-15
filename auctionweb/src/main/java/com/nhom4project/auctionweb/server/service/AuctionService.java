@@ -24,6 +24,7 @@ import java.util.*;
  * - Observer Pattern: broadcast qua WebSocket khi có thay đổi
  */
 @Service
+@Transactional
 public class AuctionService {
 
     private static final Logger log = LoggerFactory.getLogger(AuctionService.class);
