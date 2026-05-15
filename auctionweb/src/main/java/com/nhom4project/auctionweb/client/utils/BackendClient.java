@@ -75,6 +75,8 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("ngrok-skip-browser-warning", "true")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -84,6 +86,8 @@ public class BackendClient {
     public HttpResponse<String> get(String endpoint) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
+                .header("Accept", "application/json")
+                .header("ngrok-skip-browser-warning", "true")
                 .GET()
                 .build();
 
@@ -94,6 +98,8 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("ngrok-skip-browser-warning", "true")
                 .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -103,6 +109,8 @@ public class BackendClient {
     public HttpResponse<String> delete(String endpoint) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
+                .header("Accept", "application/json")
+                .header("ngrok-skip-browser-warning", "true")
                 .DELETE()
                 .build();
 
