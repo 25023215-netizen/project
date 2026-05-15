@@ -101,7 +101,7 @@ public class DashboardController {
             scene.getStylesheets().add(getClass().getResource("/style/item_management.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Quan ly san pham");
-            stage.centerOnScreen();
+            WindowUtil.maximize(stage);
         } catch (Exception e) {
             statusLabel.setText("Loi: " + e.getMessage());
             e.printStackTrace();

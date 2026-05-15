@@ -18,11 +18,22 @@ public final class WindowUtil {
         double width = Math.min(DASHBOARD_WIDTH, bounds.getWidth());
         double height = Math.min(DASHBOARD_HEIGHT, bounds.getHeight());
 
+        stage.setFullScreen(false);
+        stage.setMaximized(false);
         stage.setMinWidth(Math.min(DASHBOARD_MIN_WIDTH, bounds.getWidth()));
         stage.setMinHeight(Math.min(DASHBOARD_MIN_HEIGHT, bounds.getHeight()));
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
         stage.setY(bounds.getMinY() + (bounds.getHeight() - height) / 2);
+    }
+
+    public static void maximize(Stage stage) {
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+
+        stage.setFullScreen(false);
+        stage.setMinWidth(Math.min(DASHBOARD_MIN_WIDTH, bounds.getWidth()));
+        stage.setMinHeight(Math.min(DASHBOARD_MIN_HEIGHT, bounds.getHeight()));
+        stage.setMaximized(true);
     }
 }
