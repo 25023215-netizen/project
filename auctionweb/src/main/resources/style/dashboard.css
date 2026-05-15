@@ -8,8 +8,9 @@
 
 .sidebar {
     -fx-background-color: #14213d;
-    -fx-padding: 28 20;
-    -fx-pref-width: 230;
+    -fx-padding: 28 18;
+    -fx-pref-width: 210;
+    -fx-min-width: 190;
 }
 
 .brand-title {
@@ -32,7 +33,7 @@
     -fx-alignment: CENTER_LEFT;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-pref-width: 190;
+    -fx-pref-width: 174;
     -fx-padding: 11 14;
     -fx-font-size: 14px;
     -fx-cursor: hand;
@@ -54,7 +55,7 @@
 }
 
 .content {
-    -fx-padding: 28;
+    -fx-padding: 24;
 }
 
 .topbar {
@@ -121,7 +122,8 @@
 }
 
 .search-field {
-    -fx-pref-width: 280;
+    -fx-pref-width: 240;
+    -fx-min-width: 190;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
     -fx-border-color: #cbd5e1;

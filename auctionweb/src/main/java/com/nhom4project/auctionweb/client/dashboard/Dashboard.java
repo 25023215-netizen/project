@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 
 public class Dashboard extends Application {
     @Override
@@ -14,8 +15,7 @@ public class Dashboard extends Application {
         scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
         primaryStage.setTitle("Auction Web - Dashboard");
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(980);
-        primaryStage.setMinHeight(680);
+        WindowUtil.fitDashboard(primaryStage);
         primaryStage.show();
     }
 

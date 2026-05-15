@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import com.nhom4project.auctionweb.client.utils.WebSocketClient;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -509,6 +510,7 @@ public class AuctionDetailController {
             scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
             stage.setScene(scene);
             stage.setTitle("Auction Web - Dashboard");
+            WindowUtil.fitDashboard(stage);
         } catch (Exception e) {
             e.printStackTrace();
         }
