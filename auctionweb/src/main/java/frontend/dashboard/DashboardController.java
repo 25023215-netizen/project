@@ -39,7 +39,7 @@ public class DashboardController {
     private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
     private final DashboardService dashboardService = new DashboardService();
-
+//tạo 1 bảng tableview trong file fxml, code dưới để tạo các cột vào trong table view đó
     @FXML
     public void initialize() {
         titleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
