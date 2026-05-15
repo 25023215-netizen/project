@@ -110,8 +110,8 @@ public class AuctionService {
         }
 
         LocalDateTime start = startTime != null ? startTime : LocalDateTime.now();
-        // Enforce: thời gian đấu giá tối đa 1 giờ
-        LocalDateTime end = start.plusHours(1);
+        // Sử dụng endTime nếu được truyền vào, nếu không mặc định +24 giờ
+        LocalDateTime end = endTime != null ? endTime : start.plusHours(24);
 
         Auction auction = new Auction();
         auction.setTitle(title);
@@ -282,6 +282,25 @@ public class AuctionService {
         processAutoBids(auctionId, null);
 
         return saved;
+    }
+
+    /**
+     * Dừng Auto-bid cho một bidder trên một auction.
+     */
+    @Transactional
+    public void stopAutoBid(Long auctionId, Long bidderId) {
+        autoBidConfigRepository.findByAuctionIdAndBidderId(auctionId, bidderId).ifPresent(config -> {
+            config.setActive(false);
+            autoBidConfigRepository.save(config);
+            log.info("Auto-bid: Bidder {} stopped auto-bid for auction {}", bidderId, auctionId);
+        });
+    }
+
+    /**
+     * Kiểm tra cấu hình Auto-bid của một bidder trên một auction.
+     */
+    public Optional<AutoBidConfig> getAutoBidConfig(Long auctionId, Long bidderId) {
+        return autoBidConfigRepository.findByAuctionIdAndBidderId(auctionId, bidderId);
     }
 
     /**

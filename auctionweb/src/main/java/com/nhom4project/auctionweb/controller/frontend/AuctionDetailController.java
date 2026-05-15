@@ -56,6 +56,8 @@ public class AuctionDetailController {
     @FXML private TextField maxBidField;
     @FXML private TextField incrementField;
     @FXML private Button autoBidButton;
+    @FXML private Button stopAutoBidButton;
+    @FXML private Label minBidLabel;
 
     @FXML private LineChart<Number, Number> priceChart;
     @FXML private NumberAxis xAxis;
@@ -300,6 +302,41 @@ public class AuctionDetailController {
                 alert.show();
             });
         }
+
+        // Cập nhật gợi ý giá bid tối thiểu (giả định buóc giá 50k nếu chưa biết)
+        BigDecimal minNextBid = price.add(new BigDecimal("50000"));
+        minBidLabel.setText(String.format("Goi y: Dat tu %,.0f VND", minNextBid));
+        if (bidAmountField.getText().isEmpty()) {
+            bidAmountField.setText(minNextBid.toPlainString());
+        }
+
+        checkAutoBidStatus();
+    }
+
+    private void checkAutoBidStatus() {
+        if (!SessionManager.getInstance().isBidder()) return;
+        Long userId = SessionManager.getInstance().getUserId();
+        if (userId == null) return;
+
+        new Thread(() -> {
+            try {
+                HttpResponse<String> response = BackendClient.getInstance()
+                        .get("/auctions/" + auctionId + "/auto-bid/status?bidderId=" + userId);
+                
+                Platform.runLater(() -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            JsonNode node = mapper.readTree(response.body());
+                            boolean isActive = node.path("active").asBoolean(false);
+                            autoBidButton.setVisible(!isActive);
+                            autoBidButton.setManaged(!isActive);
+                            stopAutoBidButton.setVisible(isActive);
+                            stopAutoBidButton.setManaged(isActive);
+                        } catch (Exception ignored) {}
+                    }
+                });
+            } catch (Exception ignored) {}
+        }).start();
     }
 
     // ==================== Actions ====================
@@ -424,6 +461,41 @@ public class AuctionDetailController {
      * Xử lý chức năng nút Quay lại.
      * Dọn dẹp các tiến trình ngầm và chuyển về trang danh sách.
      */
+    @FXML
+    private void onStopAutoBid() {
+        Long userId = SessionManager.getInstance().getUserId();
+        if (userId == null) return;
+        
+        stopAutoBidButton.setDisable(true);
+        messageLabel.setText("Dang dung auto-bid...");
+
+        new Thread(() -> {
+            try {
+                JSONObject body = new JSONObject();
+                body.put("bidderId", userId);
+
+                HttpResponse<String> response = BackendClient.getInstance()
+                        .post("/auctions/" + auctionId + "/auto-bid/stop", body.toString());
+
+                Platform.runLater(() -> {
+                    if (response.statusCode() == 200) {
+                        messageLabel.setText("Da dung auto-bid!");
+                        messageLabel.setStyle("-fx-text-fill: #22c55e;");
+                        checkAutoBidStatus();
+                    } else {
+                        messageLabel.setText("Loi: " + response.body());
+                    }
+                    stopAutoBidButton.setDisable(false);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    messageLabel.setText("Loi ket noi: " + e.getMessage());
+                    stopAutoBidButton.setDisable(false);
+                });
+            }
+        }).start();
+    }
+
     @FXML
     private void onBack() {
         // Dừng đếm ngược và ngắt kết nối websocket trước khi đổi màn hình

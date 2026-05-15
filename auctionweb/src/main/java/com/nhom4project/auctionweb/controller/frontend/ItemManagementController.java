@@ -41,7 +41,8 @@ public class ItemManagementController {
     @FXML private Label statusLabel;
 
     @FXML private TextField auctionTitleField;
-    @FXML private TextField auctionDaysField;
+    @FXML private TextField durationValueField;
+    @FXML private ComboBox<String> durationUnitCombo;
 
     private final ObservableList<ItemRow> items = FXCollections.observableArrayList();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -61,6 +62,9 @@ public class ItemManagementController {
         updateExtraFieldLabels();
 
         loadItems();
+
+        durationUnitCombo.setItems(FXCollections.observableArrayList("Phut", "Gio", "Ngay"));
+        durationUnitCombo.setValue("Ngay");
     }
 
     private void updateExtraFieldLabels() {
@@ -185,13 +189,23 @@ public class ItemManagementController {
         String title = auctionTitleField.getText().trim();
         if (title.isEmpty()) title = selected.nameProperty().get();
 
-        int days = 3;
+        String finalTitle = title;
+        
+        int durationValue = 3;
         try {
-            days = Integer.parseInt(auctionDaysField.getText().trim());
+            durationValue = Integer.parseInt(durationValueField.getText().trim());
         } catch (Exception ignored) {}
 
-        String finalTitle = title;
-        int finalDays = days;
+        String unit = durationUnitCombo.getValue();
+        java.time.LocalDateTime endTime = java.time.LocalDateTime.now();
+        switch (unit) {
+            case "Phut" -> endTime = endTime.plusMinutes(durationValue);
+            case "Gio" -> endTime = endTime.plusHours(durationValue);
+            case "Ngay" -> endTime = endTime.plusDays(durationValue);
+            default -> endTime = endTime.plusDays(durationValue);
+        }
+        
+        java.time.LocalDateTime finalEndTime = endTime;
 
         new Thread(() -> {
             try {
@@ -201,7 +215,7 @@ public class ItemManagementController {
                 body.put("description", selected.descProperty().get());
                 body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replace(",", "")));
                 body.put("sellerId", SessionManager.getInstance().getUserId());
-                body.put("endTime", java.time.LocalDateTime.now().plusDays(finalDays).toString());
+                body.put("endTime", finalEndTime.toString());
 
                 HttpResponse<String> response = BackendClient.getInstance().post("/auctions", body.toString());
                 Platform.runLater(() -> {
