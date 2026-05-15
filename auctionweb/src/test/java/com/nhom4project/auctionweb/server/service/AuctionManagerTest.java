@@ -32,7 +32,8 @@ public class AuctionManagerTest {
         auction.setStatus(AuctionStatus.RUNNING);
 
         manager.registerAuction(auction);
-        assertEquals(AuctionStatus.RUNNING, manager.getStatus(999L));
+        assertNotNull(manager.getAuction(999L));
+        assertEquals(AuctionStatus.RUNNING, manager.getAuction(999L).getStatus());
     }
 
     // ============================================================
@@ -42,7 +43,7 @@ public class AuctionManagerTest {
     @Test
     @DisplayName("Lỗi Bug: Truy cập ID không tồn tại")
     public void testGetNonExistentAuction_Failure() {
-        assertNull(manager.getStatus(8888L));
+        assertNull(manager.getAuction(8888L));
     }
 
     @Test

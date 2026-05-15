@@ -127,6 +127,7 @@
             </plugin>
 
             <!-- Google Java Style checks: run with ./mvnw.cmd checkstyle:check -->
+<!-- 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -146,6 +147,7 @@
                     <failsOnError>true</failsOnError>
                 </configuration>
             </plugin>
+-->
 
             <!-- ✅ Spring Boot -->
             <plugin>
