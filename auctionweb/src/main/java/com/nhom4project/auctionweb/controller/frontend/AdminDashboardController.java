@@ -3,6 +3,7 @@ package com.nhom4project.auctionweb.controller.frontend;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -111,6 +112,8 @@ public class AdminDashboardController {
                 }
                 String[] row = getTableRow().getItem();
                 String status = row[5];
+                HBox actions = new HBox(5);
+                
                 if ("PENDING".equals(status)) {
                     Button approveBtn = new Button("✅ Duyệt");
                     approveBtn.getStyleClass().add("approve-btn");
@@ -118,10 +121,15 @@ public class AdminDashboardController {
                     Button rejectBtn = new Button("❌ Từ chối");
                     rejectBtn.getStyleClass().add("reject-btn");
                     rejectBtn.setOnAction(e -> rejectAuction(row[0]));
-                    setGraphic(new HBox(5, approveBtn, rejectBtn));
-                } else {
-                    setGraphic(new Label(status));
+                    actions.getChildren().addAll(approveBtn, rejectBtn);
                 }
+                
+                Button delBtn = new Button("🗑 Xóa");
+                delBtn.getStyleClass().add("delete-btn");
+                delBtn.setOnAction(e -> deleteAuction(row[0]));
+                actions.getChildren().add(delBtn);
+                
+                setGraphic(actions);
             }
         });
 
@@ -290,18 +298,37 @@ public class AdminDashboardController {
         }).start();
     }
 
+    private void deleteAuction(String auctionId) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn xóa phiên đấu giá này?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                new Thread(() -> {
+                    try {
+                        Long userId = SessionManager.getInstance().getUserId();
+                        String role = SessionManager.getInstance().getRole();
+                        HttpResponse<String> response = BackendClient.getInstance()
+                                .delete("/auctions/" + auctionId + "?userId=" + userId + "&role=" + role);
+                        javafx.application.Platform.runLater(() -> {
+                            statusLabel.setText(response.body());
+                            loadAuctions();
+                            loadStats();
+                        });
+                    } catch (Exception e) {
+                        javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi: " + e.getMessage()));
+                    }
+                }).start();
+            }
+        });
+    }
+
     // ==================== Navigation ====================
 
     @FXML
     private void onLogout() {
         SessionManager.getInstance().clear();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
             Stage stage = (Stage) adminInfoLabel.getScene().getWindow();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/style/signin.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Online Auction System - Sign In");
+            SceneUtils.changeScene(stage, "/fxml/signin.fxml", "Online Auction System - Sign In", "/style/signin.css");
         } catch (Exception e) {
             e.printStackTrace();
         }

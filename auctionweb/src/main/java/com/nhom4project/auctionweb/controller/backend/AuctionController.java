@@ -3,6 +3,7 @@ package com.nhom4project.auctionweb.controller.backend;
 import com.nhom4project.auctionweb.server.model.Auction;
 import com.nhom4project.auctionweb.server.model.AutoBidConfig;
 import com.nhom4project.auctionweb.server.model.BidTransaction;
+import com.nhom4project.auctionweb.server.model.Roles;
 import com.nhom4project.auctionweb.server.service.AuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -81,10 +82,20 @@ public class AuctionController {
     }
 
     @PostMapping("/{id}/end")
-    public ResponseEntity<?> endAuction(@PathVariable Long id) {
+    public ResponseEntity<?> endAuction(@PathVariable Long id, @RequestParam Long userId, @RequestParam Roles role) {
         try {
-            auctionService.endAuction(id);
+            auctionService.endAuction(id, userId, role);
             return ResponseEntity.ok("Auction ended");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAuction(@PathVariable Long id, @RequestParam Long userId, @RequestParam Roles role) {
+        try {
+            auctionService.deleteAuction(id, userId, role);
+            return ResponseEntity.ok("Auction deleted");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.controller.frontend.AuctionDetailController;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -93,12 +94,8 @@ public class DashboardController {
     @FXML
     private void onManageItems() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/item_management.fxml"));
             Stage stage = (Stage) auctionTable.getScene().getWindow();
-            Scene scene = new Scene(root, 1180, 760);
-            scene.getStylesheets().add(getClass().getResource("/style/item_management.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Quan ly san pham");
+            SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Quan ly san pham", "/style/item_management.css");
         } catch (Exception e) {
             statusLabel.setText("Loi: " + e.getMessage());
             e.printStackTrace();
@@ -112,12 +109,8 @@ public class DashboardController {
     private void onLogout() {
         SessionManager.getInstance().clear();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
             Stage stage = (Stage) auctionTable.getScene().getWindow();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/style/signin.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Online Auction System - Sign In");
+            SceneUtils.changeScene(stage, "/fxml/signin.fxml", "Online Auction System - Sign In", "/style/signin.css");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,17 +130,11 @@ public class DashboardController {
 
     private void openAuctionDetail(Long auctionId) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/auction_detail.fxml"));
-            Parent root = loader.load();
-
-            AuctionDetailController controller = loader.getController();
-            controller.setAuctionId(auctionId);
-
             Stage stage = (Stage) auctionTable.getScene().getWindow();
-            Scene scene = new Scene(root, 1180, 760);
-            scene.getStylesheets().add(getClass().getResource("/style/auction_detail.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Chi tiet phien dau gia");
+            AuctionDetailController controller = SceneUtils.changeSceneWithController(stage, "/fxml/auction_detail.fxml", "Chi tiet phien dau gia", "/style/auction_detail.css");
+            if (controller != null) {
+                controller.setAuctionId(auctionId);
+            }
         } catch (Exception e) {
             statusLabel.setText("Loi: " + e.getMessage());
             e.printStackTrace();

@@ -19,6 +19,7 @@ public interface AutoBidConfigRepository extends JpaRepository<AutoBidConfig, Lo
      * Tìm auto-bid config của một bidder trên một auction cụ thể.
      */
     Optional<AutoBidConfig> findByAuctionIdAndBidderId(Long auctionId, Long bidderId);
+    void deleteByAuctionId(Long auctionId);
 }
 
 

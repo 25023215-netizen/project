@@ -3,6 +3,7 @@ package com.nhom4project.auctionweb.controller.frontend;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -40,7 +41,7 @@ public class ItemManagementController {
     @FXML private Label extra2Label;
     @FXML private Label statusLabel;
 
-    @FXML private TextField auctionTitleField;
+
     @FXML private TextField durationValueField;
     @FXML private ComboBox<String> durationUnitCombo;
 
@@ -186,9 +187,7 @@ public class ItemManagementController {
             return;
         }
 
-        String title = auctionTitleField.getText().trim();
-        if (title.isEmpty()) title = selected.nameProperty().get();
-
+        String title = selected.nameProperty().get();
         String finalTitle = title;
         
         int durationValue = 3;
@@ -234,11 +233,8 @@ public class ItemManagementController {
     @FXML
     private void onBack() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
             Stage stage = (Stage) itemTable.getScene().getWindow();
-            Scene scene = new Scene(root, 1180, 760);
-            scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
-            stage.setScene(scene);
+            SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
         } catch (Exception e) {
             e.printStackTrace();
         }

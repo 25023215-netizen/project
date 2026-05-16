@@ -56,10 +56,7 @@
                 <!-- Tạo phiên đấu giá -->
                 <Separator/>
                 <Label text="Tao phien dau gia" styleClass="section-title"/>
-                <VBox spacing="4">
-                    <Label text="Tieu de phien (de trong = ten san pham)" styleClass="field-label"/>
-                    <TextField fx:id="auctionTitleField" promptText="Tieu de phien dau gia" styleClass="input-field"/>
-                </VBox>
+
                 <VBox spacing="4">
                     <Label text="Thoi gian dau gia" styleClass="field-label"/>
                     <HBox spacing="8">

@@ -73,6 +73,15 @@
                     </HBox>
                     <Label fx:id="minBidLabel" text="Goi y: Dat tu - VND" styleClass="info-label" style="-fx-text-fill: #64748b;"/>
                 </VBox>
+
+                <!-- Owner/Admin Actions Card -->
+                <VBox fx:id="managementCard" spacing="10" styleClass="management-card" managed="false" visible="false">
+                    <Label text="Quan ly phien dau gia" styleClass="section-title"/>
+                    <HBox spacing="10">
+                        <Button fx:id="endEarlyButton" text="Ket thuc som" onAction="#onEndAuctionEarly" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Button fx:id="deleteAuctionButton" text="Xoa phien dau gia" onAction="#onDeleteAuction" styleClass="delete-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    </HBox>
+                </VBox>
             </VBox>
 
             <!-- Right: Chart + History -->

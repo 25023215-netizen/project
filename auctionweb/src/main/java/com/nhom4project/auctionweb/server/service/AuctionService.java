@@ -146,12 +146,44 @@ public class AuctionService {
     /**
      * Kết thúc phiên đấu giá thủ công.
      */
-    public void endAuction(Long id) {
+    public void endAuction(Long id, Long userId, Roles role) {
         Auction auction = findAuction(id);
+        
+        // Permission check: Admin can end any, Seller can end their own
+        if (role != Roles.ADMIN) {
+            if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
+                throw new IllegalStateException("Ban khong co quyen ket thuc phien dau gia nay");
+            }
+        }
+
         auction.setStatus(AuctionStatus.FINISHED);
         auctionRepository.save(auction);
         AuctionManager.getInstance().updateStatus(id, AuctionStatus.FINISHED);
         broadcastAuctionUpdate(auction);
+        broadcastAuctionList();
+    }
+
+    /**
+     * Xóa phiên đấu giá.
+     */
+    public void deleteAuction(Long id, Long userId, Roles role) {
+        Auction auction = findAuction(id);
+
+        // Permission check: Admin can delete any, Seller can delete their own
+        if (role != Roles.ADMIN) {
+            if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
+                throw new IllegalStateException("Ban khong co quyen xoa phien dau gia nay");
+            }
+            if (auction.getStatus() == AuctionStatus.RUNNING && auction.getBidCount() > 0) {
+                throw new IllegalStateException("Khong the xoa phien dau gia dang co nguoi dat gia");
+            }
+        }
+
+        // Delete associated data
+        bidRepository.deleteByAuctionId(id);
+        autoBidConfigRepository.deleteByAuctionId(id);
+        
+        auctionRepository.delete(auction);
         broadcastAuctionList();
     }
 
