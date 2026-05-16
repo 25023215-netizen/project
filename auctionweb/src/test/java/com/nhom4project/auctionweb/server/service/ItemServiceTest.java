@@ -35,9 +35,12 @@ public class ItemServiceTest {
 
     @BeforeEach
     void setUp() {
+        long ts = System.nanoTime();
         seller = new Seller();
-        seller.setUsername("seller_" + System.nanoTime());
+        seller.setUsername("seller_" + ts);
         seller.setPassword("pass12345");
+        seller.setFullname("Test Seller");
+        seller.setEmail("seller_" + ts + "@test.com");
         seller.setRole(Roles.SELLER);
         userRepository.save(seller);
     }
@@ -84,6 +87,9 @@ public class ItemServiceTest {
     void testCreateWithNonSellerUser_Failure() {
         Bidder bidder = new Bidder();
         bidder.setUsername("hacker_bidder");
+        bidder.setPassword("pass12345");
+        bidder.setFullname("Hacker Bidder");
+        bidder.setEmail("hacker@test.com");
         bidder.setRole(Roles.BIDDER);
         userRepository.save(bidder);
 

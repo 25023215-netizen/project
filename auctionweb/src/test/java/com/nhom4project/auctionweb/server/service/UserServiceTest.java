@@ -5,6 +5,8 @@ import com.nhom4project.auctionweb.server.model.Bidder;
 import com.nhom4project.auctionweb.server.model.Roles;
 import com.nhom4project.auctionweb.server.model.Seller;
 import com.nhom4project.auctionweb.server.model.User;
+import com.nhom4project.auctionweb.server.repository.AuctionRepository;
+import com.nhom4project.auctionweb.server.repository.ItemRepository;
 import com.nhom4project.auctionweb.server.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,8 +32,16 @@ public class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private AuctionRepository auctionRepository;
+
     @BeforeEach
     public void cleanDB() {
+        auctionRepository.deleteAll();
+        itemRepository.deleteAll();
         userRepository.deleteAll();
     }
 

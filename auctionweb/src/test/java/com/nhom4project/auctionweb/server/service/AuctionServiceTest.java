@@ -31,15 +31,20 @@ public class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
+        long ts = System.nanoTime();
         seller = new Seller();
-        seller.setUsername("s_" + System.nanoTime());
+        seller.setUsername("s_" + ts);
         seller.setPassword("password12345");
+        seller.setFullname("Test Seller");
+        seller.setEmail("s_" + ts + "@test.com");
         seller.setRole(Roles.SELLER);
         userRepository.save(seller);
 
         bidder = new Bidder();
-        bidder.setUsername("b_" + System.nanoTime());
+        bidder.setUsername("b_" + ts);
         bidder.setPassword("password12345");
+        bidder.setFullname("Test Bidder");
+        bidder.setEmail("b_" + ts + "@test.com");
         bidder.setRole(Roles.BIDDER);
         userRepository.save(bidder);
 
