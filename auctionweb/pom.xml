@@ -126,6 +126,18 @@
                 </configuration>
             </plugin>
 
+            <!-- ✅ Surefire plugin with Java 25 Byte Buddy Support -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <net.bytebuddy.experimental>true</net.bytebuddy.experimental>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
             <!-- Google Java Style checks: run with ./mvnw.cmd checkstyle:check -->
 <!-- 
             <plugin>
