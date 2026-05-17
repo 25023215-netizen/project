@@ -1,6 +1,7 @@
 package com.nhom4project.auctionweb.controller.frontend;
 
 import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -92,10 +93,8 @@ public class SignupController {
     @FXML
     private void onGoToSignIn(ActionEvent event) {
         try {
-            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Đăng nhập");
+            SceneUtils.changeScene(stage, "/fxml/signin.fxml", "Đăng nhập", "/style/signin.css");
         } catch (Exception e) { e.printStackTrace(); }
     }
 

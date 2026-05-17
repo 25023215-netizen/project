@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface BidRepository extends JpaRepository<BidTransaction, Long> {
     List<BidTransaction> findByAuctionIdOrderByBidTimeDesc(Long auctionId);
+    void deleteByAuctionId(Long auctionId);
 }
 
 

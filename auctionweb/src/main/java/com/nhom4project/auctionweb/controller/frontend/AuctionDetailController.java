@@ -3,6 +3,7 @@ package com.nhom4project.auctionweb.controller.frontend;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import com.nhom4project.auctionweb.client.utils.WebSocketClient;
 import com.nhom4project.auctionweb.client.utils.WindowUtil;
@@ -59,6 +60,10 @@ public class AuctionDetailController {
     @FXML private Button autoBidButton;
     @FXML private Button stopAutoBidButton;
     @FXML private Label minBidLabel;
+
+    @FXML private VBox managementCard;
+    @FXML private Button endEarlyButton;
+    @FXML private Button deleteAuctionButton;
 
     @FXML private LineChart<Number, Number> priceChart;
     @FXML private NumberAxis xAxis;
@@ -256,8 +261,29 @@ public class AuctionDetailController {
         } catch (Exception ignored) {}
 
         JsonNode winner = node.path("winner");
+        JsonNode seller = node.path("seller");
         Long currentUserId = SessionManager.getInstance().getUserId();
+        String currentRole = SessionManager.getInstance().getRole();
         boolean isBidder = SessionManager.getInstance().isBidder();
+        boolean isAdmin = SessionManager.getInstance().isAdmin();
+        boolean isOwner = seller != null && !seller.isNull() && seller.path("id").asLong() == (currentUserId != null ? currentUserId : -1);
+
+        // Management visibility
+        if (isAdmin || isOwner) {
+            managementCard.setVisible(true);
+            managementCard.setManaged(true);
+            endEarlyButton.setVisible(isOwner);
+            endEarlyButton.setManaged(isOwner);
+            // Delete is for both Admin and Owner
+            deleteAuctionButton.setVisible(true);
+            deleteAuctionButton.setManaged(true);
+            
+            // Disable end early if already finished
+            endEarlyButton.setDisable(!"RUNNING".equals(status));
+        } else {
+            managementCard.setVisible(false);
+            managementCard.setManaged(false);
+        }
 
         // Logic xét người dẫn đầu: Kiểm tra xem ID người chiến thắng trả về có trùng với ID của tài khoản đang đăng nhập hay không.
         if (winner != null && !winner.isMissingNode() && !winner.isNull()) {
@@ -498,19 +524,68 @@ public class AuctionDetailController {
     }
 
     @FXML
+    private void onEndAuctionEarly() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Ban co chac muon ket thuc phien dau gia nay som?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                Long userId = SessionManager.getInstance().getUserId();
+                String role = SessionManager.getInstance().getRole();
+                new Thread(() -> {
+                    try {
+                        HttpResponse<String> response = BackendClient.getInstance()
+                                .post("/auctions/" + auctionId + "/end?userId=" + userId + "&role=" + role, "");
+                        Platform.runLater(() -> {
+                            if (response.statusCode() == 200) {
+                                messageLabel.setText("Da ket thuc phien dau gia!");
+                                loadAuctionDetail();
+                            } else {
+                                messageLabel.setText("Loi: " + response.body());
+                            }
+                        });
+                    } catch (Exception e) {
+                        Platform.runLater(() -> messageLabel.setText("Loi ket noi: " + e.getMessage()));
+                    }
+                }).start();
+            }
+        });
+    }
+
+    @FXML
+    private void onDeleteAuction() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Ban co chac muon XOA phien dau gia nay?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                Long userId = SessionManager.getInstance().getUserId();
+                String role = SessionManager.getInstance().getRole();
+                new Thread(() -> {
+                    try {
+                        HttpResponse<String> response = BackendClient.getInstance()
+                                .delete("/auctions/" + auctionId + "?userId=" + userId + "&role=" + role);
+                        Platform.runLater(() -> {
+                            if (response.statusCode() == 200) {
+                                onBack(); // Go back after delete
+                            } else {
+                                messageLabel.setText("Loi: " + response.body());
+                            }
+                        });
+                    } catch (Exception e) {
+                        Platform.runLater(() -> messageLabel.setText("Loi ket noi: " + e.getMessage()));
+                    }
+                }).start();
+            }
+        });
+    }
+
+    @FXML
     private void onBack() {
         // Dừng đếm ngược và ngắt kết nối websocket trước khi đổi màn hình
         if (countdownTimeline != null) countdownTimeline.stop();
         WebSocketClient.getInstance().stopPolling();
         try {
-            // Dùng FXMLLoader để nạp file dashboard.fxml và tạo Scene mới
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
             Stage stage = (Stage) titleLabel.getScene().getWindow();
-            Scene scene = new Scene(root, 1180, 760);
-            scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Auction Web - Dashboard");
-            WindowUtil.fitDashboard(stage);
+            SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
+            stage.setMinWidth(980);
+            stage.setMinHeight(680);
         } catch (Exception e) {
             e.printStackTrace();
         }

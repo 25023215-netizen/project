@@ -1,6 +1,7 @@
 package com.nhom4project.auctionweb.controller.frontend;
 
 import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
@@ -120,12 +121,8 @@ public class SigninController {
     @FXML
     private void onGoToSignUp(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/style/signup.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Dang ky nguoi dung");
+            SceneUtils.changeScene(stage, "/fxml/signup.fxml", "Dang ky nguoi dung", "/style/signup.css");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,14 +130,10 @@ public class SigninController {
 
     private void goToDashboard(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 1180, 760);
-            scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Auction Web - Dashboard");
-            WindowUtil.fitDashboard(stage);
-            stage.show();
+            SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
+            stage.setMinWidth(980);
+            stage.setMinHeight(680);
         } catch (Exception e) {
             statusLabel.setText("Khong the mo Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
@@ -151,15 +144,10 @@ public class SigninController {
 
     private void goToAdminDashboard(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/admin_dashboard.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 1280, 800);
-            scene.getStylesheets().add(getClass().getResource("/style/admin_dashboard.css").toExternalForm());
-            stage.setScene(scene);
-            stage.setTitle("Auction Web - Admin Dashboard");
+            SceneUtils.changeScene(stage, "/fxml/admin_dashboard.fxml", "Auction Web - Admin Dashboard", "/style/admin_dashboard.css");
             stage.setMinWidth(1024);
             stage.setMinHeight(700);
-            stage.show();
         } catch (Exception e) {
             statusLabel.setText("Khong the mo Admin Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");

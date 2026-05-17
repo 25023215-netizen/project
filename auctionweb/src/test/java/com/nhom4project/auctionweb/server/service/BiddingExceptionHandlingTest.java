@@ -37,6 +37,7 @@ public class BiddingExceptionHandlingTest {
         seller = new Seller();
         seller.setUsername("s_" + ts);
         seller.setPassword("pass12345");
+        seller.setFullname("Test Seller");
         seller.setEmail("s_" + ts + "@test.com");
         seller.setRole(Roles.SELLER);
         userRepository.save(seller);
@@ -44,6 +45,7 @@ public class BiddingExceptionHandlingTest {
         bidder = new Bidder();
         bidder.setUsername("b_" + ts);
         bidder.setPassword("pass12345");
+        bidder.setFullname("Test Bidder");
         bidder.setEmail("b_" + ts + "@test.com");
         bidder.setRole(Roles.BIDDER);
         userRepository.save(bidder);

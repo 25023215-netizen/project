@@ -199,3 +199,38 @@
     -fx-text-fill: #4b5563;
     -fx-background-color: #f3f4f6;
 }
+
+/* Management Card */
+.management-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 10;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.06), 10, 0, 0, 3);
+}
+
+.danger-button, .delete-button {
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+}
+
+.danger-button {
+    -fx-background-color: #ea580c;
+}
+
+.danger-button:hover {
+    -fx-background-color: #c2410c;
+}
+
+.delete-button {
+    -fx-background-color: #dc2626;
+}
+
+.delete-button:hover {
+    -fx-background-color: #b91c1c;
+}
