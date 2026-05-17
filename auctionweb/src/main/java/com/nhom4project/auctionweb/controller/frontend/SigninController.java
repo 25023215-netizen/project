@@ -103,7 +103,7 @@ public class SigninController {
                             goToDashboard(event);
                         }
                     } else {
-                        statusLabel.setText("Loi: " + response.body());
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                         statusLabel.setStyle("-fx-text-fill: red;");
                         signinButton.setDisable(false);
                     }

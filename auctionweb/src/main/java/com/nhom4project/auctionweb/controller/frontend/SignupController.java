@@ -82,7 +82,7 @@ public class SignupController {
                         alert.showAndWait();
                         onGoToSignIn(event);
                     } else {
-                        statusLabel.setText("Lỗi: " + response.body());
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                         signUpButton.setDisable(false);
                     }
                 });

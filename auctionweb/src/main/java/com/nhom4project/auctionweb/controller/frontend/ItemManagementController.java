@@ -141,7 +141,7 @@ public class ItemManagementController {
                         clearForm();
                         loadItems();
                     } else {
-                        statusLabel.setText("Loi: " + response.body());
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
                 });
             } catch (Exception e) {
@@ -167,7 +167,7 @@ public class ItemManagementController {
                         statusLabel.setText("Da xoa san pham!");
                         loadItems();
                     } else {
-                        statusLabel.setText("Loi: " + response.body());
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
                 });
             } catch (Exception e) {
@@ -221,7 +221,7 @@ public class ItemManagementController {
                     if (response.statusCode() == 200) {
                         statusLabel.setText("Tao phien dau gia thanh cong!");
                     } else {
-                        statusLabel.setText("Loi: " + response.body());
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
                 });
             } catch (Exception e) {
