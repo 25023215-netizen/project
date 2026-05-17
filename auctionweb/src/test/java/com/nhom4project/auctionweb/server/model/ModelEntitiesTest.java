@@ -48,6 +48,7 @@ public class ModelEntitiesTest {
         bidder.setFullname("Model Bidder");
         bidder.setRole(Roles.BIDDER);
         bidder.setLocked(true);
+        bidder.setRating(4.5);
 
         assertEquals(11L, bidder.getId());
         assertEquals("bidder_model", bidder.getUsername());
@@ -56,6 +57,7 @@ public class ModelEntitiesTest {
         assertEquals("Model Bidder", bidder.getFullname());
         assertEquals(Roles.BIDDER, bidder.getRole());
         assertTrue(bidder.isLocked());
+        assertEquals(4.5, bidder.getRating());
     }
 
     @Test
@@ -229,5 +231,51 @@ public class ModelEntitiesTest {
         assertEquals(auction, tx.getAuction());
         assertEquals(150.0, tx.getAmount());
         assertEquals(now, tx.getBidTime());
+    }
+
+    @Test
+    @DisplayName("Kiểm tra các nhánh biên và giá trị mặc định của Auction")
+    public void testAuctionEdgeCases() {
+        Auction auction = new Auction();
+
+        // 1. Version getter/setter
+        auction.setVersion(99L);
+        assertEquals(99L, auction.getVersion());
+
+        // 2. Title edge cases
+        auction.setTitle(null);
+        auction.setItem(null);
+        assertEquals("", auction.getTitle());
+
+        Item item = new Item() {};
+        item.setName("Test Item");
+        auction.setItem(item);
+        assertEquals("Test Item", auction.getTitle());
+
+        // 3. Description edge cases
+        auction.setDescription(null);
+        auction.setItem(null);
+        assertEquals("", auction.getDescription());
+
+        item.setDescription("Test Desc");
+        auction.setItem(item);
+        assertEquals("Test Desc", auction.getDescription());
+
+        // 4. Current price edge cases
+        auction.setCurrentPrice(null);
+        auction.setItem(null);
+        assertEquals(BigDecimal.ZERO, auction.getCurrentPrice());
+
+        item.setCurrentPrice(null);
+        auction.setItem(item);
+        assertEquals(BigDecimal.ZERO, auction.getCurrentPrice());
+
+        item.setCurrentPrice(450.50);
+        auction.setItem(item);
+        assertEquals(BigDecimal.valueOf(450.50), auction.getCurrentPrice());
+
+        // 5. BidCount edge cases
+        auction.setBidCount(null);
+        assertEquals(0, auction.getBidCount());
     }
 }
