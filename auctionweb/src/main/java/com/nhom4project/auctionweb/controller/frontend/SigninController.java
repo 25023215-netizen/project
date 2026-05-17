@@ -52,10 +52,17 @@ public class SigninController {
     private void onSignIn(ActionEvent event) {
         String username = userNameField.getText().trim();
         String password = passwordField.getText();
-        String selectedRole = roleComboBox.getValue().toUpperCase();
+        String rawRole = roleComboBox.getValue();
+        String tempRole = "BIDDER";
+        if ("Người bán".equals(rawRole) || "Seller".equalsIgnoreCase(rawRole)) {
+            tempRole = "SELLER";
+        } else if ("Quản trị viên".equals(rawRole) || "Admin".equalsIgnoreCase(rawRole)) {
+            tempRole = "ADMIN";
+        }
+        final String selectedRole = tempRole;
         signinButton.setDisable(true);
         statusLabel.setStyle("-fx-text-fill: #64748b;");
-        statusLabel.setText("Dang dang nhap...");
+        statusLabel.setText("Đang đăng nhập...");
 
         new Thread(() -> {
             try {
@@ -134,6 +141,7 @@ public class SigninController {
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
             stage.setMinWidth(980);
             stage.setMinHeight(680);
+            stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
             statusLabel.setText("Khong the mo Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
@@ -148,6 +156,7 @@ public class SigninController {
             SceneUtils.changeScene(stage, "/fxml/admin_dashboard.fxml", "Auction Web - Admin Dashboard", "/style/admin_dashboard.css");
             stage.setMinWidth(1024);
             stage.setMinHeight(700);
+            stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
             statusLabel.setText("Khong the mo Admin Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
