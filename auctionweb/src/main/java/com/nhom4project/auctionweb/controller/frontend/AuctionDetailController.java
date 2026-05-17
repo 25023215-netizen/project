@@ -107,6 +107,14 @@ public class AuctionDetailController {
         priceChart.getData().add(priceSeries);
         priceChart.setCreateSymbols(true);
         priceChart.setAnimated(false);
+        priceChart.setHorizontalGridLinesVisible(true);
+        priceChart.setVerticalGridLinesVisible(true);
+        if (xAxis != null) {
+            xAxis.setForceZeroInRange(false);
+        }
+        if (yAxis != null) {
+            yAxis.setForceZeroInRange(false);
+        }
 
         // Kiểm tra quyền người dùng thông qua SessionManager.
         // Chỉ cho bidder đặt giá, nếu không phải là người mua (Bidder) thì sẽ vô hiệu hóa các nút Đặt giá.
