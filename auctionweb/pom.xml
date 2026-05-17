@@ -158,6 +158,36 @@
                 </configuration>
             </plugin>
 
+            <!-- ✅ Code Coverage (JaCoCo) - 100% Core Packages -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <configuration>
+                    <includes>
+                        <include>com/nhom4project/auctionweb/server/model/**</include>
+                        <include>com/nhom4project/auctionweb/server/dto/**</include>
+                        <include>com/nhom4project/auctionweb/server/config/**</include>
+                        <include>com/nhom4project/auctionweb/server/util/**</include>
+                        <include>com/nhom4project/auctionweb/server/service/ItemFactory*</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

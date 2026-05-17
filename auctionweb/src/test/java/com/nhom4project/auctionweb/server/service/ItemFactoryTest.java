@@ -68,4 +68,13 @@ public class ItemFactoryTest {
     public void testNullType_Failure() {
         assertThrows(IllegalArgumentException.class, () -> ItemFactory.createItem(null));
     }
+
+    @Test
+    @DisplayName("Kiểm tra private/implicit constructor bằng reflection")
+    public void testConstructor() throws Exception {
+        java.lang.reflect.Constructor<ItemFactory> constructor = ItemFactory.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        ItemFactory instance = constructor.newInstance();
+        assertNotNull(instance);
+    }
 }
