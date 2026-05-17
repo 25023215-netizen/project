@@ -6,15 +6,20 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Service xử lý toàn bộ logic đấu giá.
@@ -50,6 +55,16 @@ public class AuctionService {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    @Lazy
+    private AuctionService self;
+
+    private final ConcurrentHashMap<Long, ReentrantLock> auctionLocks = new ConcurrentHashMap<>();
+
+    private ReentrantLock getLockForAuction(Long auctionId) {
+        return auctionLocks.computeIfAbsent(auctionId, id -> new ReentrantLock());
+    }
 
     @PostConstruct
     public void seedAuctions() {
@@ -127,7 +142,7 @@ public class AuctionService {
         auction.setStatus(AuctionStatus.OPEN);
 
         Auction saved = auctionRepository.save(auction);
-        broadcastAuctionList();
+        self.broadcastAuctionList();
         return saved;
     }
 
@@ -140,7 +155,7 @@ public class AuctionService {
         auction.setStartTime(LocalDateTime.now());
         auctionRepository.save(auction);
         AuctionManager.getInstance().registerAuction(auction);
-        broadcastAuctionUpdate(auction);
+        self.broadcastAuctionUpdate(buildAuctionPayload(auction));
     }
 
     /**
@@ -159,8 +174,8 @@ public class AuctionService {
         auction.setStatus(AuctionStatus.FINISHED);
         auctionRepository.save(auction);
         AuctionManager.getInstance().updateStatus(id, AuctionStatus.FINISHED);
-        broadcastAuctionUpdate(auction);
-        broadcastAuctionList();
+        self.broadcastAuctionUpdate(buildAuctionPayload(auction));
+        self.broadcastAuctionList();
     }
 
     /**
@@ -184,31 +199,42 @@ public class AuctionService {
         autoBidConfigRepository.deleteByAuctionId(id);
         
         auctionRepository.delete(auction);
-        broadcastAuctionList();
+        self.broadcastAuctionList();
     }
 
     // ==================== BIDDING (concurrent-safe) ====================
 
     /**
      * Đặt giá thầu - xử lý an toàn với Optimistic Locking + retry.
-     * Đây là điểm then chốt xử lý Concurrent Bidding.
+     * Sử dụng Fine-grained Striped Lock theo ID phiên đấu giá thay vì khóa synchronized toàn cục.
+     * Tác vụ chạy ngầm được chuyển giao bất đồng bộ để tránh đệ quy đồng bộ nghẽn luồng.
      */
-    @Transactional
-    public synchronized boolean placeBid(Long auctionId, Long bidderId, BigDecimal amount) {
-        for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
-            try {
-                return doPlaceBid(auctionId, bidderId, amount);
-            } catch (ObjectOptimisticLockingFailureException e) {
-                log.warn("Optimistic lock conflict on auction {} (attempt {}), retrying...", auctionId, attempt + 1);
-                if (attempt == MAX_RETRIES - 1) {
-                    throw new IllegalStateException("Hệ thống đang bận, vui lòng thử lại sau");
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public boolean placeBid(Long auctionId, Long bidderId, BigDecimal amount) {
+        ReentrantLock lock = getLockForAuction(auctionId);
+        lock.lock();
+        try {
+            for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
+                try {
+                    return self.doPlaceBid(auctionId, bidderId, amount);
+                } catch (ObjectOptimisticLockingFailureException e) {
+                    log.warn("Optimistic lock conflict on auction {} (attempt {}), retrying...", auctionId, attempt + 1);
+                    if (attempt == MAX_RETRIES - 1) {
+                        throw new IllegalStateException("Hệ thống đang bận, vui lòng thử lại sau");
+                    }
                 }
             }
+            return false;
+        } finally {
+            lock.unlock();
         }
-        return false;
     }
 
-    private boolean doPlaceBid(Long auctionId, Long bidderId, BigDecimal amount) {
+    /**
+     * Thực hiện đặt giá thầu trong Transaction riêng để retry Optimistic Locking hoạt động đúng đắn.
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public boolean doPlaceBid(Long auctionId, Long bidderId, BigDecimal amount) {
         Auction auction = findAuction(auctionId);
 
         // Kiểm tra trạng thái phiên
@@ -249,11 +275,11 @@ public class AuctionService {
         // Đăng ký vào AuctionManager
         AuctionManager.getInstance().registerAuction(auction);
 
-        // Observer Pattern: broadcast qua WebSocket
-        broadcastAuctionUpdate(auction);
+        // Observer Pattern: broadcast qua WebSocket bất đồng bộ (Async)
+        self.broadcastAuctionUpdate(buildAuctionPayload(auction));
 
-        // Kích hoạt Auto-bidding cho các bidder khác
-        processAutoBids(auctionId, bidderId);
+        // Kích hoạt Auto-bidding bất đồng bộ (Async) cho các bidder khác
+        self.processAutoBids(auctionId, bidderId);
 
         return true;
     }
@@ -312,7 +338,7 @@ public class AuctionService {
         AutoBidConfig saved = autoBidConfigRepository.save(config);
 
         // Kích hoạt auto-bid ngay nếu giá hiện tại thấp hơn maxBid
-        processAutoBids(auctionId, null);
+        self.processAutoBids(auctionId, null);
 
         return saved;
     }
@@ -338,10 +364,11 @@ public class AuctionService {
 
     /**
      * Xử lý auto-bid (Proxy Bidding) cho tất cả config đang active.
-     * Logic: Chỉ tăng giá vừa đủ để dẫn đầu (currentPrice + increment),
-     * nhưng không vượt quá maxBid. Nếu cần trả cao hơn maxBid -> deactivate.
+     * Chạy bất đồng bộ ngầm dưới background thread pool.
      */
-    private void processAutoBids(Long auctionId, Long excludeBidderId) {
+    @Async("taskExecutor")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void processAutoBids(Long auctionId, Long excludeBidderId) {
         List<AutoBidConfig> configs = autoBidConfigRepository
                 .findByAuctionIdAndActiveTrueOrderByRegisteredAtAsc(auctionId);
 
@@ -374,12 +401,12 @@ public class AuctionService {
                 }
             }
 
-            // Đặt giá tự động
+            // Đặt giá tự động thông qua self.placeBid để được ReentrantLock bảo vệ và retry nếu có conflict
             try {
-                doPlaceBid(auctionId, config.getBidder().getId(), newBid);
+                self.placeBid(auctionId, config.getBidder().getId(), newBid);
                 log.info("Auto-bid: Bidder {} placed {} on auction {} (max: {})",
                         config.getBidder().getId(), newBid, auctionId, config.getMaxBid());
-                return; // Chỉ xử lý 1 auto-bid mỗi lần, trigger sẽ cascade
+                return; // Chỉ xử lý 1 auto-bid mỗi lần, trigger sẽ cascade bất đồng bộ
             } catch (Exception e) {
                 log.warn("Auto-bid failed for bidder {}: {}", config.getBidder().getId(), e.getMessage());
             }
@@ -398,27 +425,34 @@ public class AuctionService {
     }
 
     /**
-     * Observer Pattern: broadcast thay đổi auction qua WebSocket.
-     * Tất cả client đang subscribe /topic/auctions/{id} sẽ nhận được ngay lập tức.
+     * Tạo Map payload cho WebSocket để tránh lỗi LazyInitializationException trong luồng bất đồng bộ.
      */
-    private void broadcastAuctionUpdate(Auction auction) {
-        try {
-            Map<String, Object> payload = new HashMap<>();
-            payload.put("auctionId", auction.getId());
-            payload.put("currentPrice", auction.getCurrentPrice());
-            payload.put("bidCount", auction.getBidCount());
-            payload.put("status", auction.getStatus().name());
-            payload.put("endTime", auction.getEndTime() != null ? auction.getEndTime().toString() : null);
-            payload.put("winnerId", auction.getWinner() != null ? auction.getWinner().getId() : null);
-            payload.put("winnerName", auction.getWinner() != null ? auction.getWinner().getUsername() : null);
+    private Map<String, Object> buildAuctionPayload(Auction auction) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("auctionId", auction.getId());
+        payload.put("currentPrice", auction.getCurrentPrice());
+        payload.put("bidCount", auction.getBidCount());
+        payload.put("status", auction.getStatus().name());
+        payload.put("endTime", auction.getEndTime() != null ? auction.getEndTime().toString() : null);
+        payload.put("winnerId", auction.getWinner() != null ? auction.getWinner().getId() : null);
+        payload.put("winnerName", auction.getWinner() != null ? auction.getWinner().getUsername() : null);
+        return payload;
+    }
 
-            messagingTemplate.convertAndSend("/topic/auctions/" + auction.getId(), payload);
+    /**
+     * Observer Pattern: broadcast thay đổi auction qua WebSocket bất đồng bộ.
+     */
+    @Async("taskExecutor")
+    public void broadcastAuctionUpdate(Map<String, Object> payload) {
+        try {
+            messagingTemplate.convertAndSend("/topic/auctions/" + payload.get("auctionId"), payload);
         } catch (Exception e) {
             log.warn("Failed to broadcast auction update: {}", e.getMessage());
         }
     }
 
-    private void broadcastAuctionList() {
+    @Async("taskExecutor")
+    public void broadcastAuctionList() {
         try {
             messagingTemplate.convertAndSend("/topic/auctions", "refresh");
         } catch (Exception e) {

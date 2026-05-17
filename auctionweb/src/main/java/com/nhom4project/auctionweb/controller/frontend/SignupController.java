@@ -58,7 +58,11 @@ public class SignupController {
         signUpButton.setDisable(true);
         statusLabel.setText("Đang đăng ký...");
 
-        String selectedRole = roleComboBox.getValue().toUpperCase();
+        String rawRole = roleComboBox.getValue();
+        String selectedRole = "BIDDER";
+        if ("Người bán".equals(rawRole) || "Seller".equalsIgnoreCase(rawRole)) {
+            selectedRole = "SELLER";
+        }
 
         new Thread(() -> {
             try {

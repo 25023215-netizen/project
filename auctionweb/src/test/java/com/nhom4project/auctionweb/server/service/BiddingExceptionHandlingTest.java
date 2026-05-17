@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * TEST LOGIC - MỤC 3.1.5: XỬ LÝ LỖI & NGOẠI LỆ - Nhóm 4
  */
 @SpringBootTest
-@Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BiddingExceptionHandlingTest {
 
