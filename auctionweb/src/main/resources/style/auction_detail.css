@@ -148,8 +148,22 @@
 }
 
 .chart-series-line {
-    -fx-stroke: #2563eb;
-    -fx-stroke-width: 2px;
+    -fx-stroke: #f43f5e;
+    -fx-stroke-width: 2.5px;
+}
+
+.chart-series-area-fill {
+    -fx-fill: linear-gradient(to bottom, #f43f5e55 0%, #f43f5e00 100%);
+}
+
+.chart-plot-background {
+    -fx-background-color: #ffffff;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #f1f5f9;
+    -fx-stroke-width: 0.8px;
 }
 
 /* History List */
