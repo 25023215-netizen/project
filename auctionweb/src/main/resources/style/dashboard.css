@@ -160,3 +160,18 @@
     -fx-font-size: 12px;
     -fx-text-fill: #64748b;
 }
+
+.refresh-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 9 16;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.refresh-button:hover {
+    -fx-background-color: #1d4ed8;
+}

@@ -24,6 +24,7 @@ public class AuctionServiceTest {
     @Autowired private AuctionService auctionService;
     @Autowired private AuctionRepository auctionRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private AuctionHistoryRepository auctionHistoryRepository;
 
     private Seller seller;
     private Bidder bidder;
@@ -117,5 +118,56 @@ public class AuctionServiceTest {
         assertTrue(updated.getBidCount() > 0);
         assertTrue(updated.getCurrentPrice().compareTo(new BigDecimal("1000000")) > 0);
         assertNotNull(updated.getWinner());
+    }
+
+    @Test
+    @DisplayName("Seller xóa thành công phiên đấu giá đã qua hạn và lưu lịch sử thầu")
+    void testDeleteAuction_SellerExpiredSuccess() {
+        // Set auction to expired/finished and bid count > 0 with winner
+        testAuction.setStatus(AuctionStatus.FINISHED);
+        testAuction.setBidCount(1);
+        testAuction.setWinner(bidder);
+        testAuction.setCurrentPrice(new BigDecimal("1500000"));
+        auctionRepository.save(testAuction);
+
+        // Delete as Seller
+        assertDoesNotThrow(() -> auctionService.deleteAuction(testAuction.getId(), seller.getId(), Roles.SELLER));
+
+        // Verify auction is deleted
+        assertFalse(auctionRepository.findById(testAuction.getId()).isPresent());
+
+        // Verify history is saved
+        java.util.List<AuctionHistory> historyList = auctionHistoryRepository.findAll();
+        assertFalse(historyList.isEmpty());
+        
+        AuctionHistory history = historyList.get(historyList.size() - 1);
+        assertEquals(testAuction.getId(), history.getAuctionId());
+        assertEquals("Test Auction", history.getTitle());
+        assertEquals(0, new BigDecimal("1500000").compareTo(history.getWinningPrice()));
+        assertEquals(bidder.getId(), history.getWinnerId());
+        assertEquals(bidder.getUsername(), history.getWinnerName());
+        assertEquals(seller.getId(), history.getSellerId());
+        assertEquals(seller.getUsername(), history.getSellerName());
+        assertNotNull(history.getDeletedAt());
+    }
+
+    @Test
+    @DisplayName("Seller bị chặn khi xóa phiên đấu giá đang diễn ra và có người đặt giá")
+    void testDeleteAuction_SellerRunningWithBidsBlocked() {
+        // Auction is RUNNING, endTime is in the future, and has bids
+        testAuction.setStatus(AuctionStatus.RUNNING);
+        testAuction.setBidCount(1);
+        testAuction.setWinner(bidder);
+        testAuction.setEndTime(LocalDateTime.now().plusHours(2));
+        auctionRepository.save(testAuction);
+
+        // Try to delete as Seller
+        Exception ex = assertThrows(IllegalStateException.class, () -> 
+            auctionService.deleteAuction(testAuction.getId(), seller.getId(), Roles.SELLER)
+        );
+        assertEquals("Khong the xoa phien dau gia dang dien ra va co nguoi dat gia", ex.getMessage());
+
+        // Verify auction is NOT deleted
+        assertTrue(auctionRepository.findById(testAuction.getId()).isPresent());
     }
 }

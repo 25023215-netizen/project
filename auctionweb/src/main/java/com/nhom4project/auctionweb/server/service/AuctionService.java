@@ -54,6 +54,9 @@ public class AuctionService {
     private AutoBidConfigRepository autoBidConfigRepository;
 
     @Autowired
+    private AuctionHistoryRepository auctionHistoryRepository;
+
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -189,10 +192,41 @@ public class AuctionService {
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
                 throw new IllegalStateException("Ban khong co quyen xoa phien dau gia nay");
             }
-            if (auction.getStatus() == AuctionStatus.RUNNING && auction.getBidCount() > 0) {
-                throw new IllegalStateException("Khong the xoa phien dau gia dang co nguoi dat gia");
+            
+            // Check if auction is expired (either finished or endTime has passed)
+            boolean isExpired = AuctionStatus.FINISHED.equals(auction.getStatus())
+                    || (auction.getEndTime() != null && LocalDateTime.now().isAfter(auction.getEndTime()));
+                    
+            // Seller can delete expired auctions even if they have bids.
+            // But they cannot delete active RUNNING auctions that already have bids.
+            boolean isRunningAndHasBids = AuctionStatus.RUNNING.equals(auction.getStatus())
+                    && !isExpired
+                    && auction.getBidCount() > 0;
+                    
+            if (isRunningAndHasBids) {
+                throw new IllegalStateException("Khong the xoa phien dau gia dang dien ra va co nguoi dat gia");
             }
         }
+
+        // Save to history before deleting
+        AuctionHistory history = new AuctionHistory();
+        history.setAuctionId(auction.getId());
+        history.setTitle(auction.getTitle());
+        history.setCategory(auction.getCategory());
+        history.setDescription(auction.getDescription());
+        history.setStartingPrice(auction.getStartingPrice());
+        history.setWinningPrice(auction.getCurrentPrice());
+        if (auction.getWinner() != null) {
+            history.setWinnerId(auction.getWinner().getId());
+            history.setWinnerName(auction.getWinner().getUsername());
+        }
+        if (auction.getSeller() != null) {
+            history.setSellerId(auction.getSeller().getId());
+            history.setSellerName(auction.getSeller().getUsername());
+        }
+        history.setEndTime(auction.getEndTime());
+        history.setDeletedAt(LocalDateTime.now());
+        auctionHistoryRepository.save(history);
 
         // Delete associated data
         bidRepository.deleteByAuctionId(id);
