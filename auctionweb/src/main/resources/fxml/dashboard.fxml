@@ -23,14 +23,6 @@
         <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
             <content>
                 <VBox spacing="18" styleClass="content">
-                    <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
-                        <VBox spacing="4" HBox.hgrow="ALWAYS">
-                            <Label text="Bảng điều khiển" styleClass="page-title"/>
-                            <Label fx:id="userInfoLabel" text="" styleClass="page-subtitle"/>
-                        </VBox>
-                        <Button text="Làm mới" onAction="#onRefresh" styleClass="primary-button"/>
-                    </HBox>
-
                     <HBox spacing="16">
                         <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
                             <Label text="Tổng phiên" styleClass="stat-label"/>

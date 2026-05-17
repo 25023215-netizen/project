@@ -6,6 +6,7 @@ import com.nhom4project.auctionweb.controller.frontend.AuctionDetailController;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,6 +62,7 @@ public class DashboardController {
         endTimeColumn.setCellValueFactory(data -> data.getValue().endTimeProperty());
 
         auctionTable.setItems(filteredAuctions);
+        auctionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
 
         // Double-click vào row để mở chi tiết
@@ -96,6 +98,8 @@ public class DashboardController {
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Quan ly san pham", "/style/item_management.css");
+            stage.setMinWidth(980);
+            stage.setMinHeight(680);
         } catch (Exception e) {
             statusLabel.setText("Loi: " + e.getMessage());
             e.printStackTrace();

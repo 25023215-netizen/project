@@ -6,6 +6,7 @@ import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import com.nhom4project.auctionweb.client.utils.WebSocketClient;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -591,6 +592,8 @@ public class AuctionDetailController {
         try {
             Stage stage = (Stage) titleLabel.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
+            stage.setMinWidth(980);
+            stage.setMinHeight(680);
         } catch (Exception e) {
             e.printStackTrace();
         }

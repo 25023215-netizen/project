@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -235,6 +236,8 @@ public class ItemManagementController {
         try {
             Stage stage = (Stage) itemTable.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
+            stage.setMinWidth(980);
+            stage.setMinHeight(680);
         } catch (Exception e) {
             e.printStackTrace();
         }
