@@ -18,6 +18,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONObject;
@@ -205,8 +206,22 @@ public class AuctionDetailController {
                             String time = bid.path("bidTime").asText("");
 
                             items.add(0, String.format("%s - %,.0f VND boi %s", formatTime(time), amount, bidder));
-                            // Thêm điểm vẽ vào biểu đồ
-                            priceSeries.getData().add(new XYChart.Data<>(chartPointIndex++, amount));
+                            // Thêm điểm vẽ vào biểu đồ với nhãn số tiền đầy đủ ở mỗi lần đặt
+                            XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(chartPointIndex++, amount);
+                            priceSeries.getData().add(dataPoint);
+
+                            // Tạo một node StackPane tùy chỉnh để hiện nhãn tiền phía trên điểm vẽ
+                            StackPane symbolNode = new StackPane();
+                            symbolNode.setPrefSize(8, 8);
+                            symbolNode.setStyle("-fx-background-color: #2563eb; -fx-background-radius: 4;");
+                            
+                            Label amountLabel = new Label(String.format("%,.0f đ", amount));
+                            amountLabel.setStyle("-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: white; " +
+                                                 "-fx-background-color: #1e293b; -fx-background-radius: 4; -fx-padding: 2 4 2 4;");
+                            amountLabel.setTranslateY(-18);
+                            
+                            symbolNode.getChildren().add(amountLabel);
+                            dataPoint.setNode(symbolNode);
                         }
                         bidHistoryList.setItems(items); // Cập nhật danh sách bidHistoryList
                     });
