@@ -52,12 +52,13 @@ public class SigninController {
         String username = userNameField.getText().trim();
         String password = passwordField.getText();
         String rawRole = roleComboBox.getValue();
-        String selectedRole = "BIDDER";
+        String tempRole = "BIDDER";
         if ("Người bán".equals(rawRole) || "Seller".equalsIgnoreCase(rawRole)) {
-            selectedRole = "SELLER";
+            tempRole = "SELLER";
         } else if ("Quản trị viên".equals(rawRole) || "Admin".equalsIgnoreCase(rawRole)) {
-            selectedRole = "ADMIN";
+            tempRole = "ADMIN";
         }
+        final String selectedRole = tempRole;
         signinButton.setDisable(true);
         statusLabel.setStyle("-fx-text-fill: #64748b;");
         statusLabel.setText("Đang đăng nhập...");

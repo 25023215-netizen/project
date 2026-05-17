@@ -114,7 +114,7 @@ public class AuctionDetailController {
         autoBidButton.setDisable(!canBid);
 
         if (!canBid) {
-            userStatusLabel.setText("Ban dang dang nhap voi quyen SELLER/ADMIN. Chi Bidder moi co the dat gia.");
+            userStatusLabel.setText("Bạn đang đăng nhập với quyền SELLER/ADMIN. Chỉ Bidder mới có thể đặt giá.");
             userStatusLabel.getStyleClass().add("status-not-bidder");
         }
 
@@ -294,18 +294,18 @@ public class AuctionDetailController {
                 userStatusLabel.getStyleClass().removeAll("status-leading", "status-outbid", "status-not-bidder");
                 if (currentUserId != null && currentUserId.equals(winnerId)) {
                     // Nếu trùng, báo "BẠN ĐANG DẪN ĐẦU" (màu xanh)
-                    userStatusLabel.setText("★ BAN DANG DAN DAU!");
+                    userStatusLabel.setText("★ BẠN ĐANG DẪN ĐẦU!");
                     userStatusLabel.getStyleClass().add("status-leading");
                 } else {
-                    // Nếu không trùng thì báo "BẠN ĐÃ BỊ VƯỢT MẶT" (màu đỏ)
-                    userStatusLabel.setText("⚠ BAN DA BI VUOT MAT! Hay dat gia cao hon!");
+                    // Nếu không trùng thì báo "BẠN ĐẠ BỊ VƯỢT MẶT" (màu đỏ)
+                    userStatusLabel.setText("⚠ BẠN ĐÃ BỊ VƯỢT MẶT! Hãy đặt giá cao hơn!");
                     userStatusLabel.getStyleClass().add("status-outbid");
                 }
             }
         } else {
-            winnerLabel.setText("Chua co nguoi dat gia");
+            winnerLabel.setText("Chưa có người đặt giá");
             if (isBidder) {
-                userStatusLabel.setText("Hay la nguoi dau tien dat gia!");
+                userStatusLabel.setText("Hãy là người đầu tiên đặt giá!");
                 userStatusLabel.getStyleClass().removeAll("status-leading", "status-outbid");
             }
         }
@@ -319,10 +319,10 @@ public class AuctionDetailController {
             isFinishedAlertShown = true;
             Platform.runLater(() -> {
                 String msg = (winner != null && !winner.isNull()) 
-                    ? "Phien dau gia ket thuc! Nguoi thang: " + winner.path("username").asText()
-                    : "Phien dau gia ket thuc ma khong co nguoi mua.";
+                    ? "Phiên đấu giá kết thúc! Người thắng: " + winner.path("username").asText()
+                    : "Phiên đấu giá kết thúc mà không có người mua.";
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Thong bao ket thuc");
+                alert.setTitle("Thông báo kết thúc");
                 alert.setHeaderText(null);
                 alert.setContentText(msg);
                 alert.show();
@@ -331,7 +331,7 @@ public class AuctionDetailController {
 
         // Cập nhật gợi ý giá bid tối thiểu (giả định buóc giá 50k nếu chưa biết)
         BigDecimal minNextBid = price.add(new BigDecimal("50000"));
-        minBidLabel.setText(String.format("Goi y: Dat tu %,.0f VND", minNextBid));
+        minBidLabel.setText(String.format("Gợi ý: Đặt từ %,.0f VND", minNextBid));
         if (bidAmountField.getText().isEmpty()) {
             bidAmountField.setText(minNextBid.toPlainString());
         }
@@ -377,7 +377,7 @@ public class AuctionDetailController {
             // Lấy số tiền người dùng nhập
             String amountText = bidAmountField.getText().trim();
             if (amountText.isEmpty()) {
-                messageLabel.setText("Vui long nhap so tien!");
+                messageLabel.setText("Vui lòng nhập số tiền!");
                 return;
             }
 
@@ -385,7 +385,7 @@ public class AuctionDetailController {
             Long userId = SessionManager.getInstance().getUserId();
 
             placeBidButton.setDisable(true);
-            messageLabel.setText("Dang dat gia...");
+            messageLabel.setText("Đang đặt giá...");
 
             new Thread(() -> {
                 try {
@@ -399,27 +399,27 @@ public class AuctionDetailController {
                     Platform.runLater(() -> {
                         // Tùy vào API trả về thành công (status 200) hay thất bại, hiện thông báo màu xanh (thành công) hoặc đỏ (lỗi).
                         if (response.statusCode() == 200) {
-                            messageLabel.setText("Dat gia thanh cong!");
+                            messageLabel.setText("Đặt giá thành công!");
                             messageLabel.setStyle("-fx-text-fill: #22c55e;");
                             bidAmountField.clear();
                             loadAuctionDetail();
                             loadBidHistory();
                         } else {
-                            messageLabel.setText("Loi: " + response.body());
+                            messageLabel.setText("Lỗi: " + response.body());
                             messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         }
                         placeBidButton.setDisable(false);
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
-                        messageLabel.setText("Loi ket noi: " + e.getMessage());
+                        messageLabel.setText("Lỗi kết nối: " + e.getMessage());
                         messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         placeBidButton.setDisable(false);
                     });
                 }
             }).start();
         } catch (NumberFormatException e) {
-            messageLabel.setText("So tien khong hop le!");
+            messageLabel.setText("Số tiền không hợp lệ!");
             messageLabel.setStyle("-fx-text-fill: #ef4444;");
         }
     }
@@ -436,7 +436,7 @@ public class AuctionDetailController {
             String incrementText = incrementField.getText().trim();
 
             if (maxBidText.isEmpty() || incrementText.isEmpty()) {
-                messageLabel.setText("Vui long nhap max bid va buoc gia!");
+                messageLabel.setText("Vui lòng nhập giá tối đa và bước giá!");
                 return;
             }
 
@@ -445,7 +445,7 @@ public class AuctionDetailController {
             Long userId = SessionManager.getInstance().getUserId();
 
             autoBidButton.setDisable(true);
-            messageLabel.setText("Dang dang ky auto-bid...");
+            messageLabel.setText("Đang đăng ký auto-bid...");
 
             new Thread(() -> {
                 try {
@@ -459,26 +459,26 @@ public class AuctionDetailController {
 
                     Platform.runLater(() -> {
                         if (response.statusCode() == 200) {
-                            messageLabel.setText("Dang ky auto-bid thanh cong!");
+                            messageLabel.setText("Đăng ký auto-bid thành công!");
                             messageLabel.setStyle("-fx-text-fill: #22c55e;");
                             maxBidField.clear();
                             incrementField.clear();
                         } else {
-                            messageLabel.setText("Loi: " + response.body());
+                            messageLabel.setText("Lỗi: " + response.body());
                             messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         }
                         autoBidButton.setDisable(false);
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
-                        messageLabel.setText("Loi ket noi: " + e.getMessage());
+                        messageLabel.setText("Lỗi kết nối: " + e.getMessage());
                         messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         autoBidButton.setDisable(false);
                     });
                 }
             }).start();
         } catch (NumberFormatException e) {
-            messageLabel.setText("So tien khong hop le!");
+            messageLabel.setText("Số tiền không hợp lệ!");
             messageLabel.setStyle("-fx-text-fill: #ef4444;");
         }
     }
@@ -493,7 +493,7 @@ public class AuctionDetailController {
         if (userId == null) return;
         
         stopAutoBidButton.setDisable(true);
-        messageLabel.setText("Dang dung auto-bid...");
+        messageLabel.setText("Đang dừng auto-bid...");
 
         new Thread(() -> {
             try {
@@ -505,17 +505,17 @@ public class AuctionDetailController {
 
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        messageLabel.setText("Da dung auto-bid!");
+                        messageLabel.setText("Đã dừng auto-bid!");
                         messageLabel.setStyle("-fx-text-fill: #22c55e;");
                         checkAutoBidStatus();
                     } else {
-                        messageLabel.setText("Loi: " + response.body());
+                        messageLabel.setText("Lỗi: " + response.body());
                     }
                     stopAutoBidButton.setDisable(false);
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    messageLabel.setText("Loi ket noi: " + e.getMessage());
+                    messageLabel.setText("Lỗi kết nối: " + e.getMessage());
                     stopAutoBidButton.setDisable(false);
                 });
             }
@@ -524,7 +524,7 @@ public class AuctionDetailController {
 
     @FXML
     private void onEndAuctionEarly() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Ban co chac muon ket thuc phien dau gia nay som?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn kết thúc phiên đấu giá này sớm?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 Long userId = SessionManager.getInstance().getUserId();
@@ -535,14 +535,14 @@ public class AuctionDetailController {
                                 .post("/auctions/" + auctionId + "/end?userId=" + userId + "&role=" + role, "");
                         Platform.runLater(() -> {
                             if (response.statusCode() == 200) {
-                                messageLabel.setText("Da ket thuc phien dau gia!");
+                                messageLabel.setText("Đã kết thúc phiên đấu giá!");
                                 loadAuctionDetail();
                             } else {
-                                messageLabel.setText("Loi: " + response.body());
+                                messageLabel.setText("Lỗi: " + response.body());
                             }
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> messageLabel.setText("Loi ket noi: " + e.getMessage()));
+                        Platform.runLater(() -> messageLabel.setText("Lỗi kết nối: " + e.getMessage()));
                     }
                 }).start();
             }
@@ -551,7 +551,7 @@ public class AuctionDetailController {
 
     @FXML
     private void onDeleteAuction() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Ban co chac muon XOA phien dau gia nay?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn XÓA phiên đấu giá này?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 Long userId = SessionManager.getInstance().getUserId();
@@ -564,11 +564,11 @@ public class AuctionDetailController {
                             if (response.statusCode() == 200) {
                                 onBack(); // Go back after delete
                             } else {
-                                messageLabel.setText("Loi: " + response.body());
+                                messageLabel.setText("Lỗi: " + response.body());
                             }
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> messageLabel.setText("Loi ket noi: " + e.getMessage()));
+                        Platform.runLater(() -> messageLabel.setText("Lỗi kết nối: " + e.getMessage()));
                     }
                 }).start();
             }

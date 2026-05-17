@@ -59,10 +59,11 @@ public class SignupController {
         statusLabel.setText("Đang đăng ký...");
 
         String rawRole = roleComboBox.getValue();
-        String selectedRole = "BIDDER";
+        String tempRole = "BIDDER";
         if ("Người bán".equals(rawRole) || "Seller".equalsIgnoreCase(rawRole)) {
-            selectedRole = "SELLER";
+            tempRole = "SELLER";
         }
+        final String selectedRole = tempRole;
 
         new Thread(() -> {
             try {
