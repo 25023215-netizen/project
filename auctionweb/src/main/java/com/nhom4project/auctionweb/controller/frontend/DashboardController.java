@@ -18,6 +18,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.text.NumberFormat;
@@ -48,9 +53,12 @@ public class DashboardController {
 
     @FXML private Button manageItemsButton;
 
+    private Timeline autoRefreshTimeline;
     private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private final ObjectMapper mapper = new ObjectMapper();
+    private String lastResponseJson = "";
 
     @FXML
     public void initialize() {
@@ -83,6 +91,22 @@ public class DashboardController {
         }
 
         loadAuctions();
+        startAutoRefresh();
+    }
+
+    private void startAutoRefresh() {
+        if (autoRefreshTimeline == null) {
+            autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> loadAuctions()));
+            autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+            autoRefreshTimeline.play();
+        }
+    }
+
+    private void stopAutoRefresh() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+            autoRefreshTimeline = null;
+        }
     }
 
     @FXML
@@ -95,6 +119,7 @@ public class DashboardController {
      */
     @FXML
     private void onManageItems() {
+        stopAutoRefresh();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Quan ly san pham", "/style/item_management.css");
@@ -111,6 +136,7 @@ public class DashboardController {
      */
     @FXML
     private void onLogout() {
+        stopAutoRefresh();
         SessionManager.getInstance().clear();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
@@ -133,6 +159,7 @@ public class DashboardController {
     }
 
     private void openAuctionDetail(Long auctionId) {
+        stopAutoRefresh();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             AuctionDetailController controller = SceneUtils.changeSceneWithController(stage, "/fxml/auction_detail.fxml", "Chi tiet phien dau gia", "/style/auction_detail.css");
@@ -146,24 +173,41 @@ public class DashboardController {
     }
 
     private void loadAuctions() {
-        try {
-            HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
-            if (response.statusCode() == 200) {
-                auctions.setAll(parseAuctions(response.body()));
-                statusLabel.setText("Da tai danh sach dau gia tu server.");
-            } else {
-                loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
+        CompletableFuture.runAsync(() -> {
+            try {
+                HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
+                if (response.statusCode() == 200) {
+                    String body = response.body();
+                    if (!body.equals(lastResponseJson)) {
+                        lastResponseJson = body;
+                        ObservableList<AuctionRow> parsed = parseAuctions(body);
+                        Platform.runLater(() -> {
+                            auctions.setAll(parsed);
+                            statusLabel.setText("Da tai danh sach dau gia tu server.");
+                            applyFilter();
+                            updateStats();
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> {
+                        loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
+                        applyFilter();
+                        updateStats();
+                    });
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
+                    applyFilter();
+                    updateStats();
+                });
             }
-        } catch (Exception e) {
-            loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
-        }
-        applyFilter();
-        updateStats();
+        });
     }
 
     private ObservableList<AuctionRow> parseAuctions(String body) throws Exception {
         ObservableList<AuctionRow> rows = FXCollections.observableArrayList();
-        JsonNode root = new ObjectMapper().readTree(body);
+        JsonNode root = mapper.readTree(body);
         for (JsonNode node : root) {
             Long id = node.path("id").asLong();
             String title = node.path("title").asText();

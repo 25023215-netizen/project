@@ -23,6 +23,13 @@
         <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
             <content>
                 <VBox spacing="18" styleClass="content">
+                    <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Bảng điều khiển" styleClass="page-title"/>
+                            <Label fx:id="userInfoLabel" text="" styleClass="page-subtitle"/>
+                        </VBox>
+                    </HBox>
+
                     <HBox spacing="16">
                         <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
                             <Label text="Tổng phiên" styleClass="stat-label"/>
@@ -42,7 +49,6 @@
                         <HBox alignment="CENTER_LEFT" spacing="12">
                             <Label text="Danh sách phiên đấu giá (nhấp đúp để xem chi tiết)" styleClass="section-title" HBox.hgrow="ALWAYS"/>
                             <TextField fx:id="searchField" promptText="Tìm theo tên, loại, trạng thái" styleClass="search-field"/>
-                            <Button text="🔄 Làm mới" onAction="#onRefresh" styleClass="refresh-button"/>
                         </HBox>
                         <TableView fx:id="auctionTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
                             <columns>
