@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.text.NumberFormat;
 import java.util.Locale;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 /**
  * Controller cho Admin Dashboard.
@@ -57,6 +60,10 @@ public class AdminDashboardController {
 
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
     private final ObjectMapper mapper = new ObjectMapper();
+    private Timeline autoRefreshTimeline;
+    private String lastUsersJson = "";
+    private String lastAuctionsJson = "";
+    private String lastStatsJson = "";
 
     @FXML
     public void initialize() {
@@ -136,6 +143,26 @@ public class AdminDashboardController {
         loadStats();
         loadUsers();
         loadAuctions();
+        startAutoRefresh();
+    }
+
+    private void startAutoRefresh() {
+        if (autoRefreshTimeline == null) {
+            autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+                loadStats();
+                loadUsers();
+                loadAuctions();
+            }));
+            autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+            autoRefreshTimeline.play();
+        }
+    }
+
+    private void stopAutoRefresh() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+            autoRefreshTimeline = null;
+        }
     }
 
     // ==================== Data Loading ====================
@@ -145,14 +172,18 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/stats");
                 if (response.statusCode() == 200) {
-                    JsonNode stats = mapper.readTree(response.body());
-                    javafx.application.Platform.runLater(() -> {
-                        totalUsersLabel.setText(String.valueOf(stats.path("totalUsers").asInt()));
-                        totalAuctionsLabel.setText(String.valueOf(stats.path("totalAuctions").asInt()));
-                        runningAuctionsLabel.setText(String.valueOf(stats.path("runningAuctions").asInt()));
-                        totalRevenueLabel.setText(currencyFormat.format(new BigDecimal(stats.path("totalRevenue").asText("0"))));
-                        highestBidLabel.setText(currencyFormat.format(new BigDecimal(stats.path("highestBid").asText("0"))));
-                    });
+                    String body = response.body();
+                    if (!body.equals(lastStatsJson)) {
+                        lastStatsJson = body;
+                        JsonNode stats = mapper.readTree(body);
+                        javafx.application.Platform.runLater(() -> {
+                            totalUsersLabel.setText(String.valueOf(stats.path("totalUsers").asInt()));
+                            totalAuctionsLabel.setText(String.valueOf(stats.path("totalAuctions").asInt()));
+                            runningAuctionsLabel.setText(String.valueOf(stats.path("runningAuctions").asInt()));
+                            totalRevenueLabel.setText(currencyFormat.format(new BigDecimal(stats.path("totalRevenue").asText("0"))));
+                            highestBidLabel.setText(currencyFormat.format(new BigDecimal(stats.path("highestBid").asText("0"))));
+                        });
+                    }
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải thống kê: " + e.getMessage()));
@@ -177,22 +208,26 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/users");
                 if (response.statusCode() == 200) {
-                    JsonNode root = mapper.readTree(response.body());
-                    ObservableList<String[]> rows = FXCollections.observableArrayList();
-                    for (JsonNode node : root) {
-                        rows.add(new String[]{
-                                String.valueOf(node.path("id").asLong()),
-                                node.path("username").asText(),
-                                node.path("fullname").asText(),
-                                node.path("email").asText(),
-                                node.path("role").asText(),
-                                node.path("locked").asBoolean() ? "Locked" : "Active"
+                    String body = response.body();
+                    if (!body.equals(lastUsersJson)) {
+                        lastUsersJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("username").asText(),
+                                    node.path("fullname").asText(),
+                                    node.path("email").asText(),
+                                    node.path("role").asText(),
+                                    node.path("locked").asBoolean() ? "Locked" : "Active"
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            userTable.setItems(rows);
+                            statusLabel.setText("Đã tải " + rows.size() + " users.");
                         });
                     }
-                    javafx.application.Platform.runLater(() -> {
-                        userTable.setItems(rows);
-                        statusLabel.setText("Đã tải " + rows.size() + " users.");
-                    });
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải users: " + e.getMessage()));
@@ -205,23 +240,27 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/auctions");
                 if (response.statusCode() == 200) {
-                    JsonNode root = mapper.readTree(response.body());
-                    ObservableList<String[]> rows = FXCollections.observableArrayList();
-                    for (JsonNode node : root) {
-                        BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
-                        rows.add(new String[]{
-                                String.valueOf(node.path("id").asLong()),
-                                node.path("title").asText(),
-                                node.path("category").asText(),
-                                currencyFormat.format(price),
-                                String.valueOf(node.path("bidCount").asInt()),
-                                node.path("status").asText()
+                    String body = response.body();
+                    if (!body.equals(lastAuctionsJson)) {
+                        lastAuctionsJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("title").asText(),
+                                    node.path("category").asText(),
+                                    currencyFormat.format(price),
+                                    String.valueOf(node.path("bidCount").asInt()),
+                                    node.path("status").asText()
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            auctionTable.setItems(rows);
+                            statusLabel.setText("Đã tải " + rows.size() + " phiên đấu giá.");
                         });
                     }
-                    javafx.application.Platform.runLater(() -> {
-                        auctionTable.setItems(rows);
-                        statusLabel.setText("Đã tải " + rows.size() + " phiên đấu giá.");
-                    });
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải auctions: " + e.getMessage()));
@@ -325,6 +364,7 @@ public class AdminDashboardController {
 
     @FXML
     private void onLogout() {
+        stopAutoRefresh();
         SessionManager.getInstance().clear();
         try {
             Stage stage = (Stage) adminInfoLabel.getScene().getWindow();
