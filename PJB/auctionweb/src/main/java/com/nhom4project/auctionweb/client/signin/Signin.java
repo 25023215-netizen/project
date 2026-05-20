@@ -28,6 +28,7 @@ public class Signin extends Application {
         // Cấu hình cửa sổ chính
         primaryStage.setTitle("Đăng nhập người dùng");
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show(); // Hiển thị cửa sổ
     }
 }

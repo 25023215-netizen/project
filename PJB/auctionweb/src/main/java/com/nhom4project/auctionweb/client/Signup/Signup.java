@@ -29,6 +29,7 @@ public class Signup extends Application {
         // Cấu hình cửa sổ chính
         primaryStage.setTitle("Đăng ký người dùng");
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show(); // Hiển thị cửa sổ
     }
 }
