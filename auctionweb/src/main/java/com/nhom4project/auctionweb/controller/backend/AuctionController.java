@@ -1,6 +1,7 @@
 package com.nhom4project.auctionweb.controller.backend;
 
 import com.nhom4project.auctionweb.server.model.Auction;
+import com.nhom4project.auctionweb.server.model.AuctionStatus;
 import com.nhom4project.auctionweb.server.model.AutoBidConfig;
 import com.nhom4project.auctionweb.server.model.BidTransaction;
 import com.nhom4project.auctionweb.server.model.Roles;

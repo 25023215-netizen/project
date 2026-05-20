@@ -1,7 +1,9 @@
-package com.nhom4project.auctionweb.server.service;
+package com.nhom4project.auctionweb.test;
 
 import com.nhom4project.auctionweb.server.model.Auction;
 import com.nhom4project.auctionweb.server.model.AuctionStatus;
+import com.nhom4project.auctionweb.server.service.AuctionManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

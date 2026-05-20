@@ -1,7 +1,9 @@
-package com.nhom4project.auctionweb.server.service;
+package com.nhom4project.auctionweb.test;
 
 import com.nhom4project.auctionweb.server.model.*;
 import com.nhom4project.auctionweb.server.repository.*;
+import com.nhom4project.auctionweb.server.service.AuctionService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,6 +81,18 @@ public class BiddingExceptionHandlingTest {
 
         assertThrows(IllegalStateException.class, () ->
             auctionService.placeBid(runningAuction.getId(), bidder.getId(), new BigDecimal("2000000"))
+        );
+    }
+
+    @Test
+    @DisplayName("Lỗi: Bidder không được bid lại khi đang giữ giá")
+    void testBidByCurrentLeadingBidder_Failure() {
+        // Bid đầu tiên thành công
+        auctionService.placeBid(runningAuction.getId(), bidder.getId(), new BigDecimal("1500000"));
+
+        // Bid cùng bidder khi vẫn là người dẫn đầu phải bị chặn
+        assertThrows(IllegalStateException.class, () ->
+            auctionService.placeBid(runningAuction.getId(), bidder.getId(), new BigDecimal("1600000"))
         );
     }
 

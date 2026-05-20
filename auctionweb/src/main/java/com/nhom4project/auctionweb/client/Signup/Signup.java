@@ -1,4 +1,4 @@
-package com.nhom4project.auctionweb.client.signup;
+package com.nhom4project.auctionweb.client.Signup;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
