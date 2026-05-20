@@ -177,11 +177,11 @@
                 <version>0.8.11</version>
                 <configuration>
                     <includes>
-                        <include>com/nhom4project/auctionweb/server/model/**</include>
-                        <include>com/nhom4project/auctionweb/server/dto/**</include>
-                        <include>com/nhom4project/auctionweb/server/config/**</include>
-                        <include>com/nhom4project/auctionweb/server/util/**</include>
-                        <include>com/nhom4project/auctionweb/server/service/ItemFactory*</include>
+                        <include>com/nhom4project/auctionweb/server/**</include>
+                        <include>com/nhom4project/auctionweb/controller/backend/**</include>
+                        <include>com/nhom4project/auctionweb/controller/frontend/SignupController*</include>
+                        <include>com/nhom4project/auctionweb/controller/frontend/SigninController*</include>
+                        <include>com/nhom4project/auctionweb/controller/frontend/DashboardController*</include>
                     </includes>
                 </configuration>
                 <executions>
