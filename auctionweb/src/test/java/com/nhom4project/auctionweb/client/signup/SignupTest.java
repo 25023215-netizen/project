@@ -1,5 +1,6 @@
 package com.nhom4project.auctionweb.client.signup;
 
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
