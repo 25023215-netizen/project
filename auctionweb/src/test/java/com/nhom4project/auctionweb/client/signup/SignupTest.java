@@ -1,6 +1,10 @@
 package com.nhom4project.auctionweb.client.signup;
 
+<<<<<<< Updated upstream
 
+=======
+import com.nhom4project.auctionweb.client.signup.Signup;
+>>>>>>> Stashed changes
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
