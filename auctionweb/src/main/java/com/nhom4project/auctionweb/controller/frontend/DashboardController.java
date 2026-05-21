@@ -71,7 +71,16 @@ public class DashboardController {
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     AuctionRow rowData = row.getItem();
-                    openAuctionDetail(rowData.getId());
+                    // Debug: show double-click detected in status label
+                    if (statusLabel != null) {
+                        statusLabel.setText("Double-clicked: " + rowData.getId());
+                    }
+                    try {
+                        openAuctionDetail(rowData.getId());
+                    } catch (Exception ex) {
+                        if (statusLabel != null) statusLabel.setText("Loi khi mo chi tiet: " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
                 }
             });
             return row;
