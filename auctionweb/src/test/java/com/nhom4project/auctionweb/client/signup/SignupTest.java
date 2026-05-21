@@ -1,6 +1,10 @@
 package com.nhom4project.auctionweb.client.signup;
 
-import com.nhom4project.auctionweb.client.Signup.Signup;
+<<<<<<< Updated upstream
+
+=======
+import com.nhom4project.auctionweb.client.signup.Signup;
+>>>>>>> Stashed changes
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,7 +31,7 @@ public class SignupTest {
 
     @Test
     public void testStart() {
-        signup signup = new signup();
+        Signup signup = new Signup();
         Stage mockStage = mock(Stage.class);
         Parent mockParent = mock(Parent.class);
         ObservableList<String> mockStylesheets = mock(ObservableList.class);
