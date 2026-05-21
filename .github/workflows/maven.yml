@@ -21,17 +21,10 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Install xvfb
+    - name: Install xvfb (skipped in debug)
       run: |
-        set -eux
-        echo '--- apt-get update ---'
-        sudo apt-get update -y
-        echo '--- apt-get install (no recommends) ---'
-        sudo apt-get install -y --no-install-recommends xvfb libgtk-3-0 libxrender1 libxext6 libxtst6 libxrandr2 libxi6 libasound2 libnss3
-        echo '--- dpkg -l (installed GUI packages) ---'
-        dpkg -l | egrep 'xvfb|gtk|xrender|xext|xtst|xrandr|xi|asound|nss' || true
-        echo '--- apt-cache policy java | head ---'
-        apt-cache policy openjdk-17-jdk || true
+        echo 'Skipping apt-get install step for debug; previous runs failed here.'
+        echo 'If tests need Xvfb, re-enable this step.'
 
     - name: Build and Test with Maven (Xvfb)
       working-directory: ./auctionweb
