@@ -91,12 +91,6 @@
                         <!-- Price Chart -->
                         <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
                             <Label text="Biểu đồ giá (Realtime)" styleClass="section-title"/>
-<<<<<<< Updated upstream
-                            <AreaChart fx:id="priceChart" VBox.vgrow="ALWAYS" styleClass="price-chart">
-                                <xAxis><NumberAxis fx:id="xAxis" label="Lượt đặt giá #" autoRanging="true"/></xAxis>
-                                <yAxis><NumberAxis fx:id="yAxis" label="Giá (VND)" autoRanging="true"/></yAxis>
-                            </AreaChart>
-=======
                             <StackPane VBox.vgrow="ALWAYS" styleClass="chart-stack">
                                 <!-- BarChart for vertical bars -->
                                 <BarChart fx:id="barChart" legendVisible="false" animated="false" horizontalGridLinesVisible="true" verticalGridLinesVisible="true" styleClass="bar-chart">
@@ -117,7 +111,6 @@
                                     </yAxis>
                                 </LineChart>
                             </StackPane>
->>>>>>> Stashed changes
                         </VBox>
 
                         <!-- Bid History -->

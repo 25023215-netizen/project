@@ -1,10 +1,7 @@
 package com.nhom4project.auctionweb.controller.backend;
 
 import com.nhom4project.auctionweb.server.model.Auction;
-<<<<<<< Updated upstream
-=======
 import com.nhom4project.auctionweb.server.model.AuctionHistory;
->>>>>>> Stashed changes
 import com.nhom4project.auctionweb.server.model.AutoBidConfig;
 import com.nhom4project.auctionweb.server.model.BidTransaction;
 import com.nhom4project.auctionweb.server.model.Roles;
@@ -132,10 +129,7 @@ public class AuctionController {
         return auctionService.getBidHistory(id);
     }
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
     // ==================== Auto-Bidding ====================
 
     /**
