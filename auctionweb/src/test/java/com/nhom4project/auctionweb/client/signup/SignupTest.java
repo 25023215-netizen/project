@@ -25,7 +25,7 @@ public class SignupTest {
 
     @Test
     public void testStart() {
-        Signup signup = new Signup();
+        signup signup = new signup();
         Stage mockStage = mock(Stage.class);
         Parent mockParent = mock(Parent.class);
         ObservableList<String> mockStylesheets = mock(ObservableList.class);
