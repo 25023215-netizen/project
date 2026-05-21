@@ -80,7 +80,7 @@
                 <!-- Price Chart -->
                 <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
                     <Label text="Bieu do gia (Realtime)" styleClass="section-title"/>
-                    <LineChart fx:id="priceChart" VBox.vgrow="ALWAYS" styleClass="price-chart">
+                    <LineChart fx:id="priceChart" VBox.vgrow="ALWAYS" styleClass="price-chart" legendVisible="false" createSymbols="false" prefHeight="320.0">
                         <xAxis><NumberAxis fx:id="xAxis" label="Bid #" autoRanging="true"/></xAxis>
                         <yAxis><NumberAxis fx:id="yAxis" label="Gia (VND)" autoRanging="true"/></yAxis>
                     </LineChart>
