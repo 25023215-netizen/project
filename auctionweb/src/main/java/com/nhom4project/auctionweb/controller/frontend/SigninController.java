@@ -3,7 +3,6 @@ package com.nhom4project.auctionweb.controller.frontend;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
-import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -74,93 +73,51 @@ public class SigninController {
                 HttpResponse<String> response = BackendClient.getInstance().post("/auth/signin", jsonBody);
 
                 Platform.runLater(() -> {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
                     if (response.statusCode() == 200) {
                         try {
                             JSONObject user = new JSONObject(response.body());
                             String userRole = user.optString("role", "BIDDER");
-                            long userId = user.optLong("id", 0L);
-                            String usernameVal = user.optString("username", username);
-                            String fullnameVal = user.optString("fullname", usernameVal);
 
+<<<<<<< Updated upstream
+                            // Kiểm tra role đã chọn có khớp với role trong DB không
+                            if (!userRole.equalsIgnoreCase(selectedRole)) {
+                                statusLabel.setText("Tai khoan nay khong phai " + selectedRole + "!");
+=======
                             // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
                             if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
-                                statusLabel.setText("Tai khoan nay khong phai " + selectedRole + "!");
+                                String roleVN = "SELLER".equals(selectedRole) ? "Người bán" : "Người đấu giá";
+                                statusLabel.setText("Tài khoản này không phải " + roleVN + "!");
+>>>>>>> Stashed changes
                                 statusLabel.setStyle("-fx-text-fill: red;");
                                 signinButton.setDisable(false);
                                 return;
                             }
 
                             SessionManager.getInstance().setUser(
-                                    userId,
-                                    usernameVal,
-                                    fullnameVal,
+                                    user.getLong("id"),
+                                    user.getString("username"),
+                                    user.optString("fullname", username),
                                     userRole
                             );
-
-                            // Điều hướng theo role thực tế từ server
-                            if ("ADMIN".equalsIgnoreCase(userRole)) {
-                                goToAdminDashboard(event);
-                            } else {
-                                goToDashboard(event);
-                            }
                         } catch (Exception e) {
                             SessionManager.getInstance().setUser(0L, username, username, selectedRole);
-                            // fallback: điều hướng theo lựa chọn UI (non-admin)
+                        }
+
+                        // Điều hướng theo Role
+                        if ("ADMIN".equals(selectedRole)) {
+                            goToAdminDashboard(event);
+                        } else {
                             goToDashboard(event);
                         }
                     } else {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
-                        statusLabel.setText("Loi: " + response.body());
-=======
-                        if (response.statusCode() == 200) {
-                            try {
-                                JSONObject user = new JSONObject(response.body());
-                                String userRole = user.optString("role", "BIDDER");
-
-                                // Nếu server trả về ADMIN thì cho phép đăng nhập admin ngay cả khi
-                                // UI không hiển thị lựa chọn Admin.
-                                if (!userRole.equalsIgnoreCase(selectedRole)) {
-                                    if (!userRole.equalsIgnoreCase("ADMIN")) {
-                                        statusLabel.setText("Tai khoan nay khong phai " + selectedRole + "!");
-                                        statusLabel.setStyle("-fx-text-fill: red;");
-                                        signinButton.setDisable(false);
-                                        return;
-                                    }
-                                    // nếu là ADMIN thì bỏ qua mismatch và tiếp tục
-                                }
-
-                                SessionManager.getInstance().setUser(
-                                        user.getLong("id"),
-                                        user.getString("username"),
-                                        user.optString("fullname", username),
-                                        userRole
-                                );
-
-                                // Điều hướng theo role thực tế từ server
-                                if ("ADMIN".equalsIgnoreCase(userRole)) {
-                                    goToAdminDashboard(event);
-                                } else {
-                                    goToDashboard(event);
-                                }
-                            } catch (Exception e) {
-                                SessionManager.getInstance().setUser(0L, username, username, selectedRole);
-                                // fallback: điều hướng theo lựa chọn UI (non-admin)
-                                goToDashboard(event);
-                            }
-                    } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
-=======
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
                         statusLabel.setStyle("-fx-text-fill: red;");
                         signinButton.setDisable(false);
                     }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    statusLabel.setText("Khong the ket noi toi may chu!");
+                    statusLabel.setText("Không thể kết nối tới máy chủ! Hãy chắc chắn backend đã chạy.");
                     statusLabel.setStyle("-fx-text-fill: red;");
                     signinButton.setDisable(false);
                 });

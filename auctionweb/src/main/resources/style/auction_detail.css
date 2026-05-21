@@ -142,6 +142,10 @@
     -fx-text-fill: #64748b;
 }
 
+<<<<<<< Updated upstream
+/* Chart */
+.price-chart {
+=======
 /* Stacked Chart Styles */
 .chart-stack {
     -fx-background-color: #ffffff;
@@ -150,51 +154,34 @@
 
 /* Base style for the Bar Chart bars - premium green to orange gradient */
 .bar-chart .chart-bar {
-    -fx-bar-fill: linear-gradient(to top, #22c55e, #84cc16, #eab308, #f97316);
+    -fx-bar-fill: #22c55e;
+    -fx-background-color: linear-gradient(to top, #22c55e, #84cc16, #eab308, #f97316);
     -fx-background-radius: 4 4 0 0;
 }
 
 /* Translucent overlay styles for the Line Chart */
 .line-chart {
+>>>>>>> Stashed changes
     -fx-background-color: transparent;
 }
 
-.line-chart .chart-plot-background {
-    -fx-background-color: transparent;
+.chart-series-line {
+    -fx-stroke: #f43f5e;
+    -fx-stroke-width: 2.5px;
 }
 
-/* Main connecting line - green to orange gradient stroke */
-.line-chart .chart-series-line {
-    -fx-stroke: linear-gradient(to right, #22c55e, #84cc16, #eab308, #f97316);
-    -fx-stroke-width: 4px;
+.chart-series-area-fill {
+    -fx-fill: linear-gradient(to bottom, #f43f5e55 0%, #f43f5e00 100%);
 }
 
-/* Grid lines and background styles for Bar Chart */
-.bar-chart .chart-plot-background {
+.chart-plot-background {
     -fx-background-color: #ffffff;
 }
 
-.bar-chart .chart-vertical-grid-lines,
-.bar-chart .chart-horizontal-grid-lines {
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
     -fx-stroke: #f1f5f9;
     -fx-stroke-width: 0.8px;
-}
-
-/* Hiding line-chart gridlines entirely */
-.line-chart .chart-vertical-grid-lines,
-.line-chart .chart-horizontal-grid-lines {
-    -fx-stroke: transparent;
-}
-
-/* Axis styles */
-.axis {
-    -fx-tick-label-fill: #64748b;
-    -fx-font-size: 11px;
-}
-
-.axis-axis-label {
-    -fx-text-fill: #475569;
-    -fx-font-weight: bold;
 }
 
 /* History List */
@@ -279,3 +266,19 @@
 .delete-button:hover {
     -fx-background-color: #b91c1c;
 }
+
+/* Style for line chart symbols */
+.line-chart .chart-line-symbol {
+    -fx-background-color: #14213d, #ffffff;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+    -fx-cursor: hand;
+}
+
+.line-chart .chart-line-symbol:hover {
+    -fx-background-color: #fca311, #ffffff;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px;
+}
+

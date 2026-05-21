@@ -34,15 +34,6 @@
     -fx-padding: 20;
 }
 
-.form-scroll {
-    -fx-background-color: transparent;
-    -fx-padding: 0;
-}
-
-.form-scroll > .viewport {
-    -fx-background-color: transparent;
-}
-
 .form-panel, .table-panel {
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;
@@ -98,7 +89,7 @@
     -fx-background-color: #dc2626;
 }
 
-<<<<<<< HEAD:PJB/auctionweb/src/main/resources/style/item_management.css
+<<<<<<< Updated upstream
 =======
 .warning-button {
     -fx-background-color: #f59e0b;
@@ -112,8 +103,7 @@
 .warning-button:hover {
     -fx-background-color: #d97706;
 }
-
->>>>>>> main:auctionweb/src/main/resources/style/item_management.css
+>>>>>>> Stashed changes
 .status-label {
     -fx-font-size: 13px;
     -fx-text-fill: #64748b;

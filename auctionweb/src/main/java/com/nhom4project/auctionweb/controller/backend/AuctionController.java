@@ -1,25 +1,13 @@
 package com.nhom4project.auctionweb.controller.backend;
 
 import com.nhom4project.auctionweb.server.model.Auction;
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
+<<<<<<< Updated upstream
 =======
-import com.nhom4project.auctionweb.server.model.AuctionStatus;
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
 import com.nhom4project.auctionweb.server.model.AuctionHistory;
+>>>>>>> Stashed changes
 import com.nhom4project.auctionweb.server.model.AutoBidConfig;
 import com.nhom4project.auctionweb.server.model.BidTransaction;
 import com.nhom4project.auctionweb.server.model.Roles;
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-import com.nhom4project.auctionweb.server.repository.AuctionHistoryRepository;
-=======
-import com.nhom4project.auctionweb.server.model.AuctionStatus;
-import com.nhom4project.auctionweb.server.model.AutoBidConfig;
-import com.nhom4project.auctionweb.server.model.BidTransaction;
-import com.nhom4project.auctionweb.server.model.Roles;
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
 import com.nhom4project.auctionweb.server.service.AuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,15 +28,6 @@ public class AuctionController {
     @Autowired
     private AuctionService auctionService;
 
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-    @Autowired
-    private AuctionHistoryRepository auctionHistoryRepository;
-
-=======
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
     // ==================== Danh sách & Chi tiết ====================
 
     @GetMapping
@@ -153,19 +132,10 @@ public class AuctionController {
         return auctionService.getBidHistory(id);
     }
 
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-    // ==================== Auction History ====================
-
-    @GetMapping("/history")
-    public List<AuctionHistory> getAuctionHistory() {
-        return auctionHistoryRepository.findAll();
-    }
-
+<<<<<<< Updated upstream
 =======
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/backend/AuctionController.java
+
+>>>>>>> Stashed changes
     // ==================== Auto-Bidding ====================
 
     /**
@@ -208,13 +178,6 @@ public class AuctionController {
         return auctionService.getAutoBidConfig(id, bidderId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    // ==================== Auction History Results ====================
-
-    @GetMapping("/history")
-    public List<AuctionHistory> getAuctionHistory() {
-        return auctionService.listAuctionHistories();
     }
 }
 

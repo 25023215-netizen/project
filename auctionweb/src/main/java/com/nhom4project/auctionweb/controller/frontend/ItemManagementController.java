@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
-import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -63,7 +62,7 @@ public class ItemManagementController {
         typeCombo.setOnAction(e -> updateExtraFieldLabels());
         updateExtraFieldLabels();
 
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+<<<<<<< Updated upstream
 =======
         // Đăng ký sự kiện chọn dòng trong bảng để tự động điền vào form
         itemTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -77,8 +76,7 @@ public class ItemManagementController {
                 extra2Field.setText(newSelection.extra2Property().get());
             }
         });
-
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+>>>>>>> Stashed changes
         loadItems();
 
         durationUnitCombo.setItems(FXCollections.observableArrayList("Phut", "Gio", "Ngay"));
@@ -104,7 +102,7 @@ public class ItemManagementController {
                     Platform.runLater(() -> {
                         items.clear();
                         for (JsonNode node : root) {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+<<<<<<< Updated upstream
                             items.add(new ItemRow(
                                     node.path("id").asText(),
                                     node.path("name").asText(),
@@ -134,7 +132,7 @@ public class ItemManagementController {
                                     node.path("description").asText(""),
                                     extra1,
                                     extra2
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+>>>>>>> Stashed changes
                             ));
                         }
                         statusLabel.setText("Da tai " + items.size() + " san pham");
@@ -147,13 +145,13 @@ public class ItemManagementController {
     }
 
     private String guessType(JsonNode node) {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+<<<<<<< Updated upstream
 =======
         if (node.has("item_type")) {
             String type = node.path("item_type").asText();
             if (!type.isBlank()) return type.toUpperCase();
         }
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+>>>>>>> Stashed changes
         if (node.has("brand")) return "ELECTRONICS";
         if (node.has("artist")) return "ART";
         if (node.has("manufacturer")) return "VEHICLE";
@@ -190,15 +188,7 @@ public class ItemManagementController {
                         clearForm();
                         loadItems();
                     } else {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-                        statusLabel.setText("Loi: " + response.body());
-=======
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-=======
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
                     }
                 });
             } catch (Exception e) {
@@ -224,10 +214,6 @@ public class ItemManagementController {
                         statusLabel.setText("Da xoa san pham!");
                         loadItems();
                     } else {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-                        statusLabel.setText("Loi: " + response.body());
-=======
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
                 });
@@ -237,6 +223,8 @@ public class ItemManagementController {
         }).start();
     }
 
+<<<<<<< Updated upstream
+=======
     @FXML
     private void onUpdateItem() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
@@ -273,10 +261,6 @@ public class ItemManagementController {
                         loadItems();
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-=======
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
                     }
                 });
             } catch (Exception e) {
@@ -285,6 +269,7 @@ public class ItemManagementController {
         }).start();
     }
 
+>>>>>>> Stashed changes
     /**
      * Tạo phiên đấu giá từ sản phẩm đã chọn.
      */
@@ -330,15 +315,7 @@ public class ItemManagementController {
                     if (response.statusCode() == 200) {
                         statusLabel.setText("Tao phien dau gia thanh cong!");
                     } else {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-                        statusLabel.setText("Loi: " + response.body());
-=======
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-=======
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
                     }
                 });
             } catch (Exception e) {
@@ -352,8 +329,6 @@ public class ItemManagementController {
         try {
             Stage stage = (Stage) itemTable.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
-            stage.setMinWidth(980);
-            stage.setMinHeight(680);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -375,7 +350,7 @@ public class ItemManagementController {
         private final SimpleStringProperty type;
         private final SimpleStringProperty price;
         private final SimpleStringProperty desc;
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+<<<<<<< Updated upstream
 
         public ItemRow(String id, String name, String type, String price, String desc) {
 =======
@@ -383,17 +358,17 @@ public class ItemManagementController {
         private final SimpleStringProperty extra2;
 
         public ItemRow(String id, String name, String type, String price, String desc, String extra1, String extra2) {
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+>>>>>>> Stashed changes
             this.id = id;
             this.name = new SimpleStringProperty(name);
             this.type = new SimpleStringProperty(type);
             this.price = new SimpleStringProperty(price);
             this.desc = new SimpleStringProperty(desc);
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+<<<<<<< Updated upstream
 =======
             this.extra1 = new SimpleStringProperty(extra1);
             this.extra2 = new SimpleStringProperty(extra2);
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+>>>>>>> Stashed changes
         }
 
         public String getId() { return id; }
@@ -401,11 +376,11 @@ public class ItemManagementController {
         public SimpleStringProperty typeProperty() { return type; }
         public SimpleStringProperty priceProperty() { return price; }
         public SimpleStringProperty descProperty() { return desc; }
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+<<<<<<< Updated upstream
 =======
         public SimpleStringProperty extra1Property() { return extra1; }
         public SimpleStringProperty extra2Property() { return extra2; }
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+>>>>>>> Stashed changes
     }
 }
 

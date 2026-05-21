@@ -10,8 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+<<<<<<< Updated upstream
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,15 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-=======
-import org.springframework.http.ResponseEntity;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+>>>>>>> Stashed changes
 
 /**
  * Scheduler tự động kết thúc phiên đấu giá khi hết thời gian.
@@ -99,11 +90,13 @@ public class AuctionScheduler {
             }
         }
     }
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+<<<<<<< Updated upstream
+}
+
+
+
+
 =======
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
     //Kết thúc phiên đầu giá sớm theo yêu cầu của client
     public ResponseEntity<?> endAuctionEarly(Long auctionId, Long userId, String role) {
         Optional<Auction> auctionOpt = auctionRepository.findById(auctionId);
@@ -146,22 +139,5 @@ public class AuctionScheduler {
             return ResponseEntity.badRequest().body("Auction is not running");
         }
     }
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
 }
-
-
-
-
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-=======
-
-
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
-=======
-
-
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+>>>>>>> Stashed changes

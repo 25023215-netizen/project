@@ -6,7 +6,6 @@ import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
 import com.nhom4project.auctionweb.client.utils.WebSocketClient;
-import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,26 +14,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+<<<<<<< Updated upstream
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.util.StringConverter;
-=======
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
 =======
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.CategoryAxis;
+>>>>>>> Stashed changes
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.layout.StackPane;
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -82,14 +70,9 @@ public class AuctionDetailController {
     @FXML private Button endEarlyButton;
     @FXML private Button deleteAuctionButton;
 
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-    @FXML private AreaChart<String, Number> priceChart;
-    @FXML private CategoryAxis xAxis;
-=======
-    @FXML private LineChart<Number, Number> priceChart;
+<<<<<<< Updated upstream
+    @FXML private AreaChart<Number, Number> priceChart;
     @FXML private NumberAxis xAxis;
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     @FXML private NumberAxis yAxis;
 =======
     @FXML private BarChart<String, Number> barChart;
@@ -99,7 +82,7 @@ public class AuctionDetailController {
     @FXML private LineChart<String, Number> lineChart;
     @FXML private CategoryAxis lineXAxis;
     @FXML private NumberAxis lineYAxis;
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+>>>>>>> Stashed changes
 
     @FXML private ListView<String> bidHistoryList;
 
@@ -108,23 +91,18 @@ public class AuctionDetailController {
     // Công cụ để chuyển đổi chuỗi JSON từ Server gửi về thành dạng dữ liệu phân tích được
     private final ObjectMapper mapper = new ObjectMapper();
     // Chứa các điểm dữ liệu để vẽ đường biểu diễn giá trên biểu đồ
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-    private XYChart.Series<String, Number> priceSeries;
-=======
+<<<<<<< Updated upstream
     private XYChart.Series<Number, Number> priceSeries;
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
 =======
     private XYChart.Series<String, Number> barSeries;
     private XYChart.Series<String, Number> lineSeries;
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+>>>>>>> Stashed changes
     private int chartPointIndex = 0;
     // Bộ đếm thời gian lùi (đếm ngược)
     private Timeline countdownTimeline;
     // Thời gian kết thúc phiên đấu
     private LocalDateTime auctionEndTime;
     private boolean isFinishedAlertShown = false;
-    private BigDecimal startingPrice;
 
     /**
      * Được gọi trước khi hiển thị màn hình, từ màn hình Dashboard khi click vào 1 phiên đấu giá.
@@ -133,6 +111,7 @@ public class AuctionDetailController {
     public void setAuctionId(Long auctionId) {
         this.auctionId = auctionId;
         loadAuctionDetail(); // Gọi API lấy thông tin phiên đấu giá
+        loadBidHistory(); // Gọi API lấy lịch sử đặt giá
         startRealtimeUpdates(); // Bật kết nối WebSocket để nhận giá mới theo thời gian thực
     }
 
@@ -141,24 +120,14 @@ public class AuctionDetailController {
      */
     @FXML
     public void initialize() {
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+<<<<<<< Updated upstream
         // Thiết lập biểu đồ (priceSeries)
         //Trong JavaFX, XYChart.Series<> (thường gọi tắt là Series) là một lớp dùng để đại diện cho một chuỗi/tập hợp các điểm dữ liệu trên một biểu đồ
         priceSeries = new XYChart.Series<>();//Series Ở đây nó đại diện cho đường biểu diễn sự thay đổi giá của phiên đấu giá
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-        priceSeries.setName("Giá đấu giá");
-=======
         priceSeries.setName("Gia dau gia");
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         priceChart.getData().add(priceSeries);
         priceChart.setCreateSymbols(false);
         priceChart.setAnimated(false);
-        priceChart.setHorizontalGridLinesVisible(true);
-        priceChart.setVerticalGridLinesVisible(true);
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-        if (yAxis != null) {
-            yAxis.setForceZeroInRange(false);
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
 =======
         // Khởi tạo các Series cho BarChart và LineChart
         barSeries = new XYChart.Series<>();
@@ -173,19 +142,18 @@ public class AuctionDetailController {
         if (lineChart != null) {
             lineChart.getData().add(lineSeries);
             lineChart.setAnimated(false);
-            lineChart.setCreateSymbols(false);
+            lineChart.setCreateSymbols(true);
         }
 
         // Đồng bộ hóa trục Y của LineChart theo BarChart
         if (barYAxis != null && lineYAxis != null) {
-            lineYAxis.autoRangingProperty().bind(barYAxis.autoRangingProperty());
+            lineYAxis.setAutoRanging(false);
             lineYAxis.lowerBoundProperty().bind(barYAxis.lowerBoundProperty());
             lineYAxis.upperBoundProperty().bind(barYAxis.upperBoundProperty());
             lineYAxis.tickUnitProperty().bind(barYAxis.tickUnitProperty());
 
             barYAxis.setForceZeroInRange(false);
             barYAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
                 @Override
                 public String toString(Number object) {
                     return String.format("%,.0f", object.doubleValue());
@@ -195,14 +163,8 @@ public class AuctionDetailController {
                     return Double.parseDouble(string);
                 }
             });
-=======
-        if (xAxis != null) {
-            xAxis.setForceZeroInRange(false);
         }
-        if (yAxis != null) {
-            yAxis.setForceZeroInRange(false);
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-        }
+>>>>>>> Stashed changes
 
         // Kiểm tra quyền người dùng thông qua SessionManager.
         // Chỉ cho bidder đặt giá, nếu không phải là người mua (Bidder) thì sẽ vô hiệu hóa các nút Đặt giá.
@@ -238,7 +200,7 @@ public class AuctionDetailController {
      */
     private void updateCountdownDisplay() {
         LocalDateTime now = LocalDateTime.now();
-        if (auctionEndTime == null || now.isAfter(auctionEndTime)) {
+        if (now.isAfter(auctionEndTime)) {
             timerLabel.setText("00:00:00");
             timerLabel.setStyle("-fx-text-fill: gray; -fx-background-color: #e5e7eb;");
             return;
@@ -270,20 +232,10 @@ public class AuctionDetailController {
                 if (response.statusCode() == 200) {
                     JsonNode node = mapper.readTree(response.body());
                     // Cập nhật giao diện phải nằm trong Platform.runLater để tránh lỗi đa luồng JavaFX
-                    Platform.runLater(() -> {
-                        try {
-                            updateUI(node);
-                            loadBidHistory();
-                        } catch (Exception ex) {
-                            titleLabel.setText("Lỗi xử lý dữ liệu UI: " + ex.getMessage());
-                            ex.printStackTrace();
-                        }
-                    });
-                } else {
-                    Platform.runLater(() -> titleLabel.setText("Lỗi máy chủ: HTTP " + response.statusCode()));
+                    Platform.runLater(() -> updateUI(node));
                 }
             } catch (Exception e) {
-                Platform.runLater(() -> titleLabel.setText("Lỗi tải dữ liệu: " + e.getMessage()));
+                Platform.runLater(() -> messageLabel.setText("Loi tai du lieu: " + e.getMessage()));
             }
         }).start();
     }
@@ -301,19 +253,31 @@ public class AuctionDetailController {
                     // Cập nhật List và Chart phải nằm trong Platform.runLater
                     Platform.runLater(() -> {
                         ObservableList<String> items = FXCollections.observableArrayList();
+<<<<<<< Updated upstream
+                        priceSeries.getData().clear();
+                        chartPointIndex = 0;
+
+=======
                         if (barSeries != null) barSeries.getData().clear();
                         if (lineSeries != null) lineSeries.getData().clear();
-                        chartPointIndex = 0;
+                        if (barXAxis != null) barXAxis.getCategories().clear();
+                        if (lineXAxis != null) lineXAxis.getCategories().clear();
 
                         // Thêm giá khởi điểm làm điểm đầu tiên của biểu đồ
                         if (startingPrice != null) {
-                            String category = String.valueOf(chartPointIndex++);
+                            String category = "Khởi điểm";
                             double value = startingPrice.doubleValue();
-                            if (barSeries != null) barSeries.getData().add(new XYChart.Data<>(category, value));
-                            if (lineSeries != null) lineSeries.getData().add(new XYChart.Data<>(category, value));
+                            XYChart.Data<String, Number> barData = new XYChart.Data<>(category, value);
+                            XYChart.Data<String, Number> lineData = new XYChart.Data<>(category, value);
+                            if (barSeries != null) barSeries.getData().add(barData);
+                            if (lineSeries != null) lineSeries.getData().add(lineData);
+                            addTooltipAndHoverEffect(barData, String.format("Giá khởi điểm: %,.0f VND", value));
+                            addTooltipAndHoverEffect(lineData, String.format("Giá khởi điểm: %,.0f VND", value));
                         }
 
+>>>>>>> Stashed changes
                         // Duyệt từ cuối lên đầu (vì API trả về desc) để đảo ngược chiều ưu tiên
+                        int bidIndex = 1;
                         for (int i = bids.size() - 1; i >= 0; i--) {
                             JsonNode bid = bids.get(i);
                             double amount = bid.path("amount").asDouble();
@@ -321,21 +285,22 @@ public class AuctionDetailController {
                             String time = bid.path("bidTime").asText("");
 
                             items.add(0, String.format("%s - %,.0f VND boi %s", formatTime(time), amount, bidder));
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+<<<<<<< Updated upstream
                             // Thêm điểm vẽ vào biểu đồ
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-                            String formattedChartTime = formatTimeOnly(time);
-                            priceSeries.getData().add(new XYChart.Data<>(formattedChartTime, amount));
-=======
                             priceSeries.getData().add(new XYChart.Data<>(chartPointIndex++, amount));
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
 =======
-
                             // Thêm điểm vẽ vào cả 2 biểu đồ
-                            String category = String.valueOf(chartPointIndex++);
-                            if (barSeries != null) barSeries.getData().add(new XYChart.Data<>(category, amount));
-                            if (lineSeries != null) lineSeries.getData().add(new XYChart.Data<>(category, amount));
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+                            String category = "Lượt " + (bidIndex++);
+                            XYChart.Data<String, Number> barData = new XYChart.Data<>(category, amount);
+                            XYChart.Data<String, Number> lineData = new XYChart.Data<>(category, amount);
+                            if (barSeries != null) barSeries.getData().add(barData);
+                            if (lineSeries != null) lineSeries.getData().add(lineData);
+
+                            String tooltipText = String.format("%s\nGiá: %,.0f VND\nNgười đặt: %s\nThời gian: %s", 
+                                                               category, amount, bidder, formatTime(time));
+                            addTooltipAndHoverEffect(barData, tooltipText);
+                            addTooltipAndHoverEffect(lineData, tooltipText);
+>>>>>>> Stashed changes
                         }
                         bidHistoryList.setItems(items); // Cập nhật danh sách bidHistoryList
                     });
@@ -344,6 +309,18 @@ public class AuctionDetailController {
                 // ignore
             }
         }).start();
+    }
+
+    private void addTooltipAndHoverEffect(XYChart.Data<String, Number> data, String tooltipText) {
+        data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+            if (newNode != null) {
+                Tooltip tooltip = new Tooltip(tooltipText);
+                tooltip.setShowDelay(javafx.util.Duration.millis(100));
+                tooltip.setStyle("-fx-font-size: 12px; -fx-font-weight: bold;");
+                Tooltip.install(newNode, tooltip);
+                newNode.setCursor(javafx.scene.Cursor.HAND);
+            }
+        });
     }
 
     /**
@@ -355,14 +332,8 @@ public class AuctionDetailController {
         Consumer<String> listener = data -> {
             try {
                 JsonNode node = mapper.readTree(data);
-                Platform.runLater(() -> {
-                    try {
-                        updateUI(node); // Cập nhật các thông số UI cơ bản
-                        loadBidHistory(); // Cập nhật lại lịch sử đặt giá và biểu đồ
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
+                updateUI(node); // Cập nhật các thông số UI cơ bản
+                loadBidHistory(); // Cập nhật lại lịch sử đặt giá và biểu đồ
             } catch (Exception ignored) {}
         };
 
@@ -381,7 +352,6 @@ public class AuctionDetailController {
         descriptionLabel.setText(node.path("description").asText(""));
 
         BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
-        startingPrice = new BigDecimal(node.path("startingPrice").asText("0"));
         currentPriceLabel.setText(String.format("%,.0f VND", price));
         bidCountLabel.setText(node.path("bidCount").asInt() + " luot dat gia");
 
@@ -627,15 +597,11 @@ public class AuctionDetailController {
     private void onStopAutoBid() {
         Long userId = SessionManager.getInstance().getUserId();
         if (userId == null) return;
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+<<<<<<< Updated upstream
         
 =======
-            
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-=======
-            
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+
+>>>>>>> Stashed changes
         stopAutoBidButton.setDisable(true);
         messageLabel.setText("Đang dừng auto-bid...");
 
@@ -727,8 +693,6 @@ public class AuctionDetailController {
         try {
             Stage stage = (Stage) titleLabel.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
-            stage.setMinWidth(980);
-            stage.setMinHeight(680);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -746,22 +710,10 @@ public class AuctionDetailController {
         }
     }
 
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-    private String formatTimeOnly(String isoTime) {
-        if (isoTime == null || isoTime.isBlank()) return "-";
-        try {
-            LocalDateTime dt = LocalDateTime.parse(isoTime);
-            return dt.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        } catch (Exception e) {
-            return isoTime;
-        }
-    }
+<<<<<<< Updated upstream
+=======
 
-=======
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
+>>>>>>> Stashed changes
     private String getStatusStyle(String status) {
         return switch (status) {
             case "RUNNING" -> "-fx-text-fill: #22c55e; -fx-font-weight: bold;";
