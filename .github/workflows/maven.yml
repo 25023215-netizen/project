@@ -23,13 +23,28 @@ jobs:
 
     - name: Install xvfb
       run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb libgtk-3-0 libxrender1 libxext6 libxtst6 libxrandr2 libxi6 libasound2 libnss3
+        set -eux
+        echo '--- apt-get update ---'
+        sudo apt-get update -y
+        echo '--- apt-get install (no recommends) ---'
+        sudo apt-get install -y --no-install-recommends xvfb libgtk-3-0 libxrender1 libxext6 libxtst6 libxrandr2 libxi6 libasound2 libnss3
+        echo '--- dpkg -l (installed GUI packages) ---'
+        dpkg -l | egrep 'xvfb|gtk|xrender|xext|xtst|xrandr|xi|asound|nss' || true
+        echo '--- apt-cache policy java | head ---'
+        apt-cache policy openjdk-17-jdk || true
 
     - name: Build and Test with Maven (Xvfb)
       working-directory: ./auctionweb
       run: |
-        # start X virtual framebuffer and export display
+        set -eux
+        echo 'Start Xvfb on :99'
         Xvfb :99 -screen 0 1280x1024x24 &
         export DISPLAY=:99
-        mvn -B -Djava.awt.headless=true clean test -Dprism.order=sw
+        echo 'Environment dump:'
+        env | sort
+        echo 'Maven version:'
+        mvn -v
+        echo 'Run mvn with debug flags'
+        mvn -B -X -e -Djava.awt.headless=true clean test -Dprism.order=sw | tee mvn-test.log
+        echo 'mvn exit code:' $?
+        tail -n +1 mvn-test.log | sed -n '1,200p'
