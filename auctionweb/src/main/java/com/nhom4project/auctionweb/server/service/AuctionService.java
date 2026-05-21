@@ -292,21 +292,10 @@ public class AuctionService {
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
         }
-
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
-=======
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
         // Không cho phép bidder hiện tại đặt giá lại khi vẫn là người dẫn đầu
         if (auction.getWinner() != null && auction.getWinner().getId().equals(bidder.getId())) {
             throw new IllegalStateException("Bạn đã là người giữ giá hiện tại");
         }
-
-<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
->>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
-=======
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
         // Cập nhật auction
         auction.setCurrentPrice(amount);
         auction.setBidCount(auction.getBidCount() + 1);
@@ -506,17 +495,6 @@ public class AuctionService {
         } catch (Exception e) {
             log.warn("Failed to broadcast auction list refresh: {}", e.getMessage());
         }
-    }
-
-    public List<AuctionHistory> listAuctionHistories() {
-        List<AuctionHistory> list = auctionHistoryRepository.findAll();
-        list.sort((a, b) -> {
-            if (a.getEndTime() == null && b.getEndTime() == null) return 0;
-            if (a.getEndTime() == null) return 1;
-            if (b.getEndTime() == null) return -1;
-            return b.getEndTime().compareTo(a.getEndTime());
-        });
-        return list;
     }
 
     private Auction findAuction(Long id) {
