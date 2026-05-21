@@ -21,7 +21,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.json.JSONObject;
@@ -111,6 +113,9 @@ public class AuctionDetailController {
             lineChart.getData().add(lineSeries);
             lineChart.setAnimated(false);
             lineChart.setCreateSymbols(true);
+            // Bật grid ngang dạng dashed như ảnh mẫu
+            lineChart.setHorizontalGridLinesVisible(true);
+            lineChart.setVerticalGridLinesVisible(false);
         }
 
         // Cấu hình định dạng và hiển thị trục
@@ -130,8 +135,7 @@ public class AuctionDetailController {
         }
 
         if (lineXAxis != null) {
-            // Xoay nhãn trục hoành nghiêng -45 độ để giống biểu đồ tham chiếu
-            lineXAxis.setTickLabelRotation(-45);
+            lineXAxis.setTickLabelRotation(0);
         }
 
         // Kiểm tra quyền người dùng thông qua SessionManager.
@@ -268,15 +272,18 @@ public class AuctionDetailController {
                     return;
                 }
 
-                Circle circle = new Circle(4);
-                circle.setFill(Color.web("#ef4444"));
-                circle.setStroke(Color.web("#ef4444"));
+                // === Circle xanh dương theo ảnh mẫu ===
+                Circle circle = new Circle(5);
+                circle.setFill(Color.web("#2196F3"));
+                circle.setStroke(Color.web("#1565C0"));
+                circle.setStrokeWidth(1.5);
 
+                // === Nhãn số tiền hiển thị phía trên đỉnh ===
                 Label label = new Label(formatCompactValue(value));
-                label.setStyle("-fx-font-family: 'System'; -fx-font-weight: bold; -fx-font-size: 10px; -fx-text-fill: #000000;");
+                label.setStyle("-fx-font-family: 'Segoe UI', Arial, sans-serif; -fx-font-weight: bold; -fx-font-size: 11px; -fx-text-fill: #1565C0;");
                 label.setManaged(false);
-                label.setTranslateY(-14);
-                
+                // Đặt nhãn lên trên circle (lên 22px)
+                label.setTranslateY(-22);
                 label.widthProperty().addListener((o, ov, nv) -> {
                     label.setTranslateX(-nv.doubleValue() / 2);
                 });
@@ -284,6 +291,14 @@ public class AuctionDetailController {
                 StackPane container = new StackPane();
                 container.getChildren().addAll(circle, label);
                 container.setUserData("custom");
+
+                // === Vẽ đường dọc dashed từ điểm xuống trục X ===
+                container.layoutYProperty().addListener((obs2, ov, nv) -> {
+                    drawDropLine(container, data);
+                });
+                container.layoutXProperty().addListener((obs2, ov, nv) -> {
+                    drawDropLine(container, data);
+                });
 
                 Tooltip tooltip = new Tooltip(tooltipText);
                 tooltip.setShowDelay(javafx.util.Duration.millis(100));
@@ -294,6 +309,35 @@ public class AuctionDetailController {
                 data.setNode(container);
             }
         });
+    }
+
+    /**
+     * Vẽ đường dọc dạng dashed từ điểm trên đồ thị xuống trục X, giống ảnh mẫu.
+     */
+    private void drawDropLine(StackPane container, XYChart.Data<String, Number> data) {
+        // Xóa đường cũ nếu có (tag bằng userData "dropline")
+        if (lineChart == null) return;
+        Pane chartPlot = (Pane) lineChart.lookup(".chart-plot-background");
+        if (chartPlot == null) return;
+
+        // Tìm và xóa đường cũ cho điểm này
+        String lineId = "dropline_" + System.identityHashCode(data);
+        chartPlot.getChildren().removeIf(n -> lineId.equals(n.getUserData()));
+
+        double nodeX = container.getLayoutX() + container.getWidth() / 2;
+        double nodeY = container.getLayoutY() + container.getHeight() / 2;
+        double plotHeight = chartPlot.getHeight();
+
+        if (plotHeight <= 0 || nodeX <= 0) return;
+
+        Line dropLine = new Line(nodeX, nodeY, nodeX, plotHeight);
+        dropLine.setStroke(Color.web("#aaaaaa"));
+        dropLine.setStrokeWidth(1.0);
+        dropLine.getStrokeDashArray().addAll(5.0, 4.0);
+        dropLine.setUserData(lineId);
+        dropLine.setMouseTransparent(true);
+
+        chartPlot.getChildren().add(0, dropLine); // Thêm ở dưới cùng để không che đường chính
     }
 
     private String formatCompactValue(double value) {

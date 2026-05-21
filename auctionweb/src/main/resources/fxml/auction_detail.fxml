@@ -92,13 +92,13 @@
                         <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
                             <Label text="Biểu đồ giá (Realtime)" styleClass="section-title"/>
                             <LineChart fx:id="lineChart" legendVisible="false" animated="false" createSymbols="true"
-                                       horizontalGridLinesVisible="false" verticalGridLinesVisible="false"
+                                       horizontalGridLinesVisible="true" verticalGridLinesVisible="false"
                                        styleClass="line-chart" VBox.vgrow="ALWAYS">
                                 <xAxis>
-                                    <CategoryAxis fx:id="lineXAxis" label="Thời điểm"/>
+                                    <CategoryAxis fx:id="lineXAxis"/>
                                 </xAxis>
                                 <yAxis>
-                                    <NumberAxis fx:id="lineYAxis" label="Giá (VND)" autoRanging="true"/>
+                                    <NumberAxis fx:id="lineYAxis" autoRanging="true" forceZeroInRange="false"/>
                                 </yAxis>
                             </LineChart>
                         </VBox>
