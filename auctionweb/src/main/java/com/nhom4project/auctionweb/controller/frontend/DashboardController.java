@@ -130,7 +130,8 @@ public class DashboardController {
      * Double-click vào row -> mở chi tiết phiên đấu giá.
      */
     private void onTableClick(MouseEvent event) {
-        if (event.getClickCount() == 2) {
+        // Change: open detail on single primary click to avoid missed double-clicks
+        if (event.isPrimaryButtonDown() && event.getClickCount() >= 1) {
             AuctionRow selected = auctionTable.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 openAuctionDetail(selected.getId());
