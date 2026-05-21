@@ -20,9 +20,18 @@ import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.text.NumberFormat;
 import java.util.Locale;
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
 
 /**
  * Controller cho Admin Dashboard.
@@ -60,10 +69,19 @@ public class AdminDashboardController {
 
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
     private final ObjectMapper mapper = new ObjectMapper();
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
     private Timeline autoRefreshTimeline;
     private String lastUsersJson = "";
     private String lastAuctionsJson = "";
     private String lastStatsJson = "";
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
 
     @FXML
     public void initialize() {
@@ -143,6 +161,11 @@ public class AdminDashboardController {
         loadStats();
         loadUsers();
         loadAuctions();
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
         startAutoRefresh();
     }
 
@@ -163,6 +186,10 @@ public class AdminDashboardController {
             autoRefreshTimeline.stop();
             autoRefreshTimeline = null;
         }
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
     }
 
     // ==================== Data Loading ====================
@@ -172,6 +199,19 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/stats");
                 if (response.statusCode() == 200) {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+                    JsonNode stats = mapper.readTree(response.body());
+                    javafx.application.Platform.runLater(() -> {
+                        totalUsersLabel.setText(String.valueOf(stats.path("totalUsers").asInt()));
+                        totalAuctionsLabel.setText(String.valueOf(stats.path("totalAuctions").asInt()));
+                        runningAuctionsLabel.setText(String.valueOf(stats.path("runningAuctions").asInt()));
+                        totalRevenueLabel.setText(currencyFormat.format(new BigDecimal(stats.path("totalRevenue").asText("0"))));
+                        highestBidLabel.setText(currencyFormat.format(new BigDecimal(stats.path("highestBid").asText("0"))));
+                    });
+=======
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
                     String body = response.body();
                     if (!body.equals(lastStatsJson)) {
                         lastStatsJson = body;
@@ -184,6 +224,10 @@ public class AdminDashboardController {
                             highestBidLabel.setText(currencyFormat.format(new BigDecimal(stats.path("highestBid").asText("0"))));
                         });
                     }
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải thống kê: " + e.getMessage()));
@@ -208,6 +252,25 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/users");
                 if (response.statusCode() == 200) {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+                    JsonNode root = mapper.readTree(response.body());
+                    ObservableList<String[]> rows = FXCollections.observableArrayList();
+                    for (JsonNode node : root) {
+                        rows.add(new String[]{
+                                String.valueOf(node.path("id").asLong()),
+                                node.path("username").asText(),
+                                node.path("fullname").asText(),
+                                node.path("email").asText(),
+                                node.path("role").asText(),
+                                node.path("locked").asBoolean() ? "Locked" : "Active"
+                        });
+                    }
+                    javafx.application.Platform.runLater(() -> {
+                        userTable.setItems(rows);
+                        statusLabel.setText("Đã tải " + rows.size() + " users.");
+                    });
+=======
                     String body = response.body();
                     if (!body.equals(lastUsersJson)) {
                         lastUsersJson = body;
@@ -228,6 +291,29 @@ public class AdminDashboardController {
                             statusLabel.setText("Đã tải " + rows.size() + " users.");
                         });
                     }
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+                    String body = response.body();
+                    if (!body.equals(lastUsersJson)) {
+                        lastUsersJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("username").asText(),
+                                    node.path("fullname").asText(),
+                                    node.path("email").asText(),
+                                    node.path("role").asText(),
+                                    node.path("locked").asBoolean() ? "Locked" : "Active"
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            userTable.setItems(rows);
+                            statusLabel.setText("Đã tải " + rows.size() + " users.");
+                        });
+                    }
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải users: " + e.getMessage()));
@@ -240,6 +326,26 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/auctions");
                 if (response.statusCode() == 200) {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+                    JsonNode root = mapper.readTree(response.body());
+                    ObservableList<String[]> rows = FXCollections.observableArrayList();
+                    for (JsonNode node : root) {
+                        BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
+                        rows.add(new String[]{
+                                String.valueOf(node.path("id").asLong()),
+                                node.path("title").asText(),
+                                node.path("category").asText(),
+                                currencyFormat.format(price),
+                                String.valueOf(node.path("bidCount").asInt()),
+                                node.path("status").asText()
+                        });
+                    }
+                    javafx.application.Platform.runLater(() -> {
+                        auctionTable.setItems(rows);
+                        statusLabel.setText("Đã tải " + rows.size() + " phiên đấu giá.");
+                    });
+=======
                     String body = response.body();
                     if (!body.equals(lastAuctionsJson)) {
                         lastAuctionsJson = body;
@@ -261,6 +367,30 @@ public class AdminDashboardController {
                             statusLabel.setText("Đã tải " + rows.size() + " phiên đấu giá.");
                         });
                     }
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+                    String body = response.body();
+                    if (!body.equals(lastAuctionsJson)) {
+                        lastAuctionsJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("title").asText(),
+                                    node.path("category").asText(),
+                                    currencyFormat.format(price),
+                                    String.valueOf(node.path("bidCount").asInt()),
+                                    node.path("status").asText()
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            auctionTable.setItems(rows);
+                            statusLabel.setText("Đã tải " + rows.size() + " phiên đấu giá.");
+                        });
+                    }
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải auctions: " + e.getMessage()));
@@ -364,7 +494,14 @@ public class AdminDashboardController {
 
     @FXML
     private void onLogout() {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
         stopAutoRefresh();
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+        stopAutoRefresh();
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
         SessionManager.getInstance().clear();
         try {
             Stage stage = (Stage) adminInfoLabel.getScene().getWindow();

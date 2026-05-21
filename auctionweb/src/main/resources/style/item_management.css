@@ -98,6 +98,8 @@
     -fx-background-color: #dc2626;
 }
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/resources/style/item_management.css
+=======
 .warning-button {
     -fx-background-color: #f59e0b;
     -fx-text-fill: white;
@@ -111,6 +113,7 @@
     -fx-background-color: #d97706;
 }
 
+>>>>>>> main:auctionweb/src/main/resources/style/item_management.css
 .status-label {
     -fx-font-size: 13px;
     -fx-text-fill: #64748b;

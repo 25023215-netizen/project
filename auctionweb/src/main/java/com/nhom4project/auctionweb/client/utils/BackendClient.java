@@ -77,7 +77,14 @@ public class BackendClient {
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .header("ngrok-skip-browser-warning", "true")
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -89,7 +96,14 @@ public class BackendClient {
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Accept", "application/json")
                 .header("ngrok-skip-browser-warning", "true")
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
                 .GET()
                 .build();
 
@@ -102,7 +116,14 @@ public class BackendClient {
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .header("ngrok-skip-browser-warning", "true")
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
                 .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -114,12 +135,24 @@ public class BackendClient {
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Accept", "application/json")
                 .header("ngrok-skip-browser-warning", "true")
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
                 .DELETE()
                 .build();
 
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
 
     /**
      * Helper method to extract a clean, user-friendly error message from non-200 HTTP responses.
@@ -140,6 +173,10 @@ public class BackendClient {
         }
         return "Lỗi: " + trimmedBody;
     }
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
 }
 
 

@@ -74,6 +74,45 @@ public class SigninController {
                 HttpResponse<String> response = BackendClient.getInstance().post("/auth/signin", jsonBody);
 
                 Platform.runLater(() -> {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
+                    if (response.statusCode() == 200) {
+                        try {
+                            JSONObject user = new JSONObject(response.body());
+                            String userRole = user.optString("role", "BIDDER");
+                            long userId = user.optLong("id", 0L);
+                            String usernameVal = user.optString("username", username);
+                            String fullnameVal = user.optString("fullname", usernameVal);
+
+                            // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
+                            if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
+                                statusLabel.setText("Tai khoan nay khong phai " + selectedRole + "!");
+                                statusLabel.setStyle("-fx-text-fill: red;");
+                                signinButton.setDisable(false);
+                                return;
+                            }
+
+                            SessionManager.getInstance().setUser(
+                                    userId,
+                                    usernameVal,
+                                    fullnameVal,
+                                    userRole
+                            );
+
+                            // Điều hướng theo role thực tế từ server
+                            if ("ADMIN".equalsIgnoreCase(userRole)) {
+                                goToAdminDashboard(event);
+                            } else {
+                                goToDashboard(event);
+                            }
+                        } catch (Exception e) {
+                            SessionManager.getInstance().setUser(0L, username, username, selectedRole);
+                            // fallback: điều hướng theo lựa chọn UI (non-admin)
+                            goToDashboard(event);
+                        }
+                    } else {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
+                        statusLabel.setText("Loi: " + response.body());
+=======
                         if (response.statusCode() == 200) {
                             try {
                                 JSONObject user = new JSONObject(response.body());
@@ -111,6 +150,10 @@ public class SigninController {
                             }
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
+=======
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SigninController.java
                         statusLabel.setStyle("-fx-text-fill: red;");
                         signinButton.setDisable(false);
                     }

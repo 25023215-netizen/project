@@ -175,3 +175,51 @@
 .refresh-button:hover {
     -fx-background-color: #1d4ed8;
 }
+
+/* TabPane Styling */
+.dashboard-tabpane {
+    -fx-tab-min-width: 150px;
+    -fx-tab-max-width: 220px;
+    -fx-tab-min-height: 38px;
+    -fx-background-color: transparent;
+}
+
+.dashboard-tabpane .tab-header-area {
+    -fx-padding: 0 0 4 0;
+}
+
+.dashboard-tabpane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.dashboard-tabpane .tab {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 8 8 0 0;
+    -fx-background-insets: 0 4 0 4;
+    -fx-padding: 0 16;
+    -fx-cursor: hand;
+    -fx-transition: -fx-background-color 0.2s ease;
+}
+
+.dashboard-tabpane .tab:hover {
+    -fx-background-color: #cbd5e1;
+}
+
+.dashboard-tabpane .tab:selected {
+    -fx-background-color: #14213d;
+    -fx-background-insets: 0 4 0 4;
+}
+
+.dashboard-tabpane .tab .tab-label {
+    -fx-text-fill: #475569;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.dashboard-tabpane .tab:selected .tab-label {
+    -fx-text-fill: #ffffff;
+}
+
+.dashboard-tabpane .headers-region {
+    -fx-effect: null;
+}

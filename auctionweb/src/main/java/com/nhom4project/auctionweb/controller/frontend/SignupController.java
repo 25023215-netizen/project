@@ -82,7 +82,15 @@ public class SignupController {
                         alert.showAndWait();
                         onGoToSignIn(event);
                     } else {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
+                        statusLabel.setText("Lỗi: " + response.body());
+=======
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
+=======
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+>>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
                         signUpButton.setDisable(false);
                     }
                 });
