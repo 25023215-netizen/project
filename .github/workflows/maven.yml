@@ -21,6 +21,11 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
+    - name: Install xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+
     - name: Build and Test with Maven
       working-directory: ./auctionweb
-      run: xvfb-run mvn -B clean test
+      run: xvfb-run --auto-servernum mvn -B clean test -Dprism.order=sw
