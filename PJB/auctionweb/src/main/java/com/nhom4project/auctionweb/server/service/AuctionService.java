@@ -293,6 +293,14 @@ public class AuctionService {
             throw new IllegalArgumentException("User is not a Bidder");
         }
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+=======
+        // Không cho phép bidder hiện tại đặt giá lại khi vẫn là người dẫn đầu
+        if (auction.getWinner() != null && auction.getWinner().getId().equals(bidder.getId())) {
+            throw new IllegalStateException("Bạn đã là người giữ giá hiện tại");
+        }
+
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
         // Cập nhật auction
         auction.setCurrentPrice(amount);
         auction.setBidCount(auction.getBidCount() + 1);

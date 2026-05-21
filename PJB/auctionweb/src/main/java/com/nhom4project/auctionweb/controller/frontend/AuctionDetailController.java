@@ -15,11 +15,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.util.StringConverter;
+=======
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -67,8 +73,13 @@ public class AuctionDetailController {
     @FXML private Button endEarlyButton;
     @FXML private Button deleteAuctionButton;
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     @FXML private AreaChart<String, Number> priceChart;
     @FXML private CategoryAxis xAxis;
+=======
+    @FXML private LineChart<Number, Number> priceChart;
+    @FXML private NumberAxis xAxis;
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     @FXML private NumberAxis yAxis;
 
     @FXML private ListView<String> bidHistoryList;
@@ -78,7 +89,11 @@ public class AuctionDetailController {
     // Công cụ để chuyển đổi chuỗi JSON từ Server gửi về thành dạng dữ liệu phân tích được
     private final ObjectMapper mapper = new ObjectMapper();
     // Chứa các điểm dữ liệu để vẽ đường biểu diễn giá trên biểu đồ
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     private XYChart.Series<String, Number> priceSeries;
+=======
+    private XYChart.Series<Number, Number> priceSeries;
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     private int chartPointIndex = 0;
     // Bộ đếm thời gian lùi (đếm ngược)
     private Timeline countdownTimeline;
@@ -105,12 +120,17 @@ public class AuctionDetailController {
         // Thiết lập biểu đồ (priceSeries)
         //Trong JavaFX, XYChart.Series<> (thường gọi tắt là Series) là một lớp dùng để đại diện cho một chuỗi/tập hợp các điểm dữ liệu trên một biểu đồ
         priceSeries = new XYChart.Series<>();//Series Ở đây nó đại diện cho đường biểu diễn sự thay đổi giá của phiên đấu giá
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         priceSeries.setName("Giá đấu giá");
+=======
+        priceSeries.setName("Gia dau gia");
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         priceChart.getData().add(priceSeries);
         priceChart.setCreateSymbols(false);
         priceChart.setAnimated(false);
         priceChart.setHorizontalGridLinesVisible(true);
         priceChart.setVerticalGridLinesVisible(true);
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         if (yAxis != null) {
             yAxis.setForceZeroInRange(false);
             yAxis.setTickLabelFormatter(new StringConverter<Number>() {
@@ -123,6 +143,13 @@ public class AuctionDetailController {
                     return 0;
                 }
             });
+=======
+        if (xAxis != null) {
+            xAxis.setForceZeroInRange(false);
+        }
+        if (yAxis != null) {
+            yAxis.setForceZeroInRange(false);
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         }
 
         // Kiểm tra quyền người dùng thông qua SessionManager.
@@ -224,8 +251,12 @@ public class AuctionDetailController {
 
                             items.add(0, String.format("%s - %,.0f VND boi %s", formatTime(time), amount, bidder));
                             // Thêm điểm vẽ vào biểu đồ
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
                             String formattedChartTime = formatTimeOnly(time);
                             priceSeries.getData().add(new XYChart.Data<>(formattedChartTime, amount));
+=======
+                            priceSeries.getData().add(new XYChart.Data<>(chartPointIndex++, amount));
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
                         }
                         bidHistoryList.setItems(items); // Cập nhật danh sách bidHistoryList
                     });
@@ -510,7 +541,11 @@ public class AuctionDetailController {
     private void onStopAutoBid() {
         Long userId = SessionManager.getInstance().getUserId();
         if (userId == null) return;
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         
+=======
+            
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
         stopAutoBidButton.setDisable(true);
         messageLabel.setText("Đang dừng auto-bid...");
 
@@ -621,6 +656,7 @@ public class AuctionDetailController {
         }
     }
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     private String formatTimeOnly(String isoTime) {
         if (isoTime == null || isoTime.isBlank()) return "-";
         try {
@@ -631,6 +667,8 @@ public class AuctionDetailController {
         }
     }
 
+=======
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AuctionDetailController.java
     private String getStatusStyle(String status) {
         return switch (status) {
             case "RUNNING" -> "-fx-text-fill: #22c55e; -fx-font-weight: bold;";

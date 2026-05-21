@@ -10,9 +10,18 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
 
 import java.time.LocalDateTime;
 import java.util.List;
+=======
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
 
 /**
  * Scheduler tự động kết thúc phiên đấu giá khi hết thời gian.
@@ -81,8 +90,58 @@ public class AuctionScheduler {
             }
         }
     }
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+=======
+    //Kết thúc phiên đầu giá sớm theo yêu cầu của client
+    public ResponseEntity<?> endAuctionEarly(Long auctionId, Long userId, String role) {
+        Optional<Auction> auctionOpt = auctionRepository.findById(auctionId);
+        if (auctionOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Auction not found");
+        }
+
+        Auction auction = auctionOpt.get();
+
+        // Kiểm tra quyền: chỉ admin hoặc chủ phiên được kết thúc sớm
+        if (!"ADMIN".equalsIgnoreCase(role) && !auction.getSeller().getId().equals(userId)) {
+            return ResponseEntity.status(403).body("Bạn không có quyền kết thúc phiên này");
+        }
+
+        if (auction.getStatus() == AuctionStatus.RUNNING) {
+            auction.setStatus(AuctionStatus.FINISHED);
+            auctionRepository.save(auction);
+            AuctionManager.getInstance().updateStatus(auction.getId(), AuctionStatus.FINISHED);
+
+            log.info("Auction {} '{}' ended early by user {} (role={})",
+                    auction.getId(), auction.getTitle(), userId, role);
+
+            try {
+                messagingTemplate.convertAndSend("/topic/auctions/" + auction.getId(),
+                        Map.of(
+                                "auctionId", auction.getId(),
+                                "status", "FINISHED",
+                                "currentPrice", auction.getCurrentPrice(),
+                                "bidCount", auction.getBidCount(),
+                                "winnerId", auction.getWinner() != null ? auction.getWinner().getId() : "",
+                                "winnerName", auction.getWinner() != null ? auction.getWinner().getUsername() : ""
+                        ));
+                messagingTemplate.convertAndSend("/topic/auctions", "refresh");
+            } catch (Exception e) {
+                log.warn("Failed to broadcast auction end: {}", e.getMessage());
+            }
+
+            return ResponseEntity.ok("Auction ended early");
+        } else {
+            return ResponseEntity.badRequest().body("Auction is not running");
+        }
+    }
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
 }
 
 
 
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+=======
+
+
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java

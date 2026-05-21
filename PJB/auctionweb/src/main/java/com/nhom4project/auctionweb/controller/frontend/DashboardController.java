@@ -15,10 +15,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+=======
+import javafx.scene.input.MouseButton;
+import javafx.scene.control.TableRow;
+import javafx.stage.Stage;
+
+import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import java.util.concurrent.CompletableFuture;
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.text.NumberFormat;
@@ -49,6 +61,7 @@ public class DashboardController {
 
     @FXML private Button manageItemsButton;
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
     // Các thành phần FXML mới cho Lịch sử Kết quả
     @FXML private Button dashboardButton;
     @FXML private Button historyNavButton;
@@ -69,6 +82,14 @@ public class DashboardController {
     private final ObservableList<HistoryRow> histories = FXCollections.observableArrayList();
     private final ObservableList<HistoryRow> filteredHistories = FXCollections.observableArrayList();
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+=======
+    private Timeline autoRefreshTimeline;
+    private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
+    private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
+    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private final ObjectMapper mapper = new ObjectMapper();
+    private String lastResponseJson = "";
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
 
     @FXML
     public void initialize() {
@@ -83,6 +104,7 @@ public class DashboardController {
         auctionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         // Thiết lập bảng lịch sử
         if (historyTitleColumn != null) {
             historyTitleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
@@ -100,6 +122,19 @@ public class DashboardController {
 
         // Double-click vào row để mở chi tiết
         auctionTable.setOnMouseClicked(this::onTableClick);
+=======
+        // Double-click vào row để mở chi tiết
+        auctionTable.setRowFactory(tv -> {
+            TableRow<AuctionRow> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    AuctionRow rowData = row.getItem();
+                    openAuctionDetail(rowData.getId());
+                }
+            });
+            return row;
+        });
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
 
         // Hiển thị thông tin user
         if (SessionManager.getInstance().isLoggedIn()) {
@@ -116,6 +151,25 @@ public class DashboardController {
         }
 
         loadAuctions();
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
+=======
+        startAutoRefresh();
+    }
+
+    private void startAutoRefresh() {
+        if (autoRefreshTimeline == null) {
+            autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> loadAuctions()));
+            autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+            autoRefreshTimeline.play();
+        }
+    }
+
+    private void stopAutoRefresh() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+            autoRefreshTimeline = null;
+        }
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
     }
 
     @FXML
@@ -128,6 +182,10 @@ public class DashboardController {
      */
     @FXML
     private void onManageItems() {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
+=======
+        stopAutoRefresh();
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Quan ly san pham", "/style/item_management.css");
@@ -144,6 +202,10 @@ public class DashboardController {
      */
     @FXML
     private void onLogout() {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
+=======
+        stopAutoRefresh();
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         SessionManager.getInstance().clear();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
@@ -153,6 +215,7 @@ public class DashboardController {
         }
     }
 
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
     /**
      * Double-click vào row -> mở chi tiết phiên đấu giá.
      */
@@ -166,6 +229,12 @@ public class DashboardController {
     }
 
     private void openAuctionDetail(Long auctionId) {
+=======
+    // Double-click handled in row factory above
+
+    private void openAuctionDetail(Long auctionId) {
+        stopAutoRefresh();
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             AuctionDetailController controller = SceneUtils.changeSceneWithController(stage, "/fxml/auction_detail.fxml", "Chi tiet phien dau gia", "/style/auction_detail.css");
@@ -179,6 +248,7 @@ public class DashboardController {
     }
 
     private void loadAuctions() {
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         try {
             HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
             if (response.statusCode() == 200) {
@@ -192,11 +262,47 @@ public class DashboardController {
         }
         applyFilter();
         updateStats();
+=======
+        CompletableFuture.runAsync(() -> {
+            try {
+                HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
+                if (response.statusCode() == 200) {
+                    String body = response.body();
+                    if (!body.equals(lastResponseJson)) {
+                        lastResponseJson = body;
+                        ObservableList<AuctionRow> parsed = parseAuctions(body);
+                        Platform.runLater(() -> {
+                            auctions.setAll(parsed);
+                            statusLabel.setText("Da tai danh sach dau gia tu server.");
+                            applyFilter();
+                            updateStats();
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> {
+                        loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
+                        applyFilter();
+                        updateStats();
+                    });
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
+                    applyFilter();
+                    updateStats();
+                });
+            }
+        });
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
     }
 
     private ObservableList<AuctionRow> parseAuctions(String body) throws Exception {
         ObservableList<AuctionRow> rows = FXCollections.observableArrayList();
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         JsonNode root = new ObjectMapper().readTree(body);
+=======
+        JsonNode root = mapper.readTree(body);
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
         for (JsonNode node : root) {
             Long id = node.path("id").asLong();
             String title = node.path("title").asText();
@@ -284,6 +390,7 @@ public class DashboardController {
         public SimpleStringProperty statusProperty() { return status; }
         public SimpleStringProperty endTimeProperty() { return endTime; }
     }
+<<<<<<< HEAD:PJB/auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
 
     // ==================== Navigation and History Logic ====================
 
@@ -449,6 +556,8 @@ public class DashboardController {
         public SimpleStringProperty sellerNameProperty() { return sellerName; }
         public SimpleStringProperty endTimeProperty() { return endTime; }
     }
+=======
+>>>>>>> main:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/DashboardController.java
 }
 
 

@@ -1,51 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <!-- Root container: StackPane để center nội dung trong cửa sổ -->
-<StackPane fx:controller="frontend.signup.SignupController"
+<StackPane fx:controller="com.nhom4project.auctionweb.controller.frontend.SignupController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signup.css"
            style="-fx-background-color: linear-gradient(to bottom right, #fef3c7, #fde2e2);">
     <!-- Card chính chứa toàn bộ form đăng ký -->
-    <VBox alignment="CENTER" spacing="25" styleClass="form-card">
+    <VBox alignment="CENTER" spacing="20" styleClass="form-card">
         <!-- Header section: Tiêu đề -->
         <VBox alignment="CENTER" spacing="10">
-            <Label text="Create Account" styleClass="title-label"/>
+            <Label text="Đăng ký tài khoản" styleClass="title-label"/>
         </VBox>
         <!-- Form container: Chứa các input fields -->
+<<<<<<< HEAD:PJB/project/auctionweb/target/classes/fxml/signup.fxml
         <VBox spacing="15" styleClass="form-container">
             <!-- Fullname field -->
             <VBox spacing="5">
                 <Label text="Full Name" styleClass="field-label"/>
                 <TextField fx:id="fullNameField" promptText="Enter your full name" styleClass="input-field"/>
+=======
+        <VBox spacing="12" styleClass="form-container">
+            <!-- Role selection (chỉ Bidder hoặc Seller) -->
+            <VBox spacing="5">
+                <Label text="Đăng ký dưới vai trò" styleClass="field-label"/>
+                <ComboBox fx:id="roleComboBox" styleClass="input-field" maxWidth="Infinity">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Người đấu giá"/>
+                            <String fx:value="Người bán"/>
+                        </FXCollections>
+                    </items>
+                    <value><String fx:value="Người đấu giá"/></value>
+                </ComboBox>
+            </VBox>
+            <!-- Fullname field -->
+            <VBox spacing="5">
+                <Label text="Họ tên" styleClass="field-label"/>
+                <TextField fx:id="fullNameField" promptText="Nhập họ tên của bạn" styleClass="input-field"/>
+>>>>>>> main:auctionweb/src/main/resources/fxml/signup.fxml
             </VBox>
             <!-- Email field -->
             <VBox spacing="5">
                 <Label text="Email" styleClass="field-label"/>
+<<<<<<< HEAD:PJB/project/auctionweb/target/classes/fxml/signup.fxml
                 <TextField fx:id="emailField" promptText="Enter your email" styleClass="input-field"/>
+=======
+                <TextField fx:id="emailField" promptText="Nhập email" styleClass="input-field"/>
+>>>>>>> main:auctionweb/src/main/resources/fxml/signup.fxml
             </VBox>
             <!-- Username field -->
             <VBox spacing="5">
-                <Label text="Username" styleClass="field-label"/>
-                <TextField fx:id="userNameField" promptText="Choose a username" styleClass="input-field"/>
+                <Label text="Tên đăng nhập" styleClass="field-label"/>
+                <TextField fx:id="userNameField" promptText="Nhập tên đăng nhập" styleClass="input-field"/>
             </VBox>
             <!-- Password field -->
             <VBox spacing="5">
-                <Label text="Password" styleClass="field-label"/>
-                <PasswordField fx:id="passwordField" promptText="Create a password" styleClass="input-field"/>
+                <Label text="Mật khẩu" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu" styleClass="input-field"/>
             </VBox>
             <!-- Confirm password field -->
             <VBox spacing="5">
-                <Label text="Confirm Password" styleClass="field-label"/>
-                <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password" styleClass="input-field"/>
+                <Label text="Xác nhận mật khẩu" styleClass="field-label"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Nhập lại mật khẩu" styleClass="input-field"/>
             </VBox>
             <!-- Status label: Hiển thị thông báo lỗi hoặc thành công -->
             <Label fx:id="statusLabel" styleClass="error-label"/>
         </VBox>
         <!-- Button container: Chứa các button hành động -->
         <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container">
-            <Button fx:id="signUpButton" text="Sign Up" onAction="#onSignUp" disable="true" styleClass="primary-button"/>
-            <Button text="Cancel" onAction="#onCancel" styleClass="secondary-button"/>
+            <Button fx:id="signUpButton" text="Đăng ký" onAction="#onSignUp" disable="true" styleClass="primary-button"/>
+            <Button text="Thoát" onAction="#onCancel" styleClass="secondary-button"/>
+        </HBox>
+        <!-- Chuyển hướng sang màn hình Đăng nhập -->
+        <HBox alignment="CENTER" style="-fx-padding: 0 0 10 0;">
+            <Label text="Đã có tài khoản? "/>
+            <Hyperlink text="Đăng nhập ngay" onAction="#onGoToSignIn"/>
         </HBox>
         <!-- Chuyển hướng sang màn hình Đăng nhập -->
         <HBox alignment="CENTER" style="-fx-padding: 0 0 10 0;">

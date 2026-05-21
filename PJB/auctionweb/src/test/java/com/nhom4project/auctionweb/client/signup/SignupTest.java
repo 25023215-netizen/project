@@ -1,5 +1,9 @@
 package com.nhom4project.auctionweb.client.signup;
 
+<<<<<<< HEAD:PJB/auctionweb/src/test/java/com/nhom4project/auctionweb/client/signup/SignupTest.java
+=======
+import com.nhom4project.auctionweb.client.signup.Signup;
+>>>>>>> main:auctionweb/src/test/java/com/nhom4project/auctionweb/client/signup/SignupTest.java
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +23,12 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for the Signup launcher view.
+<<<<<<< HEAD:PJB/auctionweb/src/test/java/com/nhom4project/auctionweb/client/signup/SignupTest.java
  * Verifies stage title, scene configuration, and stylesheet injections under static mock isolation.
+=======
+ * Verifies stage title, scene configuration, and stylesheet injections under
+ * static mock isolation.
+>>>>>>> main:auctionweb/src/test/java/com/nhom4project/auctionweb/client/signup/SignupTest.java
  */
 public class SignupTest {
 
@@ -31,10 +40,17 @@ public class SignupTest {
         ObservableList<String> mockStylesheets = mock(ObservableList.class);
 
         try (MockedStatic<FXMLLoader> fxmlStatic = mockStatic(FXMLLoader.class);
+<<<<<<< HEAD:PJB/auctionweb/src/test/java/com/nhom4project/auctionweb/client/signup/SignupTest.java
              MockedConstruction<Scene> mockScene = mockConstruction(Scene.class,
                      (mock, context) -> {
                          when(mock.getStylesheets()).thenReturn(mockStylesheets);
                      })) {
+=======
+                MockedConstruction<Scene> mockScene = mockConstruction(Scene.class,
+                        (mock, context) -> {
+                            when(mock.getStylesheets()).thenReturn(mockStylesheets);
+                        })) {
+>>>>>>> main:auctionweb/src/test/java/com/nhom4project/auctionweb/client/signup/SignupTest.java
 
             // Mock static FXML loader
             fxmlStatic.when(() -> FXMLLoader.load(any(URL.class))).thenReturn(mockParent);
