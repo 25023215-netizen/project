@@ -285,8 +285,14 @@ public class AuctionDetailController {
         Consumer<String> listener = data -> {
             try {
                 JsonNode node = mapper.readTree(data);
-                updateUI(node); // Cập nhật các thông số UI cơ bản
-                loadBidHistory(); // Cập nhật lại lịch sử đặt giá và biểu đồ
+                Platform.runLater(() -> {
+                    try {
+                        updateUI(node); // Cập nhật các thông số UI cơ bản
+                        loadBidHistory(); // Cập nhật lại lịch sử đặt giá và biểu đồ
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
             } catch (Exception ignored) {}
         };
 
