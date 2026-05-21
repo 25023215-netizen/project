@@ -32,10 +32,19 @@ public class DashboardTest {
         ObservableList<String> mockStylesheets = mock(ObservableList.class);
 
         try (MockedStatic<FXMLLoader> fxmlStatic = mockStatic(FXMLLoader.class);
+             MockedStatic<com.nhom4project.auctionweb.client.utils.WindowUtil> windowUtilStatic = mockStatic(com.nhom4project.auctionweb.client.utils.WindowUtil.class);
              MockedConstruction<Scene> mockScene = mockConstruction(Scene.class,
                      (mock, context) -> {
                          when(mock.getStylesheets()).thenReturn(mockStylesheets);
                      })) {
+
+            windowUtilStatic.when(() -> com.nhom4project.auctionweb.client.utils.WindowUtil.fitDashboard(any(Stage.class)))
+                .thenAnswer(invocation -> {
+                    Stage s = invocation.getArgument(0);
+                    s.setMinWidth(980.0);
+                    s.setMinHeight(680.0);
+                    return null;
+                });
 
             // Intercept static FXML resource loading to return mock parent
             fxmlStatic.when(() -> FXMLLoader.load(any(URL.class))).thenReturn(mockParent);
