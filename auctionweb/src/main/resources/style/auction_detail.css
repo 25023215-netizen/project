@@ -142,8 +142,26 @@
     -fx-text-fill: #64748b;
 }
 
+<<<<<<< Updated upstream
 /* Chart */
 .price-chart {
+=======
+/* Stacked Chart Styles */
+.chart-stack {
+    -fx-background-color: #ffffff;
+    -fx-padding: 10;
+}
+
+/* Base style for the Bar Chart bars - premium green to orange gradient */
+.bar-chart .chart-bar {
+    -fx-bar-fill: #22c55e;
+    -fx-background-color: linear-gradient(to top, #22c55e, #84cc16, #eab308, #f97316);
+    -fx-background-radius: 4 4 0 0;
+}
+
+/* Translucent overlay styles for the Line Chart */
+.line-chart {
+>>>>>>> Stashed changes
     -fx-background-color: transparent;
 }
 
@@ -248,3 +266,19 @@
 .delete-button:hover {
     -fx-background-color: #b91c1c;
 }
+
+/* Style for line chart symbols */
+.line-chart .chart-line-symbol {
+    -fx-background-color: #14213d, #ffffff;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+    -fx-cursor: hand;
+}
+
+.line-chart .chart-line-symbol:hover {
+    -fx-background-color: #fca311, #ffffff;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px;
+}
+

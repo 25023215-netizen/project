@@ -62,6 +62,21 @@ public class ItemManagementController {
         typeCombo.setOnAction(e -> updateExtraFieldLabels());
         updateExtraFieldLabels();
 
+<<<<<<< Updated upstream
+=======
+        // Đăng ký sự kiện chọn dòng trong bảng để tự động điền vào form
+        itemTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                nameField.setText(newSelection.nameProperty().get());
+                descField.setText(newSelection.descProperty().get());
+                // Loại bỏ định dạng phần nghìn để nhập liệu số thuần túy
+                priceField.setText(newSelection.priceProperty().get().replace(",", "").replace(".", ""));
+                typeCombo.setValue(newSelection.typeProperty().get());
+                extra1Field.setText(newSelection.extra1Property().get());
+                extra2Field.setText(newSelection.extra2Property().get());
+            }
+        });
+>>>>>>> Stashed changes
         loadItems();
 
         durationUnitCombo.setItems(FXCollections.observableArrayList("Phut", "Gio", "Ngay"));
@@ -87,12 +102,37 @@ public class ItemManagementController {
                     Platform.runLater(() -> {
                         items.clear();
                         for (JsonNode node : root) {
+<<<<<<< Updated upstream
                             items.add(new ItemRow(
                                     node.path("id").asText(),
                                     node.path("name").asText(),
                                     node.path("item_type").asText(guessType(node)),
                                     String.format("%,.0f", node.path("startingPrice").asDouble()),
                                     node.path("description").asText("")
+=======
+                            String type = guessType(node);
+                            String extra1 = "";
+                            String extra2 = "";
+                            if ("ELECTRONICS".equals(type)) {
+                                extra1 = node.path("brand").asText("");
+                                extra2 = node.path("modelName").asText("");
+                            } else if ("ART".equals(type)) {
+                                extra1 = node.path("artist").asText("");
+                                extra2 = node.path("medium").asText("");
+                            } else if ("VEHICLE".equals(type)) {
+                                extra1 = node.path("manufacturer").asText("");
+                                extra2 = node.path("releaseYear").asText("");
+                            }
+
+                            items.add(new ItemRow(
+                                    node.path("id").asText(),
+                                    node.path("name").asText(),
+                                    type,
+                                    String.format("%,.0f", node.path("startingPrice").asDouble()),
+                                    node.path("description").asText(""),
+                                    extra1,
+                                    extra2
+>>>>>>> Stashed changes
                             ));
                         }
                         statusLabel.setText("Da tai " + items.size() + " san pham");
@@ -105,6 +145,13 @@ public class ItemManagementController {
     }
 
     private String guessType(JsonNode node) {
+<<<<<<< Updated upstream
+=======
+        if (node.has("item_type")) {
+            String type = node.path("item_type").asText();
+            if (!type.isBlank()) return type.toUpperCase();
+        }
+>>>>>>> Stashed changes
         if (node.has("brand")) return "ELECTRONICS";
         if (node.has("artist")) return "ART";
         if (node.has("manufacturer")) return "VEHICLE";
@@ -176,6 +223,53 @@ public class ItemManagementController {
         }).start();
     }
 
+<<<<<<< Updated upstream
+=======
+    @FXML
+    private void onUpdateItem() {
+        ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            statusLabel.setText("Vui long chon san pham can cap nhat!");
+            return;
+        }
+
+        String name = nameField.getText().trim();
+        String desc = descField.getText().trim();
+        String priceText = priceField.getText().trim();
+        String type = typeCombo.getValue();
+
+        if (name.isEmpty() || priceText.isEmpty()) {
+            statusLabel.setText("Vui long nhap ten va gia!");
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                JSONObject body = new JSONObject();
+                body.put("name", name);
+                body.put("description", desc);
+                body.put("startingPrice", Double.parseDouble(priceText));
+                body.put("extraField1", extra1Field.getText().trim());
+                body.put("extraField2", extra2Field.getText().trim());
+
+                HttpResponse<String> response = BackendClient.getInstance()
+                        .put("/items/" + selected.getId(), body.toString());
+                Platform.runLater(() -> {
+                    if (response.statusCode() == 200) {
+                        statusLabel.setText("Cap nhat san pham thanh cong!");
+                        clearForm();
+                        loadItems();
+                    } else {
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+>>>>>>> Stashed changes
     /**
      * Tạo phiên đấu giá từ sản phẩm đã chọn.
      */
@@ -256,13 +350,25 @@ public class ItemManagementController {
         private final SimpleStringProperty type;
         private final SimpleStringProperty price;
         private final SimpleStringProperty desc;
+<<<<<<< Updated upstream
 
         public ItemRow(String id, String name, String type, String price, String desc) {
+=======
+        private final SimpleStringProperty extra1;
+        private final SimpleStringProperty extra2;
+
+        public ItemRow(String id, String name, String type, String price, String desc, String extra1, String extra2) {
+>>>>>>> Stashed changes
             this.id = id;
             this.name = new SimpleStringProperty(name);
             this.type = new SimpleStringProperty(type);
             this.price = new SimpleStringProperty(price);
             this.desc = new SimpleStringProperty(desc);
+<<<<<<< Updated upstream
+=======
+            this.extra1 = new SimpleStringProperty(extra1);
+            this.extra2 = new SimpleStringProperty(extra2);
+>>>>>>> Stashed changes
         }
 
         public String getId() { return id; }
@@ -270,6 +376,11 @@ public class ItemManagementController {
         public SimpleStringProperty typeProperty() { return type; }
         public SimpleStringProperty priceProperty() { return price; }
         public SimpleStringProperty descProperty() { return desc; }
+<<<<<<< Updated upstream
+=======
+        public SimpleStringProperty extra1Property() { return extra1; }
+        public SimpleStringProperty extra2Property() { return extra2; }
+>>>>>>> Stashed changes
     }
 }
 

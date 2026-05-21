@@ -1,5 +1,9 @@
 package com.nhom4project.auctionweb.client.dashboard;
 
+<<<<<<< Updated upstream
+=======
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
+>>>>>>> Stashed changes
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +23,11 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for the Dashboard launcher view.
+<<<<<<< Updated upstream
  * Uses constructor mocking of Scene, and static mocking of FXMLLoader
+=======
+ * Uses constructor mocking of Scene, and static mocking of both FXMLLoader and WindowUtil
+>>>>>>> Stashed changes
  * to isolate graphics centering layout math during bootstrapping.
  */
 public class DashboardTest {
@@ -32,6 +40,10 @@ public class DashboardTest {
         ObservableList<String> mockStylesheets = mock(ObservableList.class);
 
         try (MockedStatic<FXMLLoader> fxmlStatic = mockStatic(FXMLLoader.class);
+<<<<<<< Updated upstream
+=======
+             MockedStatic<WindowUtil> windowStatic = mockStatic(WindowUtil.class);
+>>>>>>> Stashed changes
              MockedConstruction<Scene> mockScene = mockConstruction(Scene.class,
                      (mock, context) -> {
                          when(mock.getStylesheets()).thenReturn(mockStylesheets);
@@ -47,9 +59,14 @@ public class DashboardTest {
             verify(mockStage).show();
             verify(mockStylesheets).add(contains("dashboard.css"));
 
+<<<<<<< Updated upstream
             // Verify window fits dashboard constraints
             verify(mockStage).setMinWidth(980.0);
             verify(mockStage).setMinHeight(680.0);
+=======
+            // Verify window fits dashboard
+            windowStatic.verify(() -> WindowUtil.fitDashboard(mockStage));
+>>>>>>> Stashed changes
         }
     }
 }

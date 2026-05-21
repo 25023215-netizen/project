@@ -78,9 +78,16 @@ public class SigninController {
                             JSONObject user = new JSONObject(response.body());
                             String userRole = user.optString("role", "BIDDER");
 
+<<<<<<< Updated upstream
                             // Kiểm tra role đã chọn có khớp với role trong DB không
                             if (!userRole.equalsIgnoreCase(selectedRole)) {
                                 statusLabel.setText("Tai khoan nay khong phai " + selectedRole + "!");
+=======
+                            // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
+                            if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
+                                String roleVN = "SELLER".equals(selectedRole) ? "Người bán" : "Người đấu giá";
+                                statusLabel.setText("Tài khoản này không phải " + roleVN + "!");
+>>>>>>> Stashed changes
                                 statusLabel.setStyle("-fx-text-fill: red;");
                                 signinButton.setDisable(false);
                                 return;
@@ -110,7 +117,7 @@ public class SigninController {
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    statusLabel.setText("Khong the ket noi toi may chu!");
+                    statusLabel.setText("Không thể kết nối tới máy chủ! Hãy chắc chắn backend đã chạy.");
                     statusLabel.setStyle("-fx-text-fill: red;");
                     signinButton.setDisable(false);
                 });

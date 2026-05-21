@@ -16,7 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import javafx.application.Platform;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -52,12 +55,32 @@ public class DashboardController {
 
     @FXML private Button manageItemsButton;
 
+<<<<<<< Updated upstream
+=======
+    // History Table bindings
+    @FXML private TableView<HistoryRow> historyTable;
+    @FXML private TableColumn<HistoryRow, String> historyTitleColumn;
+    @FXML private TableColumn<HistoryRow, String> historyCategoryColumn;
+    @FXML private TableColumn<HistoryRow, String> historyStartPriceColumn;
+    @FXML private TableColumn<HistoryRow, String> historyWinPriceColumn;
+    @FXML private TableColumn<HistoryRow, String> historyWinnerColumn;
+    @FXML private TableColumn<HistoryRow, String> historySellerColumn;
+    @FXML private TableColumn<HistoryRow, String> historyEndTimeColumn;
+    @FXML private TextField historySearchField;
+
+>>>>>>> Stashed changes
     private Timeline autoRefreshTimeline;
     private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
     private final ObjectMapper mapper = new ObjectMapper();
     private String lastResponseJson = "";
+<<<<<<< Updated upstream
+=======
+    private final ObservableList<HistoryRow> historyList = FXCollections.observableArrayList();
+    private final ObservableList<HistoryRow> filteredHistoryList = FXCollections.observableArrayList();
+    private String lastHistoryResponseJson = "";
+>>>>>>> Stashed changes
 
     @FXML
     public void initialize() {
@@ -71,6 +94,28 @@ public class DashboardController {
         auctionTable.setItems(filteredAuctions);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
 
+<<<<<<< Updated upstream
+=======
+        // Setup History Table
+        if (historyTitleColumn != null) {
+            historyTitleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
+            historyCategoryColumn.setCellValueFactory(data -> data.getValue().categoryProperty());
+            historyStartPriceColumn.setCellValueFactory(data -> data.getValue().startingPriceProperty());
+            historyWinPriceColumn.setCellValueFactory(data -> data.getValue().winningPriceProperty());
+            historyWinnerColumn.setCellValueFactory(data -> data.getValue().winnerNameProperty());
+            historySellerColumn.setCellValueFactory(data -> data.getValue().sellerNameProperty());
+            historyEndTimeColumn.setCellValueFactory(data -> data.getValue().endTimeProperty());
+        }
+
+        if (historyTable != null) {
+            historyTable.setItems(filteredHistoryList);
+            historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
+        if (historySearchField != null) {
+            historySearchField.textProperty().addListener((observable, oldValue, newValue) -> applyHistoryFilter());
+        }
+
+>>>>>>> Stashed changes
         // Double-click vào row để mở chi tiết
         auctionTable.setOnMouseClicked(this::onTableClick);
 
@@ -168,7 +213,97 @@ public class DashboardController {
         }
     }
 
+<<<<<<< Updated upstream
     private void loadAuctions() {
+=======
+    private void loadHistory() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                HttpResponse<String> mainResp = BackendClient.getInstance().get("/auctions");
+                HttpResponse<String> histResp = BackendClient.getInstance().get("/auctions/history");
+                if (mainResp.statusCode() == 200) {
+                    String mainBody = mainResp.body();
+                    String histBody = (histResp.statusCode() == 200) ? histResp.body() : "[]";
+                    String uniqueKey = mainBody.hashCode() + "-" + histBody.hashCode();
+                    if (!uniqueKey.equals(lastHistoryResponseJson)) {
+                        lastHistoryResponseJson = uniqueKey;
+                        ObservableList<HistoryRow> parsed = parseHistory(mainBody, histBody);
+                        Platform.runLater(() -> {
+                            historyList.setAll(parsed);
+                            applyHistoryFilter();
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> {
+                        loadFallbackHistory();
+                        applyHistoryFilter();
+                    });
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadFallbackHistory();
+                    applyHistoryFilter();
+                });
+            }
+        });
+    }
+
+    private ObservableList<HistoryRow> parseHistory(String mainBody, String histBody) throws Exception {
+        ObservableList<HistoryRow> rows = FXCollections.observableArrayList();
+        JsonNode mainRoot = mapper.readTree(mainBody);
+        for (JsonNode node : mainRoot) {
+            String status = node.path("status").asText();
+            if ("FINISHED".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status) || "CANCELED".equalsIgnoreCase(status)) {
+                String title = node.path("title").asText();
+                String category = node.path("category").asText();
+                BigDecimal startPrice = new BigDecimal(node.path("startingPrice").asText("0"));
+                BigDecimal winPrice = new BigDecimal(node.path("currentPrice").asText("0"));
+                JsonNode winnerNode = node.path("winner");
+                String winner = (winnerNode != null && !winnerNode.isNull() && !winnerNode.isMissingNode())
+                        ? winnerNode.path("username").asText("-") : "-";
+                JsonNode sellerNode = node.path("seller");
+                String seller = (sellerNode != null && !sellerNode.isNull() && !sellerNode.isMissingNode())
+                        ? sellerNode.path("username").asText("-") : "-";
+                String endTime = formatEndTime(node.path("endTime").asText());
+                rows.add(new HistoryRow(title, category, currencyFormat.format(startPrice),
+                        currencyFormat.format(winPrice), winner, seller, endTime));
+            }
+        }
+        JsonNode histRoot = mapper.readTree(histBody);
+        for (JsonNode node : histRoot) {
+            String title = node.path("title").asText();
+            String category = node.path("category").asText();
+            BigDecimal startPrice = new BigDecimal(node.path("startingPrice").asText("0"));
+            BigDecimal winPrice = new BigDecimal(node.path("winningPrice").asText("0"));
+            String winner = node.path("winnerName").asText("-");
+            String seller = node.path("sellerName").asText("-");
+            String endTime = formatEndTime(node.path("endTime").asText());
+            rows.add(new HistoryRow("[Đã xóa] " + title, category, currencyFormat.format(startPrice),
+                    currencyFormat.format(winPrice), winner, seller, endTime));
+        }
+        return rows;
+    }
+
+    private void loadFallbackHistory() {
+        historyList.setAll(
+                new HistoryRow("[Đã xóa] Bàn phím cơ Custom", "Electronics", "1.500.000 VND", "2.100.000 VND", "bidder1", "seller1", "20/05/2026 15:30"),
+                new HistoryRow("Apple Watch Ultra", "Electronics", "15.000.000 VND", "18.500.000 VND", "vietanh", "seller2", "19/05/2026 18:00")
+        );
+    }
+
+    private void applyHistoryFilter() {
+        String keyword = historySearchField.getText() == null ? "" : historySearchField.getText().trim().toLowerCase();
+        filteredHistoryList.setAll(historyList.filtered(row ->
+                keyword.isEmpty()
+                        || row.titleProperty().get().toLowerCase().contains(keyword)
+                        || row.categoryProperty().get().toLowerCase().contains(keyword)
+                        || row.winnerNameProperty().get().toLowerCase().contains(keyword)
+        ));
+    }
+
+    private void loadAuctions() {
+        loadHistory();
+>>>>>>> Stashed changes
         CompletableFuture.runAsync(() -> {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
@@ -203,7 +338,11 @@ public class DashboardController {
 
     private ObservableList<AuctionRow> parseAuctions(String body) throws Exception {
         ObservableList<AuctionRow> rows = FXCollections.observableArrayList();
+<<<<<<< Updated upstream
         JsonNode root = mapper.readTree(body);
+=======
+        JsonNode root = new ObjectMapper().readTree(body);
+>>>>>>> Stashed changes
         for (JsonNode node : root) {
             Long id = node.path("id").asLong();
             String title = node.path("title").asText();
@@ -291,6 +430,37 @@ public class DashboardController {
         public SimpleStringProperty statusProperty() { return status; }
         public SimpleStringProperty endTimeProperty() { return endTime; }
     }
+<<<<<<< Updated upstream
+=======
+    public static class HistoryRow {
+        private final SimpleStringProperty title;
+        private final SimpleStringProperty category;
+        private final SimpleStringProperty startingPrice;
+        private final SimpleStringProperty winningPrice;
+        private final SimpleStringProperty winnerName;
+        private final SimpleStringProperty sellerName;
+        private final SimpleStringProperty endTime;
+
+        public HistoryRow(String title, String category, String startingPrice,
+                          String winningPrice, String winnerName, String sellerName, String endTime) {
+            this.title = new SimpleStringProperty(title);
+            this.category = new SimpleStringProperty(category);
+            this.startingPrice = new SimpleStringProperty(startingPrice);
+            this.winningPrice = new SimpleStringProperty(winningPrice);
+            this.winnerName = new SimpleStringProperty(winnerName);
+            this.sellerName = new SimpleStringProperty(sellerName);
+            this.endTime = new SimpleStringProperty(endTime);
+        }
+
+        public SimpleStringProperty titleProperty() { return title; }
+        public SimpleStringProperty categoryProperty() { return category; }
+        public SimpleStringProperty startingPriceProperty() { return startingPrice; }
+        public SimpleStringProperty winningPriceProperty() { return winningPrice; }
+        public SimpleStringProperty winnerNameProperty() { return winnerName; }
+        public SimpleStringProperty sellerNameProperty() { return sellerName; }
+        public SimpleStringProperty endTimeProperty() { return endTime; }
+    }
+>>>>>>> Stashed changes
 }
 
 
