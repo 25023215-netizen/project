@@ -14,7 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.control.TableRow;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
@@ -65,7 +66,16 @@ public class DashboardController {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
 
         // Double-click vào row để mở chi tiết
-        auctionTable.setOnMouseClicked(this::onTableClick);
+        auctionTable.setRowFactory(tv -> {
+            TableRow<AuctionRow> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    AuctionRow rowData = row.getItem();
+                    openAuctionDetail(rowData.getId());
+                }
+            });
+            return row;
+        });
 
         // Hiển thị thông tin user
         if (SessionManager.getInstance().isLoggedIn()) {
@@ -126,18 +136,7 @@ public class DashboardController {
         }
     }
 
-    /**
-     * Double-click vào row -> mở chi tiết phiên đấu giá.
-     */
-    private void onTableClick(MouseEvent event) {
-        // Change: open detail on single primary click to avoid missed double-clicks
-        if (event.isPrimaryButtonDown() && event.getClickCount() >= 1) {
-            AuctionRow selected = auctionTable.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                openAuctionDetail(selected.getId());
-            }
-        }
-    }
+    // Double-click handled in row factory above
 
     private void openAuctionDetail(Long auctionId) {
         try {
