@@ -24,8 +24,12 @@ jobs:
     - name: Install xvfb
       run: |
         sudo apt-get update
-        sudo apt-get install -y xvfb
+        sudo apt-get install -y xvfb libgtk-3-0 libxrender1 libxext6 libxtst6 libxrandr2 libxi6 libasound2 libnss3
 
-    - name: Build and Test with Maven
+    - name: Build and Test with Maven (Xvfb)
       working-directory: ./auctionweb
-      run: xvfb-run --auto-servernum mvn -B clean test -Dprism.order=sw
+      run: |
+        # start X virtual framebuffer and export display
+        Xvfb :99 -screen 0 1280x1024x24 &
+        export DISPLAY=:99
+        mvn -B -Djava.awt.headless=true clean test -Dprism.order=sw
