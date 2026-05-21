@@ -91,33 +91,16 @@
                         <!-- Price Chart -->
                         <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
                             <Label text="Biểu đồ giá (Realtime)" styleClass="section-title"/>
-<<<<<<< Updated upstream
-                            <AreaChart fx:id="priceChart" VBox.vgrow="ALWAYS" styleClass="price-chart">
-                                <xAxis><NumberAxis fx:id="xAxis" label="Lượt đặt giá #" autoRanging="true"/></xAxis>
-                                <yAxis><NumberAxis fx:id="yAxis" label="Giá (VND)" autoRanging="true"/></yAxis>
-                            </AreaChart>
-=======
-                            <StackPane VBox.vgrow="ALWAYS" styleClass="chart-stack">
-                                <!-- BarChart for vertical bars -->
-                                <BarChart fx:id="barChart" legendVisible="false" animated="false" horizontalGridLinesVisible="true" verticalGridLinesVisible="true" styleClass="bar-chart">
-                                    <xAxis>
-                                        <CategoryAxis fx:id="barXAxis" label="Lượt đặt giá #" tickLabelsVisible="true" tickMarkVisible="true"/>
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis fx:id="barYAxis" label="Giá (VND)" autoRanging="true"/>
-                                    </yAxis>
-                                </BarChart>
-                                <!-- LineChart for the connecting line -->
-                                <LineChart fx:id="lineChart" legendVisible="false" animated="false" createSymbols="true" horizontalGridLinesVisible="false" verticalGridLinesVisible="false" styleClass="line-chart">
-                                    <xAxis>
-                                        <CategoryAxis fx:id="lineXAxis" visible="false"/>
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis fx:id="lineYAxis" visible="false" autoRanging="true"/>
-                                    </yAxis>
-                                </LineChart>
-                            </StackPane>
->>>>>>> Stashed changes
+                            <LineChart fx:id="lineChart" legendVisible="false" animated="false" createSymbols="true"
+                                       horizontalGridLinesVisible="false" verticalGridLinesVisible="false"
+                                       styleClass="line-chart" VBox.vgrow="ALWAYS">
+                                <xAxis>
+                                    <CategoryAxis fx:id="lineXAxis" label="Thời điểm"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis fx:id="lineYAxis" label="Giá (VND)" autoRanging="true"/>
+                                </yAxis>
+                            </LineChart>
                         </VBox>
 
                         <!-- Bid History -->
