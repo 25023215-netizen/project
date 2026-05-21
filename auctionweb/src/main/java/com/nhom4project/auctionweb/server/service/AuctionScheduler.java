@@ -10,12 +10,18 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+<<<<<<< Updated upstream
+
+import java.time.LocalDateTime;
+import java.util.List;
+=======
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+>>>>>>> Stashed changes
 
 /**
  * Scheduler tự động kết thúc phiên đấu giá khi hết thời gian.
@@ -84,6 +90,13 @@ public class AuctionScheduler {
             }
         }
     }
+<<<<<<< Updated upstream
+}
+
+
+
+
+=======
     //Kết thúc phiên đầu giá sớm theo yêu cầu của client
     public ResponseEntity<?> endAuctionEarly(Long auctionId, Long userId, String role) {
         Optional<Auction> auctionOpt = auctionRepository.findById(auctionId);
@@ -127,3 +140,4 @@ public class AuctionScheduler {
         }
     }
 }
+>>>>>>> Stashed changes

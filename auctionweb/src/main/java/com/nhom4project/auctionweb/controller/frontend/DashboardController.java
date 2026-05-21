@@ -16,6 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
 import javafx.application.Platform;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -51,6 +55,8 @@ public class DashboardController {
 
     @FXML private Button manageItemsButton;
 
+<<<<<<< Updated upstream
+=======
     // History Table bindings
     @FXML private TableView<HistoryRow> historyTable;
     @FXML private TableColumn<HistoryRow, String> historyTitleColumn;
@@ -62,15 +68,19 @@ public class DashboardController {
     @FXML private TableColumn<HistoryRow, String> historyEndTimeColumn;
     @FXML private TextField historySearchField;
 
+>>>>>>> Stashed changes
     private Timeline autoRefreshTimeline;
     private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
     private final ObjectMapper mapper = new ObjectMapper();
     private String lastResponseJson = "";
+<<<<<<< Updated upstream
+=======
     private final ObservableList<HistoryRow> historyList = FXCollections.observableArrayList();
     private final ObservableList<HistoryRow> filteredHistoryList = FXCollections.observableArrayList();
     private String lastHistoryResponseJson = "";
+>>>>>>> Stashed changes
 
     @FXML
     public void initialize() {
@@ -84,6 +94,8 @@ public class DashboardController {
         auctionTable.setItems(filteredAuctions);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
 
+<<<<<<< Updated upstream
+=======
         // Setup History Table
         if (historyTitleColumn != null) {
             historyTitleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
@@ -103,6 +115,7 @@ public class DashboardController {
             historySearchField.textProperty().addListener((observable, oldValue, newValue) -> applyHistoryFilter());
         }
 
+>>>>>>> Stashed changes
         // Double-click vào row để mở chi tiết
         auctionTable.setOnMouseClicked(this::onTableClick);
 
@@ -200,6 +213,9 @@ public class DashboardController {
         }
     }
 
+<<<<<<< Updated upstream
+    private void loadAuctions() {
+=======
     private void loadHistory() {
         CompletableFuture.runAsync(() -> {
             try {
@@ -287,6 +303,7 @@ public class DashboardController {
 
     private void loadAuctions() {
         loadHistory();
+>>>>>>> Stashed changes
         CompletableFuture.runAsync(() -> {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
@@ -321,7 +338,11 @@ public class DashboardController {
 
     private ObservableList<AuctionRow> parseAuctions(String body) throws Exception {
         ObservableList<AuctionRow> rows = FXCollections.observableArrayList();
+<<<<<<< Updated upstream
+        JsonNode root = mapper.readTree(body);
+=======
         JsonNode root = new ObjectMapper().readTree(body);
+>>>>>>> Stashed changes
         for (JsonNode node : root) {
             Long id = node.path("id").asLong();
             String title = node.path("title").asText();
@@ -409,6 +430,8 @@ public class DashboardController {
         public SimpleStringProperty statusProperty() { return status; }
         public SimpleStringProperty endTimeProperty() { return endTime; }
     }
+<<<<<<< Updated upstream
+=======
     public static class HistoryRow {
         private final SimpleStringProperty title;
         private final SimpleStringProperty category;
@@ -437,6 +460,7 @@ public class DashboardController {
         public SimpleStringProperty sellerNameProperty() { return sellerName; }
         public SimpleStringProperty endTimeProperty() { return endTime; }
     }
+>>>>>>> Stashed changes
 }
 
 

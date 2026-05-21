@@ -14,9 +14,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+<<<<<<< Updated upstream
+import javafx.scene.chart.AreaChart;
+=======
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.CategoryAxis;
+>>>>>>> Stashed changes
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
@@ -66,6 +70,11 @@ public class AuctionDetailController {
     @FXML private Button endEarlyButton;
     @FXML private Button deleteAuctionButton;
 
+<<<<<<< Updated upstream
+    @FXML private AreaChart<Number, Number> priceChart;
+    @FXML private NumberAxis xAxis;
+    @FXML private NumberAxis yAxis;
+=======
     @FXML private BarChart<String, Number> barChart;
     @FXML private CategoryAxis barXAxis;
     @FXML private NumberAxis barYAxis;
@@ -73,6 +82,7 @@ public class AuctionDetailController {
     @FXML private LineChart<String, Number> lineChart;
     @FXML private CategoryAxis lineXAxis;
     @FXML private NumberAxis lineYAxis;
+>>>>>>> Stashed changes
 
     @FXML private ListView<String> bidHistoryList;
 
@@ -81,15 +91,18 @@ public class AuctionDetailController {
     // Công cụ để chuyển đổi chuỗi JSON từ Server gửi về thành dạng dữ liệu phân tích được
     private final ObjectMapper mapper = new ObjectMapper();
     // Chứa các điểm dữ liệu để vẽ đường biểu diễn giá trên biểu đồ
+<<<<<<< Updated upstream
+    private XYChart.Series<Number, Number> priceSeries;
+=======
     private XYChart.Series<String, Number> barSeries;
     private XYChart.Series<String, Number> lineSeries;
+>>>>>>> Stashed changes
     private int chartPointIndex = 0;
     // Bộ đếm thời gian lùi (đếm ngược)
     private Timeline countdownTimeline;
     // Thời gian kết thúc phiên đấu
     private LocalDateTime auctionEndTime;
     private boolean isFinishedAlertShown = false;
-    private BigDecimal startingPrice;
 
     /**
      * Được gọi trước khi hiển thị màn hình, từ màn hình Dashboard khi click vào 1 phiên đấu giá.
@@ -107,6 +120,15 @@ public class AuctionDetailController {
      */
     @FXML
     public void initialize() {
+<<<<<<< Updated upstream
+        // Thiết lập biểu đồ (priceSeries)
+        //Trong JavaFX, XYChart.Series<> (thường gọi tắt là Series) là một lớp dùng để đại diện cho một chuỗi/tập hợp các điểm dữ liệu trên một biểu đồ
+        priceSeries = new XYChart.Series<>();//Series Ở đây nó đại diện cho đường biểu diễn sự thay đổi giá của phiên đấu giá
+        priceSeries.setName("Gia dau gia");
+        priceChart.getData().add(priceSeries);
+        priceChart.setCreateSymbols(false);
+        priceChart.setAnimated(false);
+=======
         // Khởi tạo các Series cho BarChart và LineChart
         barSeries = new XYChart.Series<>();
         barSeries.setName("Giá");
@@ -142,6 +164,7 @@ public class AuctionDetailController {
                 }
             });
         }
+>>>>>>> Stashed changes
 
         // Kiểm tra quyền người dùng thông qua SessionManager.
         // Chỉ cho bidder đặt giá, nếu không phải là người mua (Bidder) thì sẽ vô hiệu hóa các nút Đặt giá.
@@ -230,6 +253,11 @@ public class AuctionDetailController {
                     // Cập nhật List và Chart phải nằm trong Platform.runLater
                     Platform.runLater(() -> {
                         ObservableList<String> items = FXCollections.observableArrayList();
+<<<<<<< Updated upstream
+                        priceSeries.getData().clear();
+                        chartPointIndex = 0;
+
+=======
                         if (barSeries != null) barSeries.getData().clear();
                         if (lineSeries != null) lineSeries.getData().clear();
                         if (barXAxis != null) barXAxis.getCategories().clear();
@@ -247,6 +275,7 @@ public class AuctionDetailController {
                             addTooltipAndHoverEffect(lineData, String.format("Giá khởi điểm: %,.0f VND", value));
                         }
 
+>>>>>>> Stashed changes
                         // Duyệt từ cuối lên đầu (vì API trả về desc) để đảo ngược chiều ưu tiên
                         int bidIndex = 1;
                         for (int i = bids.size() - 1; i >= 0; i--) {
@@ -256,6 +285,10 @@ public class AuctionDetailController {
                             String time = bid.path("bidTime").asText("");
 
                             items.add(0, String.format("%s - %,.0f VND boi %s", formatTime(time), amount, bidder));
+<<<<<<< Updated upstream
+                            // Thêm điểm vẽ vào biểu đồ
+                            priceSeries.getData().add(new XYChart.Data<>(chartPointIndex++, amount));
+=======
                             // Thêm điểm vẽ vào cả 2 biểu đồ
                             String category = "Lượt " + (bidIndex++);
                             XYChart.Data<String, Number> barData = new XYChart.Data<>(category, amount);
@@ -267,6 +300,7 @@ public class AuctionDetailController {
                                                                category, amount, bidder, formatTime(time));
                             addTooltipAndHoverEffect(barData, tooltipText);
                             addTooltipAndHoverEffect(lineData, tooltipText);
+>>>>>>> Stashed changes
                         }
                         bidHistoryList.setItems(items); // Cập nhật danh sách bidHistoryList
                     });
@@ -318,7 +352,6 @@ public class AuctionDetailController {
         descriptionLabel.setText(node.path("description").asText(""));
 
         BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
-        startingPrice = new BigDecimal(node.path("startingPrice").asText("0"));
         currentPriceLabel.setText(String.format("%,.0f VND", price));
         bidCountLabel.setText(node.path("bidCount").asInt() + " luot dat gia");
 
@@ -564,7 +597,11 @@ public class AuctionDetailController {
     private void onStopAutoBid() {
         Long userId = SessionManager.getInstance().getUserId();
         if (userId == null) return;
+<<<<<<< Updated upstream
+        
+=======
 
+>>>>>>> Stashed changes
         stopAutoBidButton.setDisable(true);
         messageLabel.setText("Đang dừng auto-bid...");
 
@@ -673,7 +710,10 @@ public class AuctionDetailController {
         }
     }
 
+<<<<<<< Updated upstream
+=======
 
+>>>>>>> Stashed changes
     private String getStatusStyle(String status) {
         return switch (status) {
             case "RUNNING" -> "-fx-text-fill: #22c55e; -fx-font-weight: bold;";

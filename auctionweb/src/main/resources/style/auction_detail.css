@@ -142,6 +142,10 @@
     -fx-text-fill: #64748b;
 }
 
+<<<<<<< Updated upstream
+/* Chart */
+.price-chart {
+=======
 /* Stacked Chart Styles */
 .chart-stack {
     -fx-background-color: #ffffff;
@@ -157,6 +161,7 @@
 
 /* Translucent overlay styles for the Line Chart */
 .line-chart {
+>>>>>>> Stashed changes
     -fx-background-color: transparent;
 }
 

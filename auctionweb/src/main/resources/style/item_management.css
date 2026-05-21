@@ -89,6 +89,8 @@
     -fx-background-color: #dc2626;
 }
 
+<<<<<<< Updated upstream
+=======
 .warning-button {
     -fx-background-color: #f59e0b;
     -fx-text-fill: white;
@@ -101,6 +103,7 @@
 .warning-button:hover {
     -fx-background-color: #d97706;
 }
+>>>>>>> Stashed changes
 .status-label {
     -fx-font-size: 13px;
     -fx-text-fill: #64748b;
