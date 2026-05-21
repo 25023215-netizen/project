@@ -13,8 +13,7 @@
                 <Label text="Quản lý Đấu giá" styleClass="brand-subtitle"/>
             </VBox>
             <VBox spacing="8" styleClass="nav-list">
-                <Button text="Bảng điều khiển" fx:id="dashboardButton" onAction="#onViewDashboard" styleClass="nav-button-active"/>
-                <Button text="Lịch sử kết quả" fx:id="historyNavButton" onAction="#onViewHistory" styleClass="nav-button"/>
+                <Button text="Bảng điều khiển" styleClass="nav-button-active"/>
                 <Button text="Quản lý sản phẩm" fx:id="manageItemsButton" onAction="#onManageItems" styleClass="nav-button"/>
                 <Button text="Đăng xuất" onAction="#onLogout" styleClass="nav-button"/>
             </VBox>
@@ -24,6 +23,13 @@
         <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
             <content>
                 <VBox spacing="18" styleClass="content">
+                    <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Bảng điều khiển" styleClass="page-title"/>
+                            <Label fx:id="userInfoLabel" text="" styleClass="page-subtitle"/>
+                        </VBox>
+                    </HBox>
+
                     <HBox spacing="16">
                         <VBox spacing="6" styleClass="stat-card" HBox.hgrow="ALWAYS">
                             <Label text="Tổng phiên" styleClass="stat-label"/>
@@ -39,43 +45,48 @@
                         </VBox>
                     </HBox>
 
-                    <VBox fx:id="auctionPanel" spacing="12" styleClass="auction-panel" VBox.vgrow="ALWAYS">
-                        <HBox alignment="CENTER_LEFT" spacing="12">
-                            <Label text="Danh sách phiên đấu giá (nhấp đúp để xem chi tiết)" styleClass="section-title" HBox.hgrow="ALWAYS"/>
-                            <TextField fx:id="searchField" promptText="Tìm theo tên, loại, trạng thái" styleClass="search-field"/>
-                            <Button text="🔄 Làm mới" onAction="#onRefresh" styleClass="refresh-button"/>
-                        </HBox>
-                        <TableView fx:id="auctionTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn fx:id="titleColumn" text="Sản phẩm" prefWidth="310"/>
-                                <TableColumn fx:id="categoryColumn" text="Loại" prefWidth="130"/>
-                                <TableColumn fx:id="priceColumn" text="Giá hiện tại" prefWidth="170"/>
-                                <TableColumn fx:id="bidsColumn" text="Lượt bid" prefWidth="90"/>
-                                <TableColumn fx:id="statusColumn" text="Trạng thái" prefWidth="120"/>
-                                <TableColumn fx:id="endTimeColumn" text="Kết thúc" prefWidth="170"/>
-                            </columns>
-                        </TableView>
-                        <Label fx:id="statusLabel" text="" styleClass="status-label"/>
-                    </VBox>
-
-                    <VBox fx:id="historyPanel" spacing="12" styleClass="auction-panel" VBox.vgrow="ALWAYS" visible="false" managed="false">
-                        <HBox alignment="CENTER_LEFT" spacing="12">
-                            <Label text="Lịch sử kết quả đấu giá (tất cả phiên đã kết thúc)" styleClass="section-title" HBox.hgrow="ALWAYS"/>
-                            <TextField fx:id="historySearchField" promptText="Tìm theo sản phẩm, loại..." styleClass="search-field"/>
-                            <Button text="🔄 Làm mới" onAction="#onRefreshHistory" styleClass="refresh-button"/>
-                        </HBox>
-                        <TableView fx:id="historyTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn fx:id="historyTitleColumn" text="Sản phẩm" prefWidth="250"/>
-                                <TableColumn fx:id="historyCategoryColumn" text="Loại" prefWidth="110"/>
-                                <TableColumn fx:id="historyStartPriceColumn" text="Giá khởi điểm" prefWidth="140"/>
-                                <TableColumn fx:id="historyEndPriceColumn" text="Giá chung cuộc" prefWidth="150"/>
-                                <TableColumn fx:id="historyWinnerColumn" text="Người thắng" prefWidth="120"/>
-                                <TableColumn fx:id="historySellerColumn" text="Người bán" prefWidth="120"/>
-                                <TableColumn fx:id="historyEndTimeColumn" text="Kết thúc" prefWidth="160"/>
-                            </columns>
-                        </TableView>
-                    </VBox>
+                    <TabPane VBox.vgrow="ALWAYS" styleClass="dashboard-tabpane">
+                        <tabs>
+                            <Tab text="Phiên đang diễn ra" closable="false">
+                                <VBox spacing="12" styleClass="auction-panel">
+                                    <HBox alignment="CENTER_LEFT" spacing="12">
+                                        <Label text="Danh sách phiên đấu giá (nhấp đúp để xem chi tiết)" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                                        <TextField fx:id="searchField" promptText="Tìm theo tên, loại, trạng thái" styleClass="search-field"/>
+                                    </HBox>
+                                    <TableView fx:id="auctionTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="titleColumn" text="Sản phẩm" prefWidth="310"/>
+                                            <TableColumn fx:id="categoryColumn" text="Loại" prefWidth="130"/>
+                                            <TableColumn fx:id="priceColumn" text="Giá hiện tại" prefWidth="170"/>
+                                            <TableColumn fx:id="bidsColumn" text="Lượt bid" prefWidth="90"/>
+                                            <TableColumn fx:id="statusColumn" text="Trạng thái" prefWidth="120"/>
+                                            <TableColumn fx:id="endTimeColumn" text="Kết thúc" prefWidth="170"/>
+                                        </columns>
+                                    </TableView>
+                                </VBox>
+                            </Tab>
+                            <Tab text="Lịch sử kết quả" closable="false">
+                                <VBox spacing="12" styleClass="auction-panel">
+                                    <HBox alignment="CENTER_LEFT" spacing="12">
+                                        <Label text="Lịch sử kết quả đấu giá" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                                        <TextField fx:id="historySearchField" promptText="Tìm theo tên, loại, người thắng" styleClass="search-field"/>
+                                    </HBox>
+                                    <TableView fx:id="historyTable" styleClass="auction-table" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="historyTitleColumn" text="Sản phẩm" prefWidth="250"/>
+                                            <TableColumn fx:id="historyCategoryColumn" text="Loại" prefWidth="120"/>
+                                            <TableColumn fx:id="historyStartPriceColumn" text="Giá khởi điểm" prefWidth="150"/>
+                                            <TableColumn fx:id="historyWinPriceColumn" text="Giá thắng" prefWidth="150"/>
+                                            <TableColumn fx:id="historyWinnerColumn" text="Người thắng" prefWidth="130"/>
+                                            <TableColumn fx:id="historySellerColumn" text="Người bán" prefWidth="130"/>
+                                            <TableColumn fx:id="historyEndTimeColumn" text="Thời gian kết thúc" prefWidth="170"/>
+                                        </columns>
+                                    </TableView>
+                                </VBox>
+                            </Tab>
+                        </tabs>
+                    </TabPane>
+                    <Label fx:id="statusLabel" text="" styleClass="status-label"/>
                 </VBox>
             </content>
         </ScrollPane>

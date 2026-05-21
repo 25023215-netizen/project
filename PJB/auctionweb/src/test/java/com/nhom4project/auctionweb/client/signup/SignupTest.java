@@ -1,5 +1,6 @@
 package com.nhom4project.auctionweb.client.signup;
 
+import com.nhom4project.auctionweb.client.signup.Signup;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +20,8 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for the Signup launcher view.
- * Verifies stage title, scene configuration, and stylesheet injections under static mock isolation.
+ * Verifies stage title, scene configuration, and stylesheet injections under
+ * static mock isolation.
  */
 public class SignupTest {
 
@@ -31,10 +33,10 @@ public class SignupTest {
         ObservableList<String> mockStylesheets = mock(ObservableList.class);
 
         try (MockedStatic<FXMLLoader> fxmlStatic = mockStatic(FXMLLoader.class);
-             MockedConstruction<Scene> mockScene = mockConstruction(Scene.class,
-                     (mock, context) -> {
-                         when(mock.getStylesheets()).thenReturn(mockStylesheets);
-                     })) {
+                MockedConstruction<Scene> mockScene = mockConstruction(Scene.class,
+                        (mock, context) -> {
+                            when(mock.getStylesheets()).thenReturn(mockStylesheets);
+                        })) {
 
             // Mock static FXML loader
             fxmlStatic.when(() -> FXMLLoader.load(any(URL.class))).thenReturn(mockParent);

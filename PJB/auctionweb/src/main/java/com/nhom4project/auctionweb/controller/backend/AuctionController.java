@@ -1,11 +1,11 @@
 package com.nhom4project.auctionweb.controller.backend;
 
 import com.nhom4project.auctionweb.server.model.Auction;
+import com.nhom4project.auctionweb.server.model.AuctionStatus;
 import com.nhom4project.auctionweb.server.model.AuctionHistory;
 import com.nhom4project.auctionweb.server.model.AutoBidConfig;
 import com.nhom4project.auctionweb.server.model.BidTransaction;
 import com.nhom4project.auctionweb.server.model.Roles;
-import com.nhom4project.auctionweb.server.repository.AuctionHistoryRepository;
 import com.nhom4project.auctionweb.server.service.AuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +25,6 @@ public class AuctionController {
 
     @Autowired
     private AuctionService auctionService;
-
-    @Autowired
-    private AuctionHistoryRepository auctionHistoryRepository;
 
     // ==================== Danh sách & Chi tiết ====================
 
@@ -133,13 +130,6 @@ public class AuctionController {
         return auctionService.getBidHistory(id);
     }
 
-    // ==================== Auction History ====================
-
-    @GetMapping("/history")
-    public List<AuctionHistory> getAuctionHistory() {
-        return auctionHistoryRepository.findAll();
-    }
-
     // ==================== Auto-Bidding ====================
 
     /**
@@ -182,6 +172,13 @@ public class AuctionController {
         return auctionService.getAutoBidConfig(id, bidderId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // ==================== Auction History Results ====================
+
+    @GetMapping("/history")
+    public List<AuctionHistory> getAuctionHistory() {
+        return auctionService.listAuctionHistories();
     }
 }
 

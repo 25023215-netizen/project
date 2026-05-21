@@ -56,9 +56,6 @@
                         <Tab text="👤 Quản lý người dùng" closable="false">
                             <VBox spacing="10">
                                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                                <HBox spacing="10" alignment="CENTER_LEFT">
-                                    <Button text="🔄 Làm mới" onAction="#onRefreshUsers" styleClass="action-btn"/>
-                                </HBox>
                                 <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="data-table">
                                     <columns>
                                         <TableColumn fx:id="userIdCol" text="ID" prefWidth="60"/>
@@ -77,9 +74,6 @@
                         <Tab text="🔨 Quản lý đấu giá" closable="false">
                             <VBox spacing="10">
                                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                                <HBox spacing="10" alignment="CENTER_LEFT">
-                                    <Button text="🔄 Làm mới" onAction="#onRefreshAuctions" styleClass="action-btn"/>
-                                </HBox>
                                 <TableView fx:id="auctionTable" VBox.vgrow="ALWAYS" styleClass="data-table">
                                     <columns>
                                         <TableColumn fx:id="auctionIdCol" text="ID" prefWidth="60"/>

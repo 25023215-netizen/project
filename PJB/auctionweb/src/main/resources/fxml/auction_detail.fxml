@@ -21,7 +21,7 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
+        <ScrollPane fitToWidth="true" fitToHeight="false" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
             <content>
                 <HBox spacing="20" styleClass="detail-content">
                     <!-- Left: Info + Bidding -->
@@ -91,10 +91,26 @@
                         <!-- Price Chart -->
                         <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
                             <Label text="Biểu đồ giá (Realtime)" styleClass="section-title"/>
-                            <AreaChart fx:id="priceChart" VBox.vgrow="ALWAYS" styleClass="price-chart">
-                                <xAxis><CategoryAxis fx:id="xAxis" label="Thời gian" autoRanging="true"/></xAxis>
-                                <yAxis><NumberAxis fx:id="yAxis" label="Giá (VND)" autoRanging="true"/></yAxis>
-                            </AreaChart>
+                            <StackPane VBox.vgrow="ALWAYS" styleClass="chart-stack">
+                                <!-- BarChart for vertical bars -->
+                                <BarChart fx:id="barChart" legendVisible="false" animated="false" horizontalGridLinesVisible="false" verticalGridLinesVisible="false" styleClass="bar-chart">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="barXAxis" label="Lượt đặt giá #" tickLabelsVisible="false" tickMarkVisible="false"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="barYAxis" label="Giá (VND)" autoRanging="true"/>
+                                    </yAxis>
+                                </BarChart>
+                                <!-- LineChart for the connecting line -->
+                                <LineChart fx:id="lineChart" legendVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" verticalGridLinesVisible="false" styleClass="line-chart">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="lineXAxis" visible="false"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="lineYAxis" visible="false" autoRanging="true"/>
+                                    </yAxis>
+                                </LineChart>
+                            </StackPane>
                         </VBox>
 
                         <!-- Bid History -->

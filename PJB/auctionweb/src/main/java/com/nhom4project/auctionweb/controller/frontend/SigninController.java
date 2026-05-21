@@ -78,9 +78,12 @@ public class SigninController {
                         try {
                             JSONObject user = new JSONObject(response.body());
                             String userRole = user.optString("role", "BIDDER");
+                            long userId = user.optLong("id", 0L);
+                            String usernameVal = user.optString("username", username);
+                            String fullnameVal = user.optString("fullname", usernameVal);
 
-                            // Kiểm tra role đã chọn có khớp với role trong DB không
-                            if (!userRole.equalsIgnoreCase(selectedRole)) {
+                            // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
+                            if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
                                 statusLabel.setText("Tai khoan nay khong phai " + selectedRole + "!");
                                 statusLabel.setStyle("-fx-text-fill: red;");
                                 signinButton.setDisable(false);
@@ -88,23 +91,25 @@ public class SigninController {
                             }
 
                             SessionManager.getInstance().setUser(
-                                    user.getLong("id"),
-                                    user.getString("username"),
-                                    user.optString("fullname", username),
+                                    userId,
+                                    usernameVal,
+                                    fullnameVal,
                                     userRole
                             );
+
+                            // Điều hướng theo role thực tế từ server
+                            if ("ADMIN".equalsIgnoreCase(userRole)) {
+                                goToAdminDashboard(event);
+                            } else {
+                                goToDashboard(event);
+                            }
                         } catch (Exception e) {
                             SessionManager.getInstance().setUser(0L, username, username, selectedRole);
-                        }
-
-                        // Điều hướng theo Role
-                        if ("ADMIN".equals(selectedRole)) {
-                            goToAdminDashboard(event);
-                        } else {
+                            // fallback: điều hướng theo lựa chọn UI (non-admin)
                             goToDashboard(event);
                         }
                     } else {
-                        statusLabel.setText("Loi: " + response.body());
+                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                         statusLabel.setStyle("-fx-text-fill: red;");
                         signinButton.setDisable(false);
                     }

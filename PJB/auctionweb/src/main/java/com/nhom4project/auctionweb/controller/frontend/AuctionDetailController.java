@@ -15,11 +15,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.util.StringConverter;
+import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -67,9 +68,13 @@ public class AuctionDetailController {
     @FXML private Button endEarlyButton;
     @FXML private Button deleteAuctionButton;
 
-    @FXML private AreaChart<String, Number> priceChart;
-    @FXML private CategoryAxis xAxis;
-    @FXML private NumberAxis yAxis;
+    @FXML private BarChart<String, Number> barChart;
+    @FXML private CategoryAxis barXAxis;
+    @FXML private NumberAxis barYAxis;
+
+    @FXML private LineChart<String, Number> lineChart;
+    @FXML private CategoryAxis lineXAxis;
+    @FXML private NumberAxis lineYAxis;
 
     @FXML private ListView<String> bidHistoryList;
 
@@ -78,13 +83,15 @@ public class AuctionDetailController {
     // Công cụ để chuyển đổi chuỗi JSON từ Server gửi về thành dạng dữ liệu phân tích được
     private final ObjectMapper mapper = new ObjectMapper();
     // Chứa các điểm dữ liệu để vẽ đường biểu diễn giá trên biểu đồ
-    private XYChart.Series<String, Number> priceSeries;
+    private XYChart.Series<String, Number> barSeries;
+    private XYChart.Series<String, Number> lineSeries;
     private int chartPointIndex = 0;
     // Bộ đếm thời gian lùi (đếm ngược)
     private Timeline countdownTimeline;
     // Thời gian kết thúc phiên đấu
     private LocalDateTime auctionEndTime;
     private boolean isFinishedAlertShown = false;
+    private BigDecimal startingPrice;
 
     /**
      * Được gọi trước khi hiển thị màn hình, từ màn hình Dashboard khi click vào 1 phiên đấu giá.
@@ -93,7 +100,6 @@ public class AuctionDetailController {
     public void setAuctionId(Long auctionId) {
         this.auctionId = auctionId;
         loadAuctionDetail(); // Gọi API lấy thông tin phiên đấu giá
-        loadBidHistory(); // Gọi API lấy lịch sử đặt giá
         startRealtimeUpdates(); // Bật kết nối WebSocket để nhận giá mới theo thời gian thực
     }
 
@@ -102,25 +108,38 @@ public class AuctionDetailController {
      */
     @FXML
     public void initialize() {
-        // Thiết lập biểu đồ (priceSeries)
-        //Trong JavaFX, XYChart.Series<> (thường gọi tắt là Series) là một lớp dùng để đại diện cho một chuỗi/tập hợp các điểm dữ liệu trên một biểu đồ
-        priceSeries = new XYChart.Series<>();//Series Ở đây nó đại diện cho đường biểu diễn sự thay đổi giá của phiên đấu giá
-        priceSeries.setName("Giá đấu giá");
-        priceChart.getData().add(priceSeries);
-        priceChart.setCreateSymbols(false);
-        priceChart.setAnimated(false);
-        priceChart.setHorizontalGridLinesVisible(true);
-        priceChart.setVerticalGridLinesVisible(true);
-        if (yAxis != null) {
-            yAxis.setForceZeroInRange(false);
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+        // Khởi tạo các Series cho BarChart và LineChart
+        barSeries = new XYChart.Series<>();
+        barSeries.setName("Giá");
+        if (barChart != null) {
+            barChart.getData().add(barSeries);
+            barChart.setAnimated(false);
+        }
+
+        lineSeries = new XYChart.Series<>();
+        lineSeries.setName("Xu thế");
+        if (lineChart != null) {
+            lineChart.getData().add(lineSeries);
+            lineChart.setAnimated(false);
+            lineChart.setCreateSymbols(false);
+        }
+
+        // Đồng bộ hóa trục Y của LineChart theo BarChart
+        if (barYAxis != null && lineYAxis != null) {
+            lineYAxis.autoRangingProperty().bind(barYAxis.autoRangingProperty());
+            lineYAxis.lowerBoundProperty().bind(barYAxis.lowerBoundProperty());
+            lineYAxis.upperBoundProperty().bind(barYAxis.upperBoundProperty());
+            lineYAxis.tickUnitProperty().bind(barYAxis.tickUnitProperty());
+
+            barYAxis.setForceZeroInRange(false);
+            barYAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
                 @Override
                 public String toString(Number object) {
                     return String.format("%,.0f", object.doubleValue());
                 }
                 @Override
                 public Number fromString(String string) {
-                    return 0;
+                    return Double.parseDouble(string);
                 }
             });
         }
@@ -159,7 +178,7 @@ public class AuctionDetailController {
      */
     private void updateCountdownDisplay() {
         LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(auctionEndTime)) {
+        if (auctionEndTime == null || now.isAfter(auctionEndTime)) {
             timerLabel.setText("00:00:00");
             timerLabel.setStyle("-fx-text-fill: gray; -fx-background-color: #e5e7eb;");
             return;
@@ -191,10 +210,20 @@ public class AuctionDetailController {
                 if (response.statusCode() == 200) {
                     JsonNode node = mapper.readTree(response.body());
                     // Cập nhật giao diện phải nằm trong Platform.runLater để tránh lỗi đa luồng JavaFX
-                    Platform.runLater(() -> updateUI(node));
+                    Platform.runLater(() -> {
+                        try {
+                            updateUI(node);
+                            loadBidHistory();
+                        } catch (Exception ex) {
+                            titleLabel.setText("Lỗi xử lý dữ liệu UI: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    });
+                } else {
+                    Platform.runLater(() -> titleLabel.setText("Lỗi máy chủ: HTTP " + response.statusCode()));
                 }
             } catch (Exception e) {
-                Platform.runLater(() -> messageLabel.setText("Loi tai du lieu: " + e.getMessage()));
+                Platform.runLater(() -> titleLabel.setText("Lỗi tải dữ liệu: " + e.getMessage()));
             }
         }).start();
     }
@@ -212,8 +241,17 @@ public class AuctionDetailController {
                     // Cập nhật List và Chart phải nằm trong Platform.runLater
                     Platform.runLater(() -> {
                         ObservableList<String> items = FXCollections.observableArrayList();
-                        priceSeries.getData().clear();
+                        if (barSeries != null) barSeries.getData().clear();
+                        if (lineSeries != null) lineSeries.getData().clear();
                         chartPointIndex = 0;
+
+                        // Thêm giá khởi điểm làm điểm đầu tiên của biểu đồ
+                        if (startingPrice != null) {
+                            String category = String.valueOf(chartPointIndex++);
+                            double value = startingPrice.doubleValue();
+                            if (barSeries != null) barSeries.getData().add(new XYChart.Data<>(category, value));
+                            if (lineSeries != null) lineSeries.getData().add(new XYChart.Data<>(category, value));
+                        }
 
                         // Duyệt từ cuối lên đầu (vì API trả về desc) để đảo ngược chiều ưu tiên
                         for (int i = bids.size() - 1; i >= 0; i--) {
@@ -223,9 +261,11 @@ public class AuctionDetailController {
                             String time = bid.path("bidTime").asText("");
 
                             items.add(0, String.format("%s - %,.0f VND boi %s", formatTime(time), amount, bidder));
-                            // Thêm điểm vẽ vào biểu đồ
-                            String formattedChartTime = formatTimeOnly(time);
-                            priceSeries.getData().add(new XYChart.Data<>(formattedChartTime, amount));
+
+                            // Thêm điểm vẽ vào cả 2 biểu đồ
+                            String category = String.valueOf(chartPointIndex++);
+                            if (barSeries != null) barSeries.getData().add(new XYChart.Data<>(category, amount));
+                            if (lineSeries != null) lineSeries.getData().add(new XYChart.Data<>(category, amount));
                         }
                         bidHistoryList.setItems(items); // Cập nhật danh sách bidHistoryList
                     });
@@ -265,6 +305,7 @@ public class AuctionDetailController {
         descriptionLabel.setText(node.path("description").asText(""));
 
         BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
+        startingPrice = new BigDecimal(node.path("startingPrice").asText("0"));
         currentPriceLabel.setText(String.format("%,.0f VND", price));
         bidCountLabel.setText(node.path("bidCount").asInt() + " luot dat gia");
 
@@ -510,7 +551,7 @@ public class AuctionDetailController {
     private void onStopAutoBid() {
         Long userId = SessionManager.getInstance().getUserId();
         if (userId == null) return;
-        
+            
         stopAutoBidButton.setDisable(true);
         messageLabel.setText("Đang dừng auto-bid...");
 
@@ -616,16 +657,6 @@ public class AuctionDetailController {
         try {
             LocalDateTime dt = LocalDateTime.parse(isoTime);
             return dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-        } catch (Exception e) {
-            return isoTime;
-        }
-    }
-
-    private String formatTimeOnly(String isoTime) {
-        if (isoTime == null || isoTime.isBlank()) return "-";
-        try {
-            LocalDateTime dt = LocalDateTime.parse(isoTime);
-            return dt.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         } catch (Exception e) {
             return isoTime;
         }

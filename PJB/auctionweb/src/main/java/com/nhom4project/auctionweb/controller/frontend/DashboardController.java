@@ -16,9 +16,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.text.NumberFormat;
@@ -49,26 +53,26 @@ public class DashboardController {
 
     @FXML private Button manageItemsButton;
 
-    // Các thành phần FXML mới cho Lịch sử Kết quả
-    @FXML private Button dashboardButton;
-    @FXML private Button historyNavButton;
-    @FXML private VBox auctionPanel;
-    @FXML private VBox historyPanel;
-    @FXML private TextField historySearchField;
+    // History Table bindings
     @FXML private TableView<HistoryRow> historyTable;
     @FXML private TableColumn<HistoryRow, String> historyTitleColumn;
     @FXML private TableColumn<HistoryRow, String> historyCategoryColumn;
     @FXML private TableColumn<HistoryRow, String> historyStartPriceColumn;
-    @FXML private TableColumn<HistoryRow, String> historyEndPriceColumn;
+    @FXML private TableColumn<HistoryRow, String> historyWinPriceColumn;
     @FXML private TableColumn<HistoryRow, String> historyWinnerColumn;
     @FXML private TableColumn<HistoryRow, String> historySellerColumn;
     @FXML private TableColumn<HistoryRow, String> historyEndTimeColumn;
+    @FXML private TextField historySearchField;
 
+    private Timeline autoRefreshTimeline;
     private final ObservableList<AuctionRow> auctions = FXCollections.observableArrayList();
     private final ObservableList<AuctionRow> filteredAuctions = FXCollections.observableArrayList();
-    private final ObservableList<HistoryRow> histories = FXCollections.observableArrayList();
-    private final ObservableList<HistoryRow> filteredHistories = FXCollections.observableArrayList();
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private final ObjectMapper mapper = new ObjectMapper();
+    private String lastResponseJson = "";
+    private final ObservableList<HistoryRow> historyList = FXCollections.observableArrayList();
+    private final ObservableList<HistoryRow> filteredHistoryList = FXCollections.observableArrayList();
+    private String lastHistoryResponseJson = "";
 
     @FXML
     public void initialize() {
@@ -83,18 +87,18 @@ public class DashboardController {
         auctionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilter());
 
-        // Thiết lập bảng lịch sử
-        if (historyTitleColumn != null) {
-            historyTitleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
-            historyCategoryColumn.setCellValueFactory(data -> data.getValue().categoryProperty());
-            historyStartPriceColumn.setCellValueFactory(data -> data.getValue().startingPriceProperty());
-            historyEndPriceColumn.setCellValueFactory(data -> data.getValue().winningPriceProperty());
-            historyWinnerColumn.setCellValueFactory(data -> data.getValue().winnerNameProperty());
-            historySellerColumn.setCellValueFactory(data -> data.getValue().sellerNameProperty());
-            historyEndTimeColumn.setCellValueFactory(data -> data.getValue().endTimeProperty());
+        // Setup History Table
+        historyTitleColumn.setCellValueFactory(data -> data.getValue().titleProperty());
+        historyCategoryColumn.setCellValueFactory(data -> data.getValue().categoryProperty());
+        historyStartPriceColumn.setCellValueFactory(data -> data.getValue().startingPriceProperty());
+        historyWinPriceColumn.setCellValueFactory(data -> data.getValue().winningPriceProperty());
+        historyWinnerColumn.setCellValueFactory(data -> data.getValue().winnerNameProperty());
+        historySellerColumn.setCellValueFactory(data -> data.getValue().sellerNameProperty());
+        historyEndTimeColumn.setCellValueFactory(data -> data.getValue().endTimeProperty());
 
-            historyTable.setItems(filteredHistories);
-            historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        historyTable.setItems(filteredHistoryList);
+        historyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        if (historySearchField != null) {
             historySearchField.textProperty().addListener((observable, oldValue, newValue) -> applyHistoryFilter());
         }
 
@@ -116,6 +120,22 @@ public class DashboardController {
         }
 
         loadAuctions();
+        startAutoRefresh();
+    }
+
+    private void startAutoRefresh() {
+        if (autoRefreshTimeline == null) {
+            autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> loadAuctions()));
+            autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+            autoRefreshTimeline.play();
+        }
+    }
+
+    private void stopAutoRefresh() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+            autoRefreshTimeline = null;
+        }
     }
 
     @FXML
@@ -128,6 +148,7 @@ public class DashboardController {
      */
     @FXML
     private void onManageItems() {
+        stopAutoRefresh();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Quan ly san pham", "/style/item_management.css");
@@ -144,6 +165,7 @@ public class DashboardController {
      */
     @FXML
     private void onLogout() {
+        stopAutoRefresh();
         SessionManager.getInstance().clear();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
@@ -166,6 +188,7 @@ public class DashboardController {
     }
 
     private void openAuctionDetail(Long auctionId) {
+        stopAutoRefresh();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
             AuctionDetailController controller = SceneUtils.changeSceneWithController(stage, "/fxml/auction_detail.fxml", "Chi tiet phien dau gia", "/style/auction_detail.css");
@@ -178,25 +201,128 @@ public class DashboardController {
         }
     }
 
-    private void loadAuctions() {
-        try {
-            HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
-            if (response.statusCode() == 200) {
-                auctions.setAll(parseAuctions(response.body()));
-                statusLabel.setText("Da tai danh sach dau gia tu server.");
-            } else {
-                loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
+    private void loadHistory() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                HttpResponse<String> mainResp = BackendClient.getInstance().get("/auctions");
+                HttpResponse<String> histResp = BackendClient.getInstance().get("/auctions/history");
+                if (mainResp.statusCode() == 200) {
+                    String mainBody = mainResp.body();
+                    String histBody = (histResp.statusCode() == 200) ? histResp.body() : "[]";
+                    String uniqueKey = mainBody.hashCode() + "-" + histBody.hashCode();
+                    if (!uniqueKey.equals(lastHistoryResponseJson)) {
+                        lastHistoryResponseJson = uniqueKey;
+                        ObservableList<HistoryRow> parsed = parseHistory(mainBody, histBody);
+                        Platform.runLater(() -> {
+                            historyList.setAll(parsed);
+                            applyHistoryFilter();
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> {
+                        loadFallbackHistory();
+                        applyHistoryFilter();
+                    });
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadFallbackHistory();
+                    applyHistoryFilter();
+                });
             }
-        } catch (Exception e) {
-            loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
+        });
+    }
+
+    private ObservableList<HistoryRow> parseHistory(String mainBody, String histBody) throws Exception {
+        ObservableList<HistoryRow> rows = FXCollections.observableArrayList();
+        JsonNode mainRoot = mapper.readTree(mainBody);
+        for (JsonNode node : mainRoot) {
+            String status = node.path("status").asText();
+            if ("FINISHED".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status) || "CANCELED".equalsIgnoreCase(status)) {
+                String title = node.path("title").asText();
+                String category = node.path("category").asText();
+                BigDecimal startPrice = new BigDecimal(node.path("startingPrice").asText("0"));
+                BigDecimal winPrice = new BigDecimal(node.path("currentPrice").asText("0"));
+                JsonNode winnerNode = node.path("winner");
+                String winner = (winnerNode != null && !winnerNode.isNull() && !winnerNode.isMissingNode())
+                        ? winnerNode.path("username").asText("-") : "-";
+                JsonNode sellerNode = node.path("seller");
+                String seller = (sellerNode != null && !sellerNode.isNull() && !sellerNode.isMissingNode())
+                        ? sellerNode.path("username").asText("-") : "-";
+                String endTime = formatEndTime(node.path("endTime").asText());
+                rows.add(new HistoryRow(title, category, currencyFormat.format(startPrice),
+                        currencyFormat.format(winPrice), winner, seller, endTime));
+            }
         }
-        applyFilter();
-        updateStats();
+        JsonNode histRoot = mapper.readTree(histBody);
+        for (JsonNode node : histRoot) {
+            String title = node.path("title").asText();
+            String category = node.path("category").asText();
+            BigDecimal startPrice = new BigDecimal(node.path("startingPrice").asText("0"));
+            BigDecimal winPrice = new BigDecimal(node.path("winningPrice").asText("0"));
+            String winner = node.path("winnerName").asText("-");
+            String seller = node.path("sellerName").asText("-");
+            String endTime = formatEndTime(node.path("endTime").asText());
+            rows.add(new HistoryRow("[Đã xóa] " + title, category, currencyFormat.format(startPrice),
+                    currencyFormat.format(winPrice), winner, seller, endTime));
+        }
+        return rows;
+    }
+
+    private void loadFallbackHistory() {
+        historyList.setAll(
+                new HistoryRow("[Đã xóa] Bàn phím cơ Custom", "Electronics", "1.500.000 VND", "2.100.000 VND", "bidder1", "seller1", "20/05/2026 15:30"),
+                new HistoryRow("Apple Watch Ultra", "Electronics", "15.000.000 VND", "18.500.000 VND", "vietanh", "seller2", "19/05/2026 18:00")
+        );
+    }
+
+    private void applyHistoryFilter() {
+        String keyword = historySearchField.getText() == null ? "" : historySearchField.getText().trim().toLowerCase();
+        filteredHistoryList.setAll(historyList.filtered(row ->
+                keyword.isEmpty()
+                        || row.titleProperty().get().toLowerCase().contains(keyword)
+                        || row.categoryProperty().get().toLowerCase().contains(keyword)
+                        || row.winnerNameProperty().get().toLowerCase().contains(keyword)
+        ));
+    }
+
+    private void loadAuctions() {
+        loadHistory();
+        CompletableFuture.runAsync(() -> {
+            try {
+                HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
+                if (response.statusCode() == 200) {
+                    String body = response.body();
+                    if (!body.equals(lastResponseJson)) {
+                        lastResponseJson = body;
+                        ObservableList<AuctionRow> parsed = parseAuctions(body);
+                        Platform.runLater(() -> {
+                            auctions.setAll(parsed);
+                            statusLabel.setText("Da tai danh sach dau gia tu server.");
+                            applyFilter();
+                            updateStats();
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> {
+                        loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
+                        applyFilter();
+                        updateStats();
+                    });
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
+                    applyFilter();
+                    updateStats();
+                });
+            }
+        });
     }
 
     private ObservableList<AuctionRow> parseAuctions(String body) throws Exception {
         ObservableList<AuctionRow> rows = FXCollections.observableArrayList();
-        JsonNode root = new ObjectMapper().readTree(body);
+        JsonNode root = mapper.readTree(body);
         for (JsonNode node : root) {
             Long id = node.path("id").asLong();
             String title = node.path("title").asText();
@@ -284,142 +410,6 @@ public class DashboardController {
         public SimpleStringProperty statusProperty() { return status; }
         public SimpleStringProperty endTimeProperty() { return endTime; }
     }
-
-    // ==================== Navigation and History Logic ====================
-
-    @FXML
-    private void onViewDashboard() {
-        if (auctionPanel != null) {
-            auctionPanel.setVisible(true);
-            auctionPanel.setManaged(true);
-        }
-        if (historyPanel != null) {
-            historyPanel.setVisible(false);
-            historyPanel.setManaged(false);
-        }
-
-        if (dashboardButton != null) {
-            dashboardButton.getStyleClass().removeAll("nav-button", "nav-button-active");
-            dashboardButton.getStyleClass().add("nav-button-active");
-        }
-        if (historyNavButton != null) {
-            historyNavButton.getStyleClass().removeAll("nav-button", "nav-button-active");
-            historyNavButton.getStyleClass().add("nav-button");
-        }
-
-        loadAuctions();
-    }
-
-    @FXML
-    private void onViewHistory() {
-        if (auctionPanel != null) {
-            auctionPanel.setVisible(false);
-            auctionPanel.setManaged(false);
-        }
-        if (historyPanel != null) {
-            historyPanel.setVisible(true);
-            historyPanel.setManaged(true);
-        }
-
-        if (dashboardButton != null) {
-            dashboardButton.getStyleClass().removeAll("nav-button", "nav-button-active");
-            dashboardButton.getStyleClass().add("nav-button");
-        }
-        if (historyNavButton != null) {
-            historyNavButton.getStyleClass().removeAll("nav-button", "nav-button-active");
-            historyNavButton.getStyleClass().add("nav-button-active");
-        }
-
-        loadHistoryData();
-    }
-
-    @FXML
-    private void onRefreshHistory() {
-        loadHistoryData();
-    }
-
-    private void loadHistoryData() {
-        histories.clear();
-        new Thread(() -> {
-            try {
-                // 1. Tải các phiên đấu giá đang chạy nhưng đã kết thúc (status = FINISHED, CANCELED)
-                HttpResponse<String> activeRes = BackendClient.getInstance().get("/auctions");
-                ObservableList<HistoryRow> activeHistories = FXCollections.observableArrayList();
-                if (activeRes.statusCode() == 200) {
-                    JsonNode root = new ObjectMapper().readTree(activeRes.body());
-                    for (JsonNode node : root) {
-                        String status = node.path("status").asText();
-                        if ("FINISHED".equalsIgnoreCase(status) || "CANCELED".equalsIgnoreCase(status) || "PAID".equalsIgnoreCase(status)) {
-                            String title = node.path("title").asText();
-                            String category = node.path("category").asText();
-                            BigDecimal startingPrice = new BigDecimal(node.path("startingPrice").asText("0"));
-                            BigDecimal winningPrice = new BigDecimal(node.path("currentPrice").asText("0"));
-                            String winner = node.path("winner").path("username").asText("Chưa có");
-                            if (winner.isBlank() || "null".equals(winner)) winner = "Chưa có";
-                            String seller = node.path("seller").path("username").asText("?");
-                            String endTime = formatEndTime(node.path("endTime").asText());
-
-                            activeHistories.add(new HistoryRow(
-                                    title, category,
-                                    currencyFormat.format(startingPrice),
-                                    currencyFormat.format(winningPrice),
-                                    winner, seller, endTime
-                            ));
-                        }
-                    }
-                }
-
-                // 2. Tải các phiên lưu trữ từ bảng AuctionHistory
-                HttpResponse<String> archiveRes = BackendClient.getInstance().get("/auctions/history");
-                ObservableList<HistoryRow> archivedHistories = FXCollections.observableArrayList();
-                if (archiveRes.statusCode() == 200) {
-                    JsonNode root = new ObjectMapper().readTree(archiveRes.body());
-                    for (JsonNode node : root) {
-                        String title = node.path("title").asText();
-                        String category = node.path("category").asText();
-                        BigDecimal startingPrice = new BigDecimal(node.path("startingPrice").asText("0"));
-                        BigDecimal winningPrice = new BigDecimal(node.path("winningPrice").asText("0"));
-                        String winner = node.path("winnerName").asText("Chưa có");
-                        if (winner.isBlank() || "null".equals(winner)) winner = "Chưa có";
-                        String seller = node.path("sellerName").asText("?");
-                        String endTime = formatEndTime(node.path("endTime").asText());
-
-                        archivedHistories.add(new HistoryRow(
-                                title, category,
-                                currencyFormat.format(startingPrice),
-                                currencyFormat.format(winningPrice),
-                                winner, seller, endTime
-                        ));
-                    }
-                }
-
-                javafx.application.Platform.runLater(() -> {
-                    histories.addAll(activeHistories);
-                    histories.addAll(archivedHistories);
-                    // Sắp xếp các phiên mới nhất lên đầu
-                    histories.sort((r1, r2) -> r2.endTimeProperty().get().compareTo(r1.endTimeProperty().get()));
-                    applyHistoryFilter();
-                });
-            } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> {
-                    statusLabel.setText("Lỗi tải lịch sử kết quả: " + e.getMessage());
-                });
-            }
-        }).start();
-    }
-
-    private void applyHistoryFilter() {
-        String keyword = historySearchField.getText() == null ? "" : historySearchField.getText().trim().toLowerCase();
-        filteredHistories.setAll(histories.filtered(row ->
-                keyword.isEmpty()
-                        || row.titleProperty().get().toLowerCase().contains(keyword)
-                        || row.categoryProperty().get().toLowerCase().contains(keyword)
-                        || row.winnerNameProperty().get().toLowerCase().contains(keyword)
-                        || row.sellerNameProperty().get().toLowerCase().contains(keyword)
-        ));
-    }
-
-    // ==================== Inner HistoryRow Class ====================
 
     public static class HistoryRow {
         private final SimpleStringProperty title;

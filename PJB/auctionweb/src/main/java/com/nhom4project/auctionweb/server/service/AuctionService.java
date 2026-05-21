@@ -293,6 +293,11 @@ public class AuctionService {
             throw new IllegalArgumentException("User is not a Bidder");
         }
 
+        // Không cho phép bidder hiện tại đặt giá lại khi vẫn là người dẫn đầu
+        if (auction.getWinner() != null && auction.getWinner().getId().equals(bidder.getId())) {
+            throw new IllegalStateException("Bạn đã là người giữ giá hiện tại");
+        }
+
         // Cập nhật auction
         auction.setCurrentPrice(amount);
         auction.setBidCount(auction.getBidCount() + 1);
@@ -492,6 +497,17 @@ public class AuctionService {
         } catch (Exception e) {
             log.warn("Failed to broadcast auction list refresh: {}", e.getMessage());
         }
+    }
+
+    public List<AuctionHistory> listAuctionHistories() {
+        List<AuctionHistory> list = auctionHistoryRepository.findAll();
+        list.sort((a, b) -> {
+            if (a.getEndTime() == null && b.getEndTime() == null) return 0;
+            if (a.getEndTime() == null) return 1;
+            if (b.getEndTime() == null) return -1;
+            return b.getEndTime().compareTo(a.getEndTime());
+        });
+        return list;
     }
 
     private Auction findAuction(Long id) {
