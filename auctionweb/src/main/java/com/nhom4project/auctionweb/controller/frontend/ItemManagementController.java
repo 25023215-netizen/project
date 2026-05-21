@@ -62,8 +62,6 @@ public class ItemManagementController {
         typeCombo.setOnAction(e -> updateExtraFieldLabels());
         updateExtraFieldLabels();
 
-<<<<<<< Updated upstream
-=======
         // Đăng ký sự kiện chọn dòng trong bảng để tự động điền vào form
         itemTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -76,7 +74,6 @@ public class ItemManagementController {
                 extra2Field.setText(newSelection.extra2Property().get());
             }
         });
->>>>>>> Stashed changes
         loadItems();
 
         durationUnitCombo.setItems(FXCollections.observableArrayList("Phut", "Gio", "Ngay"));
@@ -102,14 +99,6 @@ public class ItemManagementController {
                     Platform.runLater(() -> {
                         items.clear();
                         for (JsonNode node : root) {
-<<<<<<< Updated upstream
-                            items.add(new ItemRow(
-                                    node.path("id").asText(),
-                                    node.path("name").asText(),
-                                    node.path("item_type").asText(guessType(node)),
-                                    String.format("%,.0f", node.path("startingPrice").asDouble()),
-                                    node.path("description").asText("")
-=======
                             String type = guessType(node);
                             String extra1 = "";
                             String extra2 = "";
@@ -132,7 +121,6 @@ public class ItemManagementController {
                                     node.path("description").asText(""),
                                     extra1,
                                     extra2
->>>>>>> Stashed changes
                             ));
                         }
                         statusLabel.setText("Da tai " + items.size() + " san pham");
@@ -145,13 +133,10 @@ public class ItemManagementController {
     }
 
     private String guessType(JsonNode node) {
-<<<<<<< Updated upstream
-=======
         if (node.has("item_type")) {
             String type = node.path("item_type").asText();
             if (!type.isBlank()) return type.toUpperCase();
         }
->>>>>>> Stashed changes
         if (node.has("brand")) return "ELECTRONICS";
         if (node.has("artist")) return "ART";
         if (node.has("manufacturer")) return "VEHICLE";
@@ -223,8 +208,6 @@ public class ItemManagementController {
         }).start();
     }
 
-<<<<<<< Updated upstream
-=======
     @FXML
     private void onUpdateItem() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
@@ -269,7 +252,6 @@ public class ItemManagementController {
         }).start();
     }
 
->>>>>>> Stashed changes
     /**
      * Tạo phiên đấu giá từ sản phẩm đã chọn.
      */
@@ -350,25 +332,17 @@ public class ItemManagementController {
         private final SimpleStringProperty type;
         private final SimpleStringProperty price;
         private final SimpleStringProperty desc;
-<<<<<<< Updated upstream
-
-        public ItemRow(String id, String name, String type, String price, String desc) {
-=======
         private final SimpleStringProperty extra1;
         private final SimpleStringProperty extra2;
 
         public ItemRow(String id, String name, String type, String price, String desc, String extra1, String extra2) {
->>>>>>> Stashed changes
             this.id = id;
             this.name = new SimpleStringProperty(name);
             this.type = new SimpleStringProperty(type);
             this.price = new SimpleStringProperty(price);
             this.desc = new SimpleStringProperty(desc);
-<<<<<<< Updated upstream
-=======
             this.extra1 = new SimpleStringProperty(extra1);
             this.extra2 = new SimpleStringProperty(extra2);
->>>>>>> Stashed changes
         }
 
         public String getId() { return id; }
@@ -376,11 +350,8 @@ public class ItemManagementController {
         public SimpleStringProperty typeProperty() { return type; }
         public SimpleStringProperty priceProperty() { return price; }
         public SimpleStringProperty descProperty() { return desc; }
-<<<<<<< Updated upstream
-=======
         public SimpleStringProperty extra1Property() { return extra1; }
         public SimpleStringProperty extra2Property() { return extra2; }
->>>>>>> Stashed changes
     }
 }
 
