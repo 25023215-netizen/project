@@ -2,6 +2,7 @@ package com.nhom4project.auctionweb.controller.frontend;
 
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
+import com.nhom4project.auctionweb.client.utils.ErrorLogger;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -95,6 +96,7 @@ public class SignupController {
                     }
                 });
             } catch (Exception e) {
+                ErrorLogger.log("Lỗi trong quá trình đăng ký tài khoản", e);
                 Platform.runLater(() -> {
                     statusLabel.setText("Lỗi: " + e.getMessage());
                     signUpButton.setDisable(false);
