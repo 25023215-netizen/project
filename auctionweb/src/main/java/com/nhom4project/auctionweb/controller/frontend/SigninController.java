@@ -3,6 +3,7 @@ package com.nhom4project.auctionweb.controller.frontend;
 import com.nhom4project.auctionweb.client.utils.BackendClient;
 import com.nhom4project.auctionweb.client.utils.SceneUtils;
 import com.nhom4project.auctionweb.client.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.ErrorLogger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -94,6 +95,7 @@ public class SigninController {
                                     userRole
                             );
                         } catch (Exception e) {
+                            ErrorLogger.log("Lỗi parse thông tin user khi đăng nhập: " + username, e);
                             SessionManager.getInstance().setUser(0L, username, username, selectedRole);
                         }
 
@@ -110,6 +112,7 @@ public class SigninController {
                     }
                 });
             } catch (Exception e) {
+                ErrorLogger.log("Lỗi kết nối khi đăng nhập: " + username, e);
                 Platform.runLater(() -> {
                     statusLabel.setText("Không thể kết nối tới máy chủ! Hãy chắc chắn backend đã chạy.");
                     statusLabel.setStyle("-fx-text-fill: red;");
@@ -131,6 +134,7 @@ public class SigninController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             SceneUtils.changeScene(stage, "/fxml/signup.fxml", "Dang ky nguoi dung", "/style/signup.css");
         } catch (Exception e) {
+            ErrorLogger.log("Lỗi chuyển đổi sang màn hình Đăng ký", e);
             e.printStackTrace();
         }
     }
@@ -143,6 +147,7 @@ public class SigninController {
             stage.setMinHeight(680);
             stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
+            ErrorLogger.log("Lỗi mở màn hình Dashboard", e);
             statusLabel.setText("Khong the mo Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
             signinButton.setDisable(false);
@@ -158,6 +163,7 @@ public class SigninController {
             stage.setMinHeight(700);
             stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
+            ErrorLogger.log("Lỗi mở màn hình Admin Dashboard", e);
             statusLabel.setText("Khong the mo Admin Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
             signinButton.setDisable(false);
