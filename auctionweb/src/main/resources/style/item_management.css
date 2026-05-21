@@ -98,6 +98,19 @@
     -fx-background-color: #dc2626;
 }
 
+.warning-button {
+    -fx-background-color: #f59e0b;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.warning-button:hover {
+    -fx-background-color: #d97706;
+}
+
 .status-label {
     -fx-font-size: 13px;
     -fx-text-fill: #64748b;

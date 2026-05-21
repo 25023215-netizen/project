@@ -51,8 +51,9 @@
                         </HBox>
 
                         <HBox spacing="10">
-                            <Button text="Thêm sản phẩm" onAction="#onAddItem" styleClass="primary-button"/>
-                            <Button text="Xóa sản phẩm" onAction="#onDeleteItem" styleClass="danger-button"/>
+                            <Button text="Thêm" onAction="#onAddItem" styleClass="primary-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                            <Button text="Cập nhật" onAction="#onUpdateItem" styleClass="warning-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                            <Button text="Xóa" onAction="#onDeleteItem" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                         </HBox>
 
                         <!-- Tạo phiên đấu giá -->
