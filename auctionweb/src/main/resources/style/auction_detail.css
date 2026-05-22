@@ -142,59 +142,64 @@
     -fx-text-fill: #64748b;
 }
 
-/* Stacked Chart Styles */
-.chart-stack {
-    -fx-background-color: #ffffff;
-    -fx-padding: 10;
-}
+/* ===== Line Chart — Biểu đồ diễn biến giá theo ảnh mẫu ===== */
 
-/* Base style for the Bar Chart bars - premium green to orange gradient */
-.bar-chart .chart-bar {
-    -fx-bar-fill: linear-gradient(to top, #22c55e, #84cc16, #eab308, #f97316);
-    -fx-background-radius: 4 4 0 0;
-}
-
-/* Translucent overlay styles for the Line Chart */
+/* Nền trắng sạch */
 .line-chart {
     -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
 }
 
 .line-chart .chart-plot-background {
-    -fx-background-color: transparent;
-}
-
-/* Main connecting line - green to orange gradient stroke */
-.line-chart .chart-series-line {
-    -fx-stroke: linear-gradient(to right, #22c55e, #84cc16, #eab308, #f97316);
-    -fx-stroke-width: 4px;
-}
-
-/* Grid lines and background styles for Bar Chart */
-.bar-chart .chart-plot-background {
     -fx-background-color: #ffffff;
 }
 
-.bar-chart .chart-vertical-grid-lines,
-.bar-chart .chart-horizontal-grid-lines {
-    -fx-stroke: #f1f5f9;
-    -fx-stroke-width: 0.8px;
+/* Đường nối màu xanh dương, dày 2.5px */
+.line-chart .chart-series-line {
+    -fx-stroke: #2196F3;
+    -fx-stroke-width: 2.5px;
 }
 
-/* Hiding line-chart gridlines entirely */
-.line-chart .chart-vertical-grid-lines,
-.line-chart .chart-horizontal-grid-lines {
+/* Ẩn lưới dọc */
+.line-chart .chart-vertical-grid-lines {
     -fx-stroke: transparent;
 }
 
-/* Axis styles */
-.axis {
-    -fx-tick-label-fill: #64748b;
-    -fx-font-size: 11px;
+/* Lưới ngang dạng dashed (đứt nét) giống ảnh mẫu */
+.line-chart .chart-horizontal-grid-lines {
+    -fx-stroke: #cccccc;
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 6 4;
 }
 
-.axis-axis-label {
-    -fx-text-fill: #475569;
-    -fx-font-weight: bold;
+/* Trục ngang và dọc */
+.line-chart .axis-line {
+    -fx-stroke: #aaaaaa;
+    -fx-stroke-width: 1px;
+}
+
+/* Nhãn trục */
+.line-chart .axis {
+    -fx-tick-label-fill: #444444;
+    -fx-tick-label-font-size: 11px;
+}
+
+/* Ẩn tick mark nhỏ trên trục */
+.line-chart .axis-tick-mark {
+    -fx-stroke: transparent;
+}
+
+/* Ẩn symbol mặc định, chỉ dùng custom Circle */
+.line-chart .chart-line-symbol {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+/* Alternate row fill — tắt */
+.line-chart .chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
 }
 
 /* History List */

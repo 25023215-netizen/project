@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.*?>
 
-<BorderPane fx:controller="com.nhom4project.auctionweb.controller.frontend.AuctionDetailController"
+<BorderPane fx:controller="com.nhom4project.auctionweb.frontend.controller.AuctionDetailController"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@../style/auction_detail.css"
             styleClass="detail-root">
@@ -21,7 +21,7 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="false" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
             <content>
                 <HBox spacing="20" styleClass="detail-content">
                     <!-- Left: Info + Bidding -->
@@ -91,26 +91,16 @@
                         <!-- Price Chart -->
                         <VBox spacing="8" styleClass="chart-card" VBox.vgrow="ALWAYS">
                             <Label text="Biểu đồ giá (Realtime)" styleClass="section-title"/>
-                            <StackPane VBox.vgrow="ALWAYS" styleClass="chart-stack">
-                                <!-- BarChart for vertical bars -->
-                                <BarChart fx:id="barChart" legendVisible="false" animated="false" horizontalGridLinesVisible="false" verticalGridLinesVisible="false" styleClass="bar-chart">
-                                    <xAxis>
-                                        <CategoryAxis fx:id="barXAxis" label="Lượt đặt giá #" tickLabelsVisible="false" tickMarkVisible="false"/>
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis fx:id="barYAxis" label="Giá (VND)" autoRanging="true"/>
-                                    </yAxis>
-                                </BarChart>
-                                <!-- LineChart for the connecting line -->
-                                <LineChart fx:id="lineChart" legendVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" verticalGridLinesVisible="false" styleClass="line-chart">
-                                    <xAxis>
-                                        <CategoryAxis fx:id="lineXAxis" visible="false"/>
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis fx:id="lineYAxis" visible="false" autoRanging="true"/>
-                                    </yAxis>
-                                </LineChart>
-                            </StackPane>
+                            <LineChart fx:id="lineChart" legendVisible="false" animated="false" createSymbols="true"
+                                       horizontalGridLinesVisible="true" verticalGridLinesVisible="false"
+                                       styleClass="line-chart" VBox.vgrow="ALWAYS">
+                                <xAxis>
+                                    <CategoryAxis fx:id="lineXAxis"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis fx:id="lineYAxis" autoRanging="true" forceZeroInRange="false"/>
+                                </yAxis>
+                            </LineChart>
                         </VBox>
 
                         <!-- Bid History -->

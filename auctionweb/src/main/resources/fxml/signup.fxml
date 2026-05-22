@@ -4,7 +4,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <!-- Root container: StackPane để center nội dung trong cửa sổ -->
-<StackPane fx:controller="com.nhom4project.auctionweb.controller.frontend.SignupController"
+<StackPane fx:controller="com.nhom4project.auctionweb.frontend.controller.SignupController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signup.css"
            style="-fx-background-color: linear-gradient(to bottom right, #fef3c7, #fde2e2);">
