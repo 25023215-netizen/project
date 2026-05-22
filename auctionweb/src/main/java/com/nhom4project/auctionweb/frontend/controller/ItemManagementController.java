@@ -296,6 +296,11 @@ public class ItemManagementController {
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
                         statusLabel.setText("Tao phien dau gia thanh cong!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Thong bao");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Tao phien dau gia thanh cong!");
+                        alert.showAndWait();
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
