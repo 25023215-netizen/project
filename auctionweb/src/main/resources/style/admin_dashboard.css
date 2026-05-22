@@ -1,0 +1,206 @@
+/* ==================== Admin Dashboard Styles ==================== */
+
+.root-pane {
+    -fx-background-color: #f0f2f5;
+}
+
+/* Header */
+.header-bar {
+    -fx-background-color: linear-gradient(to right, #1e3a5f, #2d5a87);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
+}
+
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.admin-info {
+    -fx-text-fill: #b0c4de;
+    -fx-font-size: 14px;
+}
+
+.logout-btn {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 8 18;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255,255,255,0.3);
+    -fx-border-radius: 6;
+}
+
+.logout-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.25);
+}
+
+/* Main content */
+.main-content {
+    -fx-background-color: #f0f2f5;
+}
+
+/* Stats cards */
+.stats-row {
+    -fx-alignment: CENTER;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 18 22;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-alignment: CENTER;
+    -fx-spacing: 8;
+    -fx-min-width: 150;
+}
+
+.stat-title {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.stat-value {
+    -fx-text-fill: #1e3a5f;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.stat-value.revenue {
+    -fx-text-fill: #059669;
+}
+
+/* Tabs */
+.admin-tabs .tab-header-area {
+    -fx-padding: 5 0 0 0;
+}
+
+.admin-tabs .tab {
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding: 8 20;
+}
+
+.admin-tabs .tab:selected {
+    -fx-background-color: white;
+}
+
+.admin-tabs .tab .tab-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.admin-tabs .tab-content-area {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 12 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+}
+
+/* Action buttons */
+.action-btn {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.action-btn:hover {
+    -fx-background-color: #2563eb;
+}
+
+/* Data Table */
+.data-table {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+}
+
+.data-table .column-header {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e5e7eb;
+    -fx-padding: 10 8;
+}
+
+.data-table .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+    -fx-font-size: 13px;
+}
+
+.data-table .table-row-cell {
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+    -fx-padding: 4 0;
+}
+
+.data-table .table-row-cell:hover {
+    -fx-background-color: #f0f9ff;
+}
+
+.data-table .table-cell {
+    -fx-padding: 8;
+    -fx-font-size: 13px;
+}
+
+/* Row action buttons */
+.lock-btn {
+    -fx-background-color: #f59e0b;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4 10;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.lock-btn:hover {
+    -fx-background-color: #d97706;
+}
+
+.delete-btn {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4 10;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.delete-btn:hover {
+    -fx-background-color: #dc2626;
+}
+
+.approve-btn {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4 10;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.approve-btn:hover {
+    -fx-background-color: #059669;
+}
+
+.reject-btn {
+    -fx-background-color: #f97316;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4 10;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.reject-btn:hover {
+    -fx-background-color: #ea580c;
+}
+
+/* Status bar */
+.status-bar {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+    -fx-padding: 5 0;
+}
