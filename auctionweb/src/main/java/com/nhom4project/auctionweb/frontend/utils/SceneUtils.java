@@ -15,24 +15,32 @@ public class SceneUtils {
         try {
             FXMLLoader loader = new FXMLLoader(SceneUtils.class.getResource(fxmlPath));
             Parent root = loader.load();
-            
+
+            boolean wasMaximized = stage.isMaximized();
+            boolean wasFullScreen = stage.isFullScreen();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1180;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 760;
+
             Scene currentScene = stage.getScene();
             if (currentScene == null) {
-                // If no scene exists, create one with default size
-                currentScene = new Scene(root, 1180, 760);
+                currentScene = new Scene(root, width, height);
                 stage.setScene(currentScene);
             } else {
-                // If scene exists, just update the root to preserve window size/state
                 currentScene.setRoot(root);
             }
-            
-            // Update stylesheets
+
             if (stylesheetPath != null) {
                 currentScene.getStylesheets().clear();
                 currentScene.getStylesheets().add(SceneUtils.class.getResource(stylesheetPath).toExternalForm());
             }
-            
+
             stage.setTitle(title);
+            if (wasMaximized) {
+                stage.setMaximized(true);
+            }
+            if (wasFullScreen) {
+                stage.setFullScreen(true);
+            }
             stage.show();
         } catch (Exception e) {
             System.err.println("Error changing scene to " + fxmlPath + ": " + e.getMessage());
@@ -47,23 +55,34 @@ public class SceneUtils {
         try {
             FXMLLoader loader = new FXMLLoader(SceneUtils.class.getResource(fxmlPath));
             Parent root = loader.load();
-            
+
+            boolean wasMaximized = stage.isMaximized();
+            boolean wasFullScreen = stage.isFullScreen();
+            double width = stage.getWidth() > 0 ? stage.getWidth() : 1180;
+            double height = stage.getHeight() > 0 ? stage.getHeight() : 760;
+
             Scene currentScene = stage.getScene();
             if (currentScene == null) {
-                currentScene = new Scene(root, 1180, 760);
+                currentScene = new Scene(root, width, height);
                 stage.setScene(currentScene);
             } else {
                 currentScene.setRoot(root);
             }
-            
+
             if (stylesheetPath != null) {
                 currentScene.getStylesheets().clear();
                 currentScene.getStylesheets().add(SceneUtils.class.getResource(stylesheetPath).toExternalForm());
             }
-            
+
             stage.setTitle(title);
+            if (wasMaximized) {
+                stage.setMaximized(true);
+            }
+            if (wasFullScreen) {
+                stage.setFullScreen(true);
+            }
             stage.show();
-            
+
             return loader.getController();
         } catch (Exception e) {
             System.err.println("Error changing scene with controller to " + fxmlPath + ": " + e.getMessage());
