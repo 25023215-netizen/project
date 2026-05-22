@@ -1,8 +1,10 @@
 package com.nhom4project.auctionweb.frontend.utils;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -40,11 +42,15 @@ public class SceneUtils {
             }
 
             javafx.application.Platform.runLater(() -> {
-                if (wasMaximized) {
-                    stage.setMaximized(true);
-                }
                 if (wasFullScreen) {
                     stage.setFullScreen(true);
+                } else if (wasMaximized) {
+                    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+                    stage.setX(bounds.getMinX());
+                    stage.setY(bounds.getMinY());
+                    stage.setWidth(bounds.getWidth());
+                    stage.setHeight(bounds.getHeight());
+                    stage.setMaximized(true);
                 }
             });
         } catch (Exception e) {
@@ -85,11 +91,15 @@ public class SceneUtils {
             }
 
             javafx.application.Platform.runLater(() -> {
-                if (wasMaximized) {
-                    stage.setMaximized(true);
-                }
                 if (wasFullScreen) {
                     stage.setFullScreen(true);
+                } else if (wasMaximized) {
+                    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+                    stage.setX(bounds.getMinX());
+                    stage.setY(bounds.getMinY());
+                    stage.setWidth(bounds.getWidth());
+                    stage.setHeight(bounds.getHeight());
+                    stage.setMaximized(true);
                 }
             });
 
