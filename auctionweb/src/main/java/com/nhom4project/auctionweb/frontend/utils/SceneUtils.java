@@ -33,7 +33,9 @@ public class SceneUtils {
             }
             
             stage.setTitle(title);
-            stage.show();
+            if (!stage.isShowing()) {
+                stage.show();
+            }
         } catch (Exception e) {
             System.err.println("Error changing scene to " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
@@ -62,7 +64,9 @@ public class SceneUtils {
             }
             
             stage.setTitle(title);
-            stage.show();
+            if (!stage.isShowing()) {
+                stage.show();
+            }
             
             return loader.getController();
         } catch (Exception e) {
