@@ -7,12 +7,13 @@
 <StackPane fx:controller="com.nhom4project.auctionweb.frontend.controller.SigninController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signin.css"
-           style="-fx-background-color: linear-gradient(to bottom right, #e3f2fd, #f3e5f5);">
+           styleClass="auth-root">
     <!-- Card chính chứa toàn bộ form -->
     <VBox alignment="CENTER" spacing="25" styleClass="form-card">
         <!-- Header section với title -->
-        <VBox alignment="CENTER" spacing="10">
+        <VBox alignment="CENTER" spacing="8">
             <Label text="Chào mừng quay trở lại" styleClass="title-label"/>
+            <Label text="Nhập thông tin để tiếp tục tham gia đấu giá" styleClass="subtitle-label"/>
         </VBox>
         <!-- Container chứa các input fields -->
         <VBox spacing="15" styleClass="form-container">

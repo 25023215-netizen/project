@@ -1,206 +1,220 @@
 /* ==================== Admin Dashboard Styles ==================== */
 
 .root-pane {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: linear-gradient(135deg, #08192f 0%, #10264d 45%, #183663 100%);
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* Header */
 .header-bar {
-    -fx-background-color: linear-gradient(to right, #1e3a5f, #2d5a87);
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
+    -fx-background-color: linear-gradient(to right, #10264d 0%, #1d3f72 50%, #142c56 100%);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 26, 0, 0, 14);
+    -fx-padding: 18 28;
 }
 
 .header-title {
-    -fx-text-fill: white;
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
+    -fx-text-fill: #ffc857;
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
 }
 
 .admin-info {
-    -fx-text-fill: #b0c4de;
+    -fx-text-fill: #dbeafe;
     -fx-font-size: 14px;
 }
 
 .logout-btn {
-    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-background-color: rgba(255,255,255,0.16);
     -fx-text-fill: white;
     -fx-font-size: 13px;
-    -fx-padding: 8 18;
-    -fx-background-radius: 6;
+    -fx-padding: 10 18;
+    -fx-background-radius: 16;
     -fx-cursor: hand;
-    -fx-border-color: rgba(255,255,255,0.3);
-    -fx-border-radius: 6;
+    -fx-border-color: rgba(255,255,255,0.22);
+    -fx-border-radius: 16;
 }
 
 .logout-btn:hover {
-    -fx-background-color: rgba(255,255,255,0.25);
+    -fx-background-color: rgba(255,255,255,0.26);
 }
 
-/* Main content */
 .main-content {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: transparent;
 }
 
-/* Stats cards */
 .stats-row {
     -fx-alignment: CENTER;
+    -fx-padding: 8 0 0 0;
 }
 
 .stat-card {
-    -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-padding: 18 22;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 28;
+    -fx-padding: 24 28;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 28, 0, 0, 14),
+                dropshadow(gaussian, rgba(255,200,87,0.12), 14, 0, 0, 6);
+    -fx-border-color: rgba(255,200,87,0.15);
+    -fx-border-width: 1.5;
+    -fx-border-radius: 28;
     -fx-alignment: CENTER;
-    -fx-spacing: 8;
-    -fx-min-width: 150;
+    -fx-spacing: 10;
+    -fx-min-width: 180;
 }
 
 .stat-title {
-    -fx-text-fill: #6b7280;
+    -fx-text-fill: #64748b;
     -fx-font-size: 12px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 800;
 }
 
 .stat-value {
-    -fx-text-fill: #1e3a5f;
-    -fx-font-size: 26px;
-    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
 }
 
 .stat-value.revenue {
-    -fx-text-fill: #059669;
+    -fx-text-fill: #ffd166;
 }
 
-/* Tabs */
 .admin-tabs .tab-header-area {
-    -fx-padding: 5 0 0 0;
+    -fx-padding: 10 0 0 0;
 }
 
 .admin-tabs .tab {
-    -fx-background-color: #e5e7eb;
-    -fx-background-radius: 8 8 0 0;
-    -fx-padding: 8 20;
+    -fx-background-color: rgba(255,255,255,0.93);
+    -fx-background-radius: 20 20 0 0;
+    -fx-padding: 0 24;
+    -fx-border-color: rgba(255,200,87,0.1);
+    -fx-border-width: 1;
+    -fx-border-radius: 20 20 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);
 }
 
 .admin-tabs .tab:selected {
-    -fx-background-color: white;
+    -fx-background-color: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0.98));
+    -fx-border-color: rgba(255,200,87,0.3);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0, 0, 6);
 }
 
 .admin-tabs .tab .tab-label {
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 900;
+    -fx-text-fill: #334155;
+}
+
+.admin-tabs .tab:selected .tab-label {
+    -fx-text-fill: #10264d;
 }
 
 .admin-tabs .tab-content-area {
-    -fx-background-color: white;
-    -fx-background-radius: 0 0 12 12;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 0 0 20 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 16, 0, 0, 10);
 }
 
-/* Action buttons */
 .action-btn {
-    -fx-background-color: #3b82f6;
-    -fx-text-fill: white;
+    -fx-background-color: #ffc857;
+    -fx-text-fill: #10264d;
     -fx-font-size: 13px;
-    -fx-padding: 8 16;
-    -fx-background-radius: 6;
+    -fx-padding: 10 18;
+    -fx-background-radius: 16;
     -fx-cursor: hand;
 }
 
 .action-btn:hover {
-    -fx-background-color: #2563eb;
+    -fx-background-color: #fbbf24;
 }
 
-/* Data Table */
 .data-table {
-    -fx-background-color: white;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 8;
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-border-color: transparent;
+    -fx-background-radius: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 16, 0, 0, 8);
 }
 
 .data-table .column-header {
-    -fx-background-color: #f8fafc;
-    -fx-border-color: #e5e7eb;
-    -fx-padding: 10 8;
+    -fx-background-color: linear-gradient(to bottom, rgba(248,250,252,0.98), rgba(240,245,250,0.95));
+    -fx-border-color: transparent;
+    -fx-padding: 12 10;
 }
 
 .data-table .column-header .label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #374151;
+    -fx-font-weight: 900;
+    -fx-text-fill: #10264d;
     -fx-font-size: 13px;
 }
 
 .data-table .table-row-cell {
-    -fx-border-color: transparent transparent #f3f4f6 transparent;
-    -fx-padding: 4 0;
+    -fx-border-color: transparent transparent rgba(16,37,77,0.08) transparent;
+    -fx-padding: 6 0;
 }
 
 .data-table .table-row-cell:hover {
-    -fx-background-color: #f0f9ff;
+    -fx-background-color: rgba(255,255,255,0.8);
 }
 
 .data-table .table-cell {
-    -fx-padding: 8;
+    -fx-padding: 10;
     -fx-font-size: 13px;
 }
 
-/* Row action buttons */
-.lock-btn {
-    -fx-background-color: #f59e0b;
+.lock-btn, .delete-btn, .approve-btn, .reject-btn {
     -fx-text-fill: white;
     -fx-font-size: 11px;
-    -fx-padding: 4 10;
-    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-background-radius: 14;
     -fx-cursor: hand;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-font-weight: bold;
+}
+
+.lock-btn {
+    -fx-background-color: linear-gradient(to bottom, #f59e0b, #d97706);
+    -fx-border-color: rgba(245, 158, 11, 0.3);
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.2), 8, 0, 0, 5);
 }
 
 .lock-btn:hover {
-    -fx-background-color: #d97706;
+    -fx-background-color: linear-gradient(to bottom, #fbbf24, #d97706);
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.3), 10, 0, 0, 7);
 }
 
 .delete-btn {
-    -fx-background-color: #ef4444;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-padding: 4 10;
-    -fx-background-radius: 4;
-    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, #ef4444, #dc2626);
+    -fx-border-color: rgba(239, 68, 68, 0.3);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.2), 8, 0, 0, 5);
 }
 
 .delete-btn:hover {
-    -fx-background-color: #dc2626;
+    -fx-background-color: linear-gradient(to bottom, #f87171, #dc2626);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.3), 10, 0, 0, 7);
 }
 
 .approve-btn {
-    -fx-background-color: #10b981;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-padding: 4 10;
-    -fx-background-radius: 4;
-    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, #10b981, #059669);
+    -fx-border-color: rgba(16, 185, 129, 0.3);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.2), 8, 0, 0, 5);
 }
 
 .approve-btn:hover {
-    -fx-background-color: #059669;
+    -fx-background-color: linear-gradient(to bottom, #6ee7b7, #059669);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.3), 10, 0, 0, 7);
 }
 
 .reject-btn {
-    -fx-background-color: #f97316;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-padding: 4 10;
-    -fx-background-radius: 4;
-    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, #f97316, #ea580c);
+    -fx-border-color: rgba(249, 115, 22, 0.3);
+    -fx-effect: dropshadow(gaussian, rgba(249, 115, 22, 0.2), 8, 0, 0, 5);
 }
 
 .reject-btn:hover {
-    -fx-background-color: #ea580c;
+    -fx-background-color: linear-gradient(to bottom, #fb923c, #ea580c);
+    -fx-effect: dropshadow(gaussian, rgba(249, 115, 22, 0.3), 10, 0, 0, 7);
 }
 
-/* Status bar */
 .status-bar {
-    -fx-text-fill: #6b7280;
+    -fx-text-fill: rgba(255,255,255,0.8);
     -fx-font-size: 12px;
-    -fx-padding: 5 0;
+    -fx-padding: 8 0 0 0;
 }

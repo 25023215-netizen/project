@@ -7,12 +7,13 @@
 <StackPane fx:controller="com.nhom4project.auctionweb.frontend.controller.SignupController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signup.css"
-           style="-fx-background-color: linear-gradient(to bottom right, #fef3c7, #fde2e2);">
+           styleClass="auth-root">
     <!-- Card chính chứa toàn bộ form đăng ký -->
     <VBox alignment="CENTER" spacing="20" styleClass="form-card">
         <!-- Header section: Tiêu đề -->
-        <VBox alignment="CENTER" spacing="10">
+        <VBox alignment="CENTER" spacing="8">
             <Label text="Đăng ký tài khoản" styleClass="title-label"/>
+            <Label text="Tạo tài khoản để tham gia đấu giá dễ dàng và bảo mật" styleClass="subtitle-label"/>
         </VBox>
         <!-- Form container: Chứa các input fields -->
         <VBox spacing="12" styleClass="form-container">
