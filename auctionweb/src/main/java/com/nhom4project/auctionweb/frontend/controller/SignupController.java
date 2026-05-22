@@ -1,8 +1,8 @@
 package com.nhom4project.auctionweb.frontend.controller;
 
-import com.nhom4project.auctionweb.frontend.util.BackendClient;
-import com.nhom4project.auctionweb.frontend.util.SceneUtils;
-import com.nhom4project.auctionweb.frontend.util.ErrorLogger;
+import com.nhom4project.auctionweb.frontend.utils.BackendClient;
+import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
+import com.nhom4project.auctionweb.frontend.utils.ErrorLogger;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

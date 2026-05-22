@@ -2,9 +2,9 @@ package com.nhom4project.auctionweb.frontend.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhom4project.auctionweb.frontend.util.BackendClient;
-import com.nhom4project.auctionweb.frontend.util.SceneUtils;
-import com.nhom4project.auctionweb.frontend.util.SessionManager;
+import com.nhom4project.auctionweb.frontend.utils.BackendClient;
+import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
+import com.nhom4project.auctionweb.frontend.utils.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -296,6 +296,11 @@ public class ItemManagementController {
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
                         statusLabel.setText("Tao phien dau gia thanh cong!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Thong bao");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Tao phien dau gia thanh cong!");
+                        alert.showAndWait();
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
