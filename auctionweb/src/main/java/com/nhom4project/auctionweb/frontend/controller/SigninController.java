@@ -4,6 +4,7 @@ import com.nhom4project.auctionweb.frontend.utils.BackendClient;
 import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
 import com.nhom4project.auctionweb.frontend.utils.SessionManager;
 import com.nhom4project.auctionweb.frontend.utils.ErrorLogger;
+import com.nhom4project.auctionweb.frontend.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -94,16 +95,23 @@ public class SigninController {
                                     user.optString("fullname", username),
                                     userRole
                             );
+
+                            // Điều hướng theo role thực tế trả về từ server
+                            if ("ADMIN".equalsIgnoreCase(userRole)) {
+                                goToAdminDashboard(event);
+                            } else {
+                                goToDashboard(event);
+                            }
+
                         } catch (Exception e) {
                             ErrorLogger.log("Lỗi parse thông tin user khi đăng nhập: " + username, e);
                             SessionManager.getInstance().setUser(0L, username, username, selectedRole);
-                        }
-
-                        // Điều hướng theo Role
-                        if ("ADMIN".equals(selectedRole)) {
-                            goToAdminDashboard(event);
-                        } else {
-                            goToDashboard(event);
+                            // Fallback: điều hướng theo lựa chọn người dùng (nếu parse lỗi)
+                            if ("ADMIN".equalsIgnoreCase(selectedRole)) {
+                                goToAdminDashboard(event);
+                            } else {
+                                goToDashboard(event);
+                            }
                         }
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
@@ -145,7 +153,7 @@ public class SigninController {
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
             stage.setMinWidth(980);
             stage.setMinHeight(680);
-            stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
+            WindowUtil.maximizeStage(stage);
         } catch (Exception e) {
             ErrorLogger.log("Lỗi mở màn hình Dashboard", e);
             statusLabel.setText("Khong the mo Dashboard!");
@@ -161,7 +169,7 @@ public class SigninController {
             SceneUtils.changeScene(stage, "/fxml/admin_dashboard.fxml", "Auction Web - Admin Dashboard", "/style/admin_dashboard.css");
             stage.setMinWidth(1024);
             stage.setMinHeight(700);
-            stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
+            WindowUtil.maximizeStage(stage);
         } catch (Exception e) {
             ErrorLogger.log("Lỗi mở màn hình Admin Dashboard", e);
             statusLabel.setText("Khong the mo Admin Dashboard!");

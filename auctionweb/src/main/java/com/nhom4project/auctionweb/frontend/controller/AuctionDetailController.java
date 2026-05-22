@@ -427,7 +427,8 @@ public class AuctionDetailController {
         // Logic xét người dẫn đầu: Kiểm tra xem ID người chiến thắng trả về có trùng với ID của tài khoản đang đăng nhập hay không.
         if (winner != null && !winner.isMissingNode() && !winner.isNull()) {
             Long winnerId = winner.path("id").asLong();
-            String winnerName = winner.path("username").asText("");
+            String winnerFullname = winner.path("fullname").asText("");
+            String winnerName = !winnerFullname.isBlank() ? winnerFullname : winner.path("username").asText("");
             winnerLabel.setText("Nguoi dan dau: " + winnerName);
 
             if (isBidder) {
@@ -458,8 +459,10 @@ public class AuctionDetailController {
         if ("FINISHED".equals(status) && !isFinishedAlertShown) {
             isFinishedAlertShown = true;
             Platform.runLater(() -> {
+                String winnerFullname = (winner != null && !winner.isNull()) ? winner.path("fullname").asText("") : "";
+                String winnerName = !winnerFullname.isBlank() ? winnerFullname : (winner != null ? winner.path("username").asText() : "");
                 String msg = (winner != null && !winner.isNull()) 
-                    ? "Phiên đấu giá kết thúc! Người thắng: " + winner.path("username").asText()
+                    ? "Phiên đấu giá kết thúc! Người thắng: " + winnerName
                     : "Phiên đấu giá kết thúc mà không có người mua.";
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Thông báo kết thúc");

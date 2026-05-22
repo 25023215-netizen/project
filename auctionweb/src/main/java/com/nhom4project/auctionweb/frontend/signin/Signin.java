@@ -1,5 +1,6 @@
 package com.nhom4project.auctionweb.frontend.signin;
 
+import com.nhom4project.auctionweb.frontend.utils.WindowUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,8 +29,8 @@ public class Signin extends Application {
         // Cấu hình cửa sổ chính
         primaryStage.setTitle("Đăng nhập người dùng");
         primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
         primaryStage.show(); // Hiển thị cửa sổ
+        WindowUtil.maximizeStage(primaryStage);
     }
 }
 

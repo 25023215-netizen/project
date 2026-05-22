@@ -1,11 +1,11 @@
 package com.nhom4project.auctionweb.frontend.dashboard;
 
+import com.nhom4project.auctionweb.frontend.utils.WindowUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import com.nhom4project.auctionweb.frontend.utils.WindowUtil;
 
 public class Dashboard extends Application {
     @Override
@@ -15,8 +15,8 @@ public class Dashboard extends Application {
         scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
         primaryStage.setTitle("Auction Web - Dashboard");
         primaryStage.setScene(scene);
-        WindowUtil.fitDashboard(primaryStage);
         primaryStage.show();
+        WindowUtil.fitDashboard(primaryStage);
     }
 
     public static void main(String[] args) {
