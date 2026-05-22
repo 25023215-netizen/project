@@ -1168,3 +1168,17 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 2026-05-22T20:58:35.583+07:00  WARN 20508 --- [auctionweb] [auction-sched-4] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@1dc2c26c (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
 2026-05-22T21:00:44.720+07:00  INFO 20508 --- [auctionweb] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-05-22T21:00:48.917+07:00  INFO 20508 --- [auctionweb] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-22T22:59:26.385+07:00  INFO 17980 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Starting BackendApplication using Java 25.0.2 with PID 17980 (D:\BTL\auctionweb\target\classes started by ASUS in D:\BTL\auctionweb)
+2026-05-22T22:59:26.386+07:00  INFO 17980 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-05-22T22:59:27.363+07:00  INFO 17980 --- [auctionweb] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-22T22:59:27.364+07:00  INFO 17980 --- [auctionweb] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-05-22T22:59:27.407+07:00  INFO 17980 --- [auctionweb] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-22T22:59:27.518+07:00  INFO 17980 --- [auctionweb] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-22T22:59:27.549+07:00  INFO 17980 --- [auctionweb] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-05-22T22:59:27.569+07:00  INFO 17980 --- [auctionweb] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-05-22T22:59:27.733+07:00  INFO 17980 --- [auctionweb] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-22T22:59:30.033+07:00  INFO 17980 --- [auctionweb] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4aa22cc2
+2026-05-22T22:59:30.034+07:00  INFO 17980 --- [auctionweb] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-22T22:59:30.484+07:00  WARN 17980 --- [auctionweb] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-22T22:59:31.639+07:00  INFO 17980 --- [auctionweb] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-22T22:59:41.131+07:00  INFO 17980 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Started BackendApplication in 15.077 seconds (process running for 15.358)
