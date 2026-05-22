@@ -142,9 +142,9 @@
     -fx-text-fill: #64748b;
 }
 
-/* ===== Line Chart — Biểu đồ diễn biến giá theo ảnh mẫu ===== */
+/* ===== Line Chart — giống biểu đồ "Diễn Biến Giá" ===== */
 
-/* Nền trắng sạch */
+/* Nền trắng sạch, không viền thừa */
 .line-chart {
     -fx-background-color: transparent;
     -fx-padding: 10 10 10 10;
@@ -154,39 +154,31 @@
     -fx-background-color: #ffffff;
 }
 
-/* Đường nối màu xanh dương, dày 2.5px */
+/* Đường nối màu đỏ đậm, dày 2.5px */
 .line-chart .chart-series-line {
-    -fx-stroke: #2196F3;
+    -fx-stroke: #ef4444;
     -fx-stroke-width: 2.5px;
 }
 
-/* Ẩn lưới dọc */
+/* Ẩn lưới dọc và ngang */
 .line-chart .chart-vertical-grid-lines {
     -fx-stroke: transparent;
 }
 
-/* Lưới ngang dạng dashed (đứt nét) giống ảnh mẫu */
 .line-chart .chart-horizontal-grid-lines {
-    -fx-stroke: #cccccc;
-    -fx-stroke-width: 1px;
-    -fx-stroke-dash-array: 6 4;
+    -fx-stroke: transparent;
 }
 
-/* Trục ngang và dọc */
+/* Trục ngang và dọc — đen đậm */
 .line-chart .axis-line {
-    -fx-stroke: #aaaaaa;
-    -fx-stroke-width: 1px;
+    -fx-stroke: #000000;
+    -fx-stroke-width: 1.5px;
 }
 
 /* Nhãn trục */
 .line-chart .axis {
-    -fx-tick-label-fill: #444444;
+    -fx-tick-label-fill: #1e293b;
     -fx-tick-label-font-size: 11px;
-}
-
-/* Ẩn tick mark nhỏ trên trục */
-.line-chart .axis-tick-mark {
-    -fx-stroke: transparent;
 }
 
 /* Ẩn symbol mặc định, chỉ dùng custom Circle */
