@@ -35,13 +35,18 @@ public class SceneUtils {
             }
 
             stage.setTitle(title);
-            if (wasMaximized) {
-                stage.setMaximized(true);
+            if (!stage.isShowing()) {
+                stage.show();
             }
-            if (wasFullScreen) {
-                stage.setFullScreen(true);
-            }
-            stage.show();
+
+            javafx.application.Platform.runLater(() -> {
+                if (wasMaximized) {
+                    stage.setMaximized(true);
+                }
+                if (wasFullScreen) {
+                    stage.setFullScreen(true);
+                }
+            });
         } catch (Exception e) {
             System.err.println("Error changing scene to " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
@@ -75,13 +80,18 @@ public class SceneUtils {
             }
 
             stage.setTitle(title);
-            if (wasMaximized) {
-                stage.setMaximized(true);
+            if (!stage.isShowing()) {
+                stage.show();
             }
-            if (wasFullScreen) {
-                stage.setFullScreen(true);
-            }
-            stage.show();
+
+            javafx.application.Platform.runLater(() -> {
+                if (wasMaximized) {
+                    stage.setMaximized(true);
+                }
+                if (wasFullScreen) {
+                    stage.setFullScreen(true);
+                }
+            });
 
             return loader.getController();
         } catch (Exception e) {
