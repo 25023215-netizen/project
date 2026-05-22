@@ -2,9 +2,9 @@ package com.nhom4project.auctionweb.frontend.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhom4project.auctionweb.frontend.util.BackendClient;
-import com.nhom4project.auctionweb.frontend.util.SceneUtils;
-import com.nhom4project.auctionweb.frontend.util.SessionManager;
+import com.nhom4project.auctionweb.frontend.utils.BackendClient;
+import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
+import com.nhom4project.auctionweb.frontend.utils.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
