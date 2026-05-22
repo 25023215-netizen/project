@@ -1,10 +1,10 @@
 package com.nhom4project.auctionweb.frontend.controller;
 
-import com.nhom4project.auctionweb.frontend.utils.BackendClient;
-import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
-import com.nhom4project.auctionweb.frontend.utils.SessionManager;
-import com.nhom4project.auctionweb.frontend.utils.ErrorLogger;
-import com.nhom4project.auctionweb.frontend.utils.WindowUtil;
+import com.nhom4project.auctionweb.frontend.util.BackendClient;
+import com.nhom4project.auctionweb.frontend.util.SceneUtils;
+import com.nhom4project.auctionweb.frontend.util.SessionManager;
+import com.nhom4project.auctionweb.frontend.util.ErrorLogger;
+import com.nhom4project.auctionweb.frontend.util.WindowUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

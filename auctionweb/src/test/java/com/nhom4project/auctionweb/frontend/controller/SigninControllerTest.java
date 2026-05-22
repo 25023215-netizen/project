@@ -1,7 +1,7 @@
 package com.nhom4project.auctionweb.frontend.controller;
 
-import com.nhom4project.auctionweb.frontend.utils.BackendClient;
-import com.nhom4project.auctionweb.frontend.utils.SessionManager;
+import com.nhom4project.auctionweb.frontend.util.BackendClient;
+import com.nhom4project.auctionweb.frontend.util.SessionManager;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;

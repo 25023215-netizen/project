@@ -1,4 +1,4 @@
-package com.nhom4project.auctionweb.frontend.utils;
+package com.nhom4project.auctionweb.frontend.util;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

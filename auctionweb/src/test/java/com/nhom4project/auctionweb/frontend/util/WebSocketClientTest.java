@@ -1,4 +1,4 @@
-package com.nhom4project.auctionweb.frontend.utils;
+package com.nhom4project.auctionweb.frontend.util;
 
 import javafx.application.Platform;
 import org.junit.jupiter.api.AfterEach;

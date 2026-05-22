@@ -1,4 +1,4 @@
-package com.nhom4project.auctionweb.frontend.utils;
+package com.nhom4project.auctionweb.frontend.util;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
