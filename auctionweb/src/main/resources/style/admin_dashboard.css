@@ -77,6 +77,10 @@
     -fx-padding: 5 0 0 0;
 }
 
+.admin-tabs .tab-header-background {
+    -fx-background-color: transparent;
+}
+
 .admin-tabs .tab {
     -fx-background-color: #e5e7eb;
     -fx-background-radius: 8 8 0 0;
@@ -84,12 +88,17 @@
 }
 
 .admin-tabs .tab:selected {
-    -fx-background-color: white;
+    -fx-background-color: #1e3a5f;
 }
 
 .admin-tabs .tab .tab-label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+}
+
+.admin-tabs .tab:selected .tab-label {
+    -fx-text-fill: white;
 }
 
 .admin-tabs .tab-content-area {

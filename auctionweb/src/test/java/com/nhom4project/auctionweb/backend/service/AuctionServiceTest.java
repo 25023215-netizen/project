@@ -145,9 +145,11 @@ public class AuctionServiceTest {
         assertEquals("Test Auction", history.getTitle());
         assertEquals(0, new BigDecimal("1500000").compareTo(history.getWinningPrice()));
         assertEquals(bidder.getId(), history.getWinnerId());
-        assertEquals(bidder.getUsername(), history.getWinnerName());
+        String expectedWinner = (bidder.getFullname() != null && !bidder.getFullname().isBlank()) ? bidder.getFullname() : bidder.getUsername();
+        assertEquals(expectedWinner, history.getWinnerName());
         assertEquals(seller.getId(), history.getSellerId());
-        assertEquals(seller.getUsername(), history.getSellerName());
+        String expectedSeller = (seller.getFullname() != null && !seller.getFullname().isBlank()) ? seller.getFullname() : seller.getUsername();
+        assertEquals(expectedSeller, history.getSellerName());
         assertNotNull(history.getDeletedAt());
     }
 

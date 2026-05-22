@@ -56,7 +56,3 @@ public class SessionManager {
     public String getFullname() { return fullname; }
     public String getRole() { return role; }
 }
-
-
-
-

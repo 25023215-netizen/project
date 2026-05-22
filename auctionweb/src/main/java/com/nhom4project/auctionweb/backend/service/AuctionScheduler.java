@@ -69,20 +69,6 @@ public class AuctionScheduler {
                 log.warn("Failed to broadcast auction end: {}", e.getMessage());
             }
         }
-
-        // Tự động bắt đầu các phiên OPEN đã đến startTime
-        List<Auction> openAuctions = auctionRepository.findByStatus(AuctionStatus.OPEN);
-        for (Auction auction : openAuctions) {
-            if (auction.getStartTime() != null && !LocalDateTime.now().isBefore(auction.getStartTime())) {
-                auction.setStatus(AuctionStatus.RUNNING);
-                auctionRepository.save(auction);
-                AuctionManager.getInstance().registerAuction(auction);
-                log.info("Auction {} '{}' auto-started", auction.getId(), auction.getTitle());
-                try {
-                    messagingTemplate.convertAndSend("/topic/auctions", "refresh");
-                } catch (Exception ignored) {}
-            }
-        }
     }
     //Kết thúc phiên đầu giá sớm theo yêu cầu của client
     public ResponseEntity<?> endAuctionEarly(Long auctionId, Long userId, String role) {

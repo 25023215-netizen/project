@@ -61,9 +61,12 @@ public class AuctionController {
             LocalDateTime endTime = body.containsKey("endTime")
                     ? LocalDateTime.parse(body.get("endTime").toString())
                     : LocalDateTime.now().plusDays(3);
+            Long itemId = body.containsKey("itemId") && body.get("itemId") != null
+                    ? Long.valueOf(body.get("itemId").toString())
+                    : null;
 
             Auction auction = auctionService.createAuction(title, category, description,
-                    startingPrice, sellerId, null, endTime);
+                    startingPrice, sellerId, null, endTime, itemId);
             return ResponseEntity.ok(auction);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
