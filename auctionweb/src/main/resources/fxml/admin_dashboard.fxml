@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane fx:controller="com.nhom4project.auctionweb.controller.frontend.AdminDashboardController"
+<BorderPane fx:controller="com.nhom4project.auctionweb.frontend.controller.AdminDashboardController"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@../style/admin_dashboard.css"
             styleClass="root-pane">

@@ -142,41 +142,64 @@
     -fx-text-fill: #64748b;
 }
 
-/* Stacked Chart Styles */
-.chart-stack {
-    -fx-background-color: #ffffff;
-    -fx-padding: 10;
-}
+/* ===== Line Chart — Biểu đồ diễn biến giá theo ảnh mẫu ===== */
 
-/* Base style for the Bar Chart bars - premium green to orange gradient */
-.bar-chart .chart-bar {
-    -fx-bar-fill: #22c55e;
-    -fx-background-color: linear-gradient(to top, #22c55e, #84cc16, #eab308, #f97316);
-    -fx-background-radius: 4 4 0 0;
-}
-
-/* Translucent overlay styles for the Line Chart */
+/* Nền trắng sạch */
 .line-chart {
     -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
 }
 
-.chart-series-line {
-    -fx-stroke: #f43f5e;
+.line-chart .chart-plot-background {
+    -fx-background-color: #ffffff;
+}
+
+/* Đường nối màu xanh dương, dày 2.5px */
+.line-chart .chart-series-line {
+    -fx-stroke: #2196F3;
     -fx-stroke-width: 2.5px;
 }
 
-.chart-series-area-fill {
-    -fx-fill: linear-gradient(to bottom, #f43f5e55 0%, #f43f5e00 100%);
+/* Ẩn lưới dọc */
+.line-chart .chart-vertical-grid-lines {
+    -fx-stroke: transparent;
 }
 
-.chart-plot-background {
-    -fx-background-color: #ffffff;
+/* Lưới ngang dạng dashed (đứt nét) giống ảnh mẫu */
+.line-chart .chart-horizontal-grid-lines {
+    -fx-stroke: #cccccc;
+    -fx-stroke-width: 1px;
+    -fx-stroke-dash-array: 6 4;
 }
 
-.chart-vertical-grid-lines,
-.chart-horizontal-grid-lines {
-    -fx-stroke: #f1f5f9;
-    -fx-stroke-width: 0.8px;
+/* Trục ngang và dọc */
+.line-chart .axis-line {
+    -fx-stroke: #aaaaaa;
+    -fx-stroke-width: 1px;
+}
+
+/* Nhãn trục */
+.line-chart .axis {
+    -fx-tick-label-fill: #444444;
+    -fx-tick-label-font-size: 11px;
+}
+
+/* Ẩn tick mark nhỏ trên trục */
+.line-chart .axis-tick-mark {
+    -fx-stroke: transparent;
+}
+
+/* Ẩn symbol mặc định, chỉ dùng custom Circle */
+.line-chart .chart-line-symbol {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+/* Alternate row fill — tắt */
+.line-chart .chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
 }
 
 /* History List */
@@ -261,19 +284,3 @@
 .delete-button:hover {
     -fx-background-color: #b91c1c;
 }
-
-/* Style for line chart symbols */
-.line-chart .chart-line-symbol {
-    -fx-background-color: #14213d, #ffffff;
-    -fx-background-insets: 0, 2;
-    -fx-background-radius: 6px;
-    -fx-padding: 6px;
-    -fx-cursor: hand;
-}
-
-.line-chart .chart-line-symbol:hover {
-    -fx-background-color: #fca311, #ffffff;
-    -fx-background-radius: 8px;
-    -fx-padding: 8px;
-}
-

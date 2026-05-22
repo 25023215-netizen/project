@@ -4,7 +4,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <!-- Root container: StackPane để center nội dung -->
-<StackPane fx:controller="com.nhom4project.auctionweb.controller.frontend.SigninController"
+<StackPane fx:controller="com.nhom4project.auctionweb.frontend.controller.SigninController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signin.css"
            style="-fx-background-color: linear-gradient(to bottom right, #e3f2fd, #f3e5f5);">
