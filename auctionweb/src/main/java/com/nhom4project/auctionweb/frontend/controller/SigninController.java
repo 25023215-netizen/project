@@ -99,8 +99,8 @@ public class SigninController {
                             SessionManager.getInstance().setUser(0L, username, username, selectedRole);
                         }
 
-                        // Điều hướng theo Role thực tế từ server
-                        if ("ADMIN".equalsIgnoreCase(SessionManager.getInstance().getRole())) {
+                        // Điều hướng theo Role
+                        if ("ADMIN".equals(selectedRole)) {
                             goToAdminDashboard(event);
                         } else {
                             goToDashboard(event);

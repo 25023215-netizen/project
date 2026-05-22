@@ -84,14 +84,12 @@ public class AdminDashboardController {
                 super.updateItem(item, empty);
                 if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setGraphic(null);
-                    setText(null);
                     return;
                 }
                 String[] row = getTableRow().getItem();
                 String role = row[4];
                 if ("ADMIN".equals(role)) {
                     setGraphic(new Label("-"));
-                    setText(null);
                     return;
                 }
                 Button lockBtn = new Button(row[5].equals("Active") ? "🔒 Khóa" : "🔓 Mở khóa");
@@ -100,7 +98,6 @@ public class AdminDashboardController {
                 Button deleteBtn = new Button("🗑 Xóa");
                 deleteBtn.getStyleClass().add("delete-btn");
                 deleteBtn.setOnAction(e -> deleteUser(row[0]));
-                setText(null);
                 setGraphic(new HBox(5, lockBtn, deleteBtn));
             }
         });
@@ -278,12 +275,7 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().post("/admin/users/" + userId + "/lock", "");
                 javafx.application.Platform.runLater(() -> {
-                    if (response.statusCode() == 200) {
-                        statusLabel.setText("✅ " + response.body());
-                        lastUsersJson = ""; // reset cache để buộc reload dữ liệu mới
-                    } else {
-                        statusLabel.setText("❌ Lỗi: " + response.body());
-                    }
+                    statusLabel.setText(response.body());
                     loadUsers();
                     loadStats();
                 });
@@ -301,12 +293,7 @@ public class AdminDashboardController {
                     try {
                         HttpResponse<String> response = BackendClient.getInstance().delete("/admin/users/" + userId);
                         javafx.application.Platform.runLater(() -> {
-                            if (response.statusCode() == 200) {
-                                statusLabel.setText("✅ " + response.body());
-                                lastUsersJson = ""; // reset cache để buộc reload dữ liệu mới
-                            } else {
-                                statusLabel.setText("❌ Lỗi: " + response.body());
-                            }
+                            statusLabel.setText(response.body());
                             loadUsers();
                             loadStats();
                         });
@@ -325,12 +312,7 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().post("/admin/auctions/" + auctionId + "/approve", "");
                 javafx.application.Platform.runLater(() -> {
-                    if (response.statusCode() == 200) {
-                        statusLabel.setText("✅ " + response.body());
-                        lastAuctionsJson = ""; // reset cache để buộc reload
-                    } else {
-                        statusLabel.setText("❌ Lỗi: " + response.body());
-                    }
+                    statusLabel.setText(response.body());
                     loadAuctions();
                     loadStats();
                 });
@@ -345,12 +327,7 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().post("/admin/auctions/" + auctionId + "/reject", "");
                 javafx.application.Platform.runLater(() -> {
-                    if (response.statusCode() == 200) {
-                        statusLabel.setText("✅ " + response.body());
-                        lastAuctionsJson = ""; // reset cache để buộc reload
-                    } else {
-                        statusLabel.setText("❌ Lỗi: " + response.body());
-                    }
+                    statusLabel.setText(response.body());
                     loadAuctions();
                     loadStats();
                 });
@@ -371,12 +348,7 @@ public class AdminDashboardController {
                         HttpResponse<String> response = BackendClient.getInstance()
                                 .delete("/auctions/" + auctionId + "?userId=" + userId + "&role=" + role);
                         javafx.application.Platform.runLater(() -> {
-                            if (response.statusCode() == 200) {
-                                statusLabel.setText("✅ " + response.body());
-                                lastAuctionsJson = ""; // reset cache để buộc reload
-                            } else {
-                                statusLabel.setText("❌ Lỗi: " + response.body());
-                            }
+                            statusLabel.setText(response.body());
                             loadAuctions();
                             loadStats();
                         });
