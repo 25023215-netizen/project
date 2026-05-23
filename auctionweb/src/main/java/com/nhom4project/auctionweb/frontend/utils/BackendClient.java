@@ -76,8 +76,6 @@ public class BackendClient {
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .header("ngrok-skip-browser-warning", "true")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -88,8 +86,6 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Accept", "application/json")
-                .header("ngrok-skip-browser-warning", "true")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
                 .GET()
                 .build();
 
@@ -101,8 +97,6 @@ public class BackendClient {
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .header("ngrok-skip-browser-warning", "true")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
                 .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -113,8 +107,6 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Accept", "application/json")
-                .header("ngrok-skip-browser-warning", "true")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
                 .DELETE()
                 .build();
 
@@ -122,8 +114,7 @@ public class BackendClient {
     }
 
     /**
-     * Helper method to extract a clean, user-friendly error message from non-200 HTTP responses.
-     * Prevents displaying raw HTML code when ngrok returns warning or bad gateway pages.
+     * Helper method để trích xuất thông báo lỗi rõ ràng từ HTTP response không thành công.
      */
     public static String getCleanErrorMessage(HttpResponse<String> response) {
         if (response == null) {
@@ -133,11 +124,6 @@ public class BackendClient {
         if (body == null || body.trim().isEmpty()) {
             return "Lỗi phản hồi rỗng từ máy chủ (Status: " + response.statusCode() + ")";
         }
-        
-        String trimmedBody = body.trim();
-        if (trimmedBody.contains("<!DOCTYPE") || trimmedBody.contains("<html") || trimmedBody.contains("ngrok")) {
-            return "Lỗi kết nối máy chủ qua Ngrok (Giới hạn Traffic/Server offline). Vui lòng thử lại! (Mã lỗi: " + response.statusCode() + ")";
-        }
-        return "Lỗi: " + trimmedBody;
+        return "Lỗi: " + body.trim();
     }
 }

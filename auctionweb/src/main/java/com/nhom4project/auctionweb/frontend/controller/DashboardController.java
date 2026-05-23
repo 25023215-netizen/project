@@ -243,11 +243,17 @@ public class DashboardController {
                 BigDecimal startPrice = new BigDecimal(node.path("startingPrice").asText("0"));
                 BigDecimal winPrice = new BigDecimal(node.path("currentPrice").asText("0"));
                 JsonNode winnerNode = node.path("winner");
-                String winner = (winnerNode != null && !winnerNode.isNull() && !winnerNode.isMissingNode())
-                        ? winnerNode.path("username").asText("-") : "-";
+                String winner = "-";
+                if (winnerNode != null && !winnerNode.isNull() && !winnerNode.isMissingNode()) {
+                    String fullname = winnerNode.path("fullname").asText("");
+                    winner = !fullname.isBlank() ? fullname : winnerNode.path("username").asText("-");
+                }
                 JsonNode sellerNode = node.path("seller");
-                String seller = (sellerNode != null && !sellerNode.isNull() && !sellerNode.isMissingNode())
-                        ? sellerNode.path("username").asText("-") : "-";
+                String seller = "-";
+                if (sellerNode != null && !sellerNode.isNull() && !sellerNode.isMissingNode()) {
+                    String fullname = sellerNode.path("fullname").asText("");
+                    seller = !fullname.isBlank() ? fullname : sellerNode.path("username").asText("-");
+                }
                 String endTime = formatEndTime(node.path("endTime").asText());
                 rows.add(new HistoryRow(title, category, currencyFormat.format(startPrice),
                         currencyFormat.format(winPrice), winner, seller, endTime));

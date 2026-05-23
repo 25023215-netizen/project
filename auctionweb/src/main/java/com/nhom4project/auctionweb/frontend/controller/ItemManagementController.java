@@ -285,10 +285,11 @@ public class ItemManagementController {
         new Thread(() -> {
             try {
                 JSONObject body = new JSONObject();
+                body.put("itemId", Long.parseLong(selected.getId()));
                 body.put("title", finalTitle);
                 body.put("category", selected.typeProperty().get());
                 body.put("description", selected.descProperty().get());
-                body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replace(",", "")));
+                body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replace(",", "").replace(".", "")));
                 body.put("sellerId", SessionManager.getInstance().getUserId());
                 body.put("endTime", finalEndTime.toString());
 

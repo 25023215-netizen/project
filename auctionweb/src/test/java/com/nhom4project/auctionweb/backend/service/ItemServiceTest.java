@@ -97,4 +97,16 @@ public class ItemServiceTest {
             itemService.createItem("ELECTRONICS", "Name", "Desc", 1000.0, bidder.getId(), null, null)
         );
     }
+
+    @Test
+    @DisplayName("Tạo sản phẩm thất bại khi tài khoản seller bị khóa")
+    void testCreateItemWithLockedSeller_Failure() {
+        seller.setLocked(true);
+        userRepository.save(seller);
+
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> 
+            itemService.createItem("ELECTRONICS", "iPhone 15", "Apple Phone", 20000000.0, seller.getId(), "Apple", "15 Pro")
+        );
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
+    }
 }

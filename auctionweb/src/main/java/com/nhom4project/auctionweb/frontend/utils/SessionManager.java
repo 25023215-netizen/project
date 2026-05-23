@@ -1,5 +1,12 @@
 package com.nhom4project.auctionweb.frontend.utils;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import org.json.JSONObject;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Singleton quản lý phiên đăng nhập của user trên client.
  * Lưu thông tin user sau khi đăng nhập thành công.
@@ -11,6 +18,7 @@ public class SessionManager {
     private String username;
     private String fullname;
     private String role; // BIDDER, SELLER, ADMIN
+    private ScheduledExecutorService scheduler;
 
     private SessionManager() {}
 
@@ -26,13 +34,65 @@ public class SessionManager {
         this.username = username;
         this.fullname = fullname;
         this.role = role;
+        
+        if (userId != null && userId > 0 && !"ADMIN".equalsIgnoreCase(role)) {
+            startStatusCheck();
+        }
     }
 
     public void clear() {
+        stopStatusCheck();
         this.userId = null;
         this.username = null;
         this.fullname = null;
         this.role = null;
+    }
+
+    public void startStatusCheck() {
+        stopStatusCheck();
+        scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+            Thread t = new Thread(runnable, "UserStatusChecker");
+            t.setDaemon(true);
+            return t;
+        });
+        scheduler.scheduleAtFixedRate(this::checkUserStatus, 0, 3, TimeUnit.SECONDS);
+    }
+
+    public void stopStatusCheck() {
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+            scheduler = null;
+        }
+    }
+
+    private void checkUserStatus() {
+        if (userId == null) return;
+        try {
+            java.net.http.HttpResponse<String> response = BackendClient.getInstance().get("/auth/status?userId=" + userId);
+            if (response.statusCode() == 200) {
+                JSONObject json = new JSONObject(response.body());
+                boolean locked = json.optBoolean("locked", false);
+                if (locked) {
+                    try {
+                        Platform.runLater(() -> {
+                            stopStatusCheck();
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("Thông báo");
+                            alert.setHeaderText("Tài khoản bị khóa");
+                            alert.setContentText("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                            alert.showAndWait();
+                            Platform.exit();
+                            System.exit(0);
+                        });
+                    } catch (IllegalStateException e) {
+                        System.err.println("JavaFX Toolkit not initialized. Skipping UI logout alert.");
+                        stopStatusCheck();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Ignore connection errors
+        }
     }
 
     public boolean isLoggedIn() {
@@ -56,7 +116,3 @@ public class SessionManager {
     public String getFullname() { return fullname; }
     public String getRole() { return role; }
 }
-
-
-
-

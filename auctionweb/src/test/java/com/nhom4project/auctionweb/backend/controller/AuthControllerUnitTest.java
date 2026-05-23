@@ -102,4 +102,43 @@ public class AuthControllerUnitTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Invalid credentials!", response.getBody());
     }
+
+    @Test
+    public void testCheckUserStatus_Locked() {
+        when(userService.isUserLocked(1L)).thenReturn(true);
+
+        ResponseEntity<?> response = authController.checkUserStatus(1L);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody() instanceof java.util.Map);
+        java.util.Map<?, ?> body = (java.util.Map<?, ?>) response.getBody();
+        assertEquals(true, body.get("locked"));
+        verify(userService, times(1)).isUserLocked(1L);
+    }
+
+    @Test
+    public void testCheckUserStatus_NotLocked() {
+        when(userService.isUserLocked(2L)).thenReturn(false);
+
+        ResponseEntity<?> response = authController.checkUserStatus(2L);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody() instanceof java.util.Map);
+        java.util.Map<?, ?> body = (java.util.Map<?, ?>) response.getBody();
+        assertEquals(false, body.get("locked"));
+        verify(userService, times(1)).isUserLocked(2L);
+    }
+
+    @Test
+    public void testCheckUserStatus_Exception() {
+        when(userService.isUserLocked(3L)).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<?> response = authController.checkUserStatus(3L);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Database error", response.getBody());
+    }
 }

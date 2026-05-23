@@ -57,6 +57,9 @@ public class AuctionService {
     private AuctionHistoryRepository auctionHistoryRepository;
 
     @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -117,22 +120,49 @@ public class AuctionService {
 
     /**
      * Tạo mới một phiên đấu giá.
-     * Giới hạn: mỗi phiên đấu giá chỉ kéo dài tối đa 1 giờ.
      */
     public Auction createAuction(String title, String category, String description,
                                   BigDecimal startingPrice, Long sellerId,
                                   LocalDateTime startTime, LocalDateTime endTime) {
+        return createAuction(title, category, description, startingPrice, sellerId, startTime, endTime, null);
+    }
+
+    public Auction createAuction(String title, String category, String description,
+                                  BigDecimal startingPrice, Long sellerId,
+                                  LocalDateTime startTime, LocalDateTime endTime, Long itemId) {
         User user = userRepository.findById(sellerId)
                 .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
         if (!(user instanceof Seller seller)) {
             throw new IllegalArgumentException("User is not a Seller");
+        }
+        if (user.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
         }
 
         LocalDateTime start = startTime != null ? startTime : LocalDateTime.now();
         // Sử dụng endTime nếu được truyền vào, nếu không mặc định +24 giờ
         LocalDateTime end = endTime != null ? endTime : start.plusHours(24);
 
-        Auction auction = new Auction();
+        Auction auction = null;
+        if (itemId != null) {
+            Optional<Auction> existingOpt = auctionRepository.findByItemId(itemId);
+            if (existingOpt.isPresent()) {
+                auction = existingOpt.get();
+                if (auction.getStatus() != AuctionStatus.OPEN) {
+                    throw new IllegalStateException("Phiên đấu giá cho sản phẩm này đã được bắt đầu hoặc đã kết thúc!");
+                }
+            }
+        }
+
+        if (auction == null) {
+            auction = new Auction();
+            if (itemId != null) {
+                Item item = itemRepository.findById(itemId)
+                        .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+                auction.setItem(item);
+            }
+        }
+
         auction.setTitle(title);
         auction.setCategory(category);
         auction.setDescription(description);
@@ -142,10 +172,15 @@ public class AuctionService {
         auction.setSeller(seller);
         auction.setStartTime(start);
         auction.setEndTime(end);
-        auction.setStatus(AuctionStatus.OPEN);
+        auction.setStatus(AuctionStatus.RUNNING); // Start immediately as RUNNING
 
         Auction saved = auctionRepository.save(auction);
+        
+        // Register in AuctionManager
+        AuctionManager.getInstance().registerAuction(saved);
+        
         self.broadcastAuctionList();
+        self.broadcastAuctionUpdate(buildAuctionPayload(saved));
         return saved;
     }
 
@@ -169,6 +204,11 @@ public class AuctionService {
         
         // Permission check: Admin can end any, Seller can end their own
         if (role != Roles.ADMIN) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            if (user.isLocked()) {
+                throw new IllegalStateException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+            }
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
                 throw new IllegalStateException("Ban khong co quyen ket thuc phien dau gia nay");
             }
@@ -189,6 +229,11 @@ public class AuctionService {
 
         // Permission check: Admin can delete any, Seller can delete their own
         if (role != Roles.ADMIN) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            if (user.isLocked()) {
+                throw new IllegalStateException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+            }
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
                 throw new IllegalStateException("Ban khong co quyen xoa phien dau gia nay");
             }
@@ -218,11 +263,15 @@ public class AuctionService {
         history.setWinningPrice(auction.getCurrentPrice());
         if (auction.getWinner() != null) {
             history.setWinnerId(auction.getWinner().getId());
-            history.setWinnerName(auction.getWinner().getUsername());
+            String wName = (auction.getWinner().getFullname() != null && !auction.getWinner().getFullname().isBlank())
+                    ? auction.getWinner().getFullname() : auction.getWinner().getUsername();
+            history.setWinnerName(wName);
         }
         if (auction.getSeller() != null) {
             history.setSellerId(auction.getSeller().getId());
-            history.setSellerName(auction.getSeller().getUsername());
+            String sName = (auction.getSeller().getFullname() != null && !auction.getSeller().getFullname().isBlank())
+                    ? auction.getSeller().getFullname() : auction.getSeller().getUsername();
+            history.setSellerName(sName);
         }
         history.setEndTime(auction.getEndTime());
         history.setDeletedAt(LocalDateTime.now());
@@ -272,8 +321,14 @@ public class AuctionService {
         Auction auction = findAuction(auctionId);
 
         // Kiểm tra trạng thái phiên
-        if (auction.getStatus() != AuctionStatus.RUNNING) {
-            throw new IllegalStateException("Phien dau gia khong dang chay");
+        if (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.OPEN) {
+            throw new IllegalStateException("Phien dau gia khong hoat dong");
+        }
+
+        // Chuyển trạng thái khi bắt đầu đấu giá
+        if (auction.getStatus() == AuctionStatus.OPEN) {
+            auction.setStatus(AuctionStatus.RUNNING);
+            auction.setStartTime(LocalDateTime.now());
         }
 
         // Kiểm tra thời gian
@@ -291,6 +346,9 @@ public class AuctionService {
                 .orElseThrow(() -> new IllegalArgumentException("Bidder not found"));
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
+        }
+        if (user.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
         }
 
         // Không cho phép bidder hiện tại đặt giá lại khi vẫn là người dẫn đầu
@@ -348,14 +406,17 @@ public class AuctionService {
     @Transactional
     public AutoBidConfig registerAutoBid(Long auctionId, Long bidderId, BigDecimal maxBid, BigDecimal increment) {
         Auction auction = findAuction(auctionId);
-        if (auction.getStatus() != AuctionStatus.RUNNING) {
-            throw new IllegalStateException("Phien dau gia khong dang chay");
+        if (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.OPEN) {
+            throw new IllegalStateException("Phien dau gia khong hoat dong");
         }
 
         User user = userRepository.findById(bidderId)
                 .orElseThrow(() -> new IllegalArgumentException("Bidder not found"));
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
+        }
+        if (user.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
         }
 
         if (maxBid.compareTo(auction.getCurrentPrice()) <= 0) {
@@ -413,7 +474,7 @@ public class AuctionService {
         if (configs.isEmpty()) return;
 
         Auction auction = findAuction(auctionId);
-        if (auction.getStatus() != AuctionStatus.RUNNING) return;
+        if (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.OPEN) return;
 
         for (AutoBidConfig config : configs) {
             // Bỏ qua bidder vừa đặt giá (tránh bid chồng lên chính mình)

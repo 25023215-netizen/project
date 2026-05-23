@@ -93,4 +93,13 @@ public class UserService {
         user.setLocked(!user.isLocked());
         userRepository.save(user);
     }
+
+    /**
+     * Kiểm tra trạng thái khóa của tài khoản.
+     */
+    public boolean isUserLocked(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::isLocked)
+                .orElse(true);
+    }
 }

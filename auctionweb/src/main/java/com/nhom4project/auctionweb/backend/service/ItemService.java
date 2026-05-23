@@ -1,9 +1,9 @@
 package com.nhom4project.auctionweb.backend.service;
 
 import com.nhom4project.auctionweb.backend.model.*;
-import com.nhom4project.auctionweb.backend.repository.ItemRepository;
-import com.nhom4project.auctionweb.backend.repository.UserRepository;
+import com.nhom4project.auctionweb.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +24,18 @@ public class ItemService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuctionRepository auctionRepository;
+
+    @Autowired
+    private BidRepository bidRepository;
+
+    @Autowired
+    private AutoBidConfigRepository autoBidConfigRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public List<Item> listItems() {
         return itemRepository.findAll();
@@ -57,12 +69,39 @@ public class ItemService {
         if (!(seller instanceof Seller)) {
             throw new IllegalArgumentException("User is not a Seller");
         }
+        if (seller.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+        }
         item.setSeller((Seller) seller);
 
         // Gán các thuộc tính riêng của từng loại
         applyExtraFields(item, type, extraField1, extraField2);
 
-        return itemRepository.save(item);
+        Item savedItem = itemRepository.save(item);
+
+        // Auto-create Auction in OPEN status
+        Auction auction = new Auction();
+        auction.setItem(savedItem);
+        auction.setTitle(savedItem.getName());
+        auction.setCategory(type);
+        auction.setDescription(savedItem.getDescription());
+        auction.setStartingPrice(java.math.BigDecimal.valueOf(savedItem.getStartingPrice()));
+        auction.setCurrentPrice(java.math.BigDecimal.valueOf(savedItem.getStartingPrice()));
+        auction.setBidCount(0);
+        auction.setSeller((Seller) seller);
+        auction.setStartTime(java.time.LocalDateTime.now());
+        auction.setEndTime(java.time.LocalDateTime.now().plusDays(3)); // default duration is 3 days
+        auction.setStatus(AuctionStatus.OPEN);
+        auctionRepository.save(auction);
+
+        // Broadcast refresh signal to clients
+        try {
+            messagingTemplate.convertAndSend("/topic/auctions", "refresh");
+        } catch (Exception e) {
+            // Ignore/Log
+        }
+
+        return savedItem;
     }
 
     /**
@@ -94,7 +133,27 @@ public class ItemService {
         if (!itemRepository.existsById(id)) {
             throw new IllegalArgumentException("Item not found");
         }
+
+        // First delete any associated Auction
+        auctionRepository.findByItemId(id).ifPresent(auction -> {
+            // Delete auto-bid configs
+            autoBidConfigRepository.deleteByAuctionId(auction.getId());
+            // Delete bids
+            bidRepository.deleteByAuctionId(auction.getId());
+            // Remove from manager
+            AuctionManager.getInstance().removeAuction(auction.getId());
+            // Delete the auction
+            auctionRepository.delete(auction);
+        });
+
         itemRepository.deleteById(id);
+
+        // Notify client to refresh dashboard
+        try {
+            messagingTemplate.convertAndSend("/topic/auctions", "refresh");
+        } catch (Exception e) {
+            // Ignore/Log
+        }
     }
 
     /**
