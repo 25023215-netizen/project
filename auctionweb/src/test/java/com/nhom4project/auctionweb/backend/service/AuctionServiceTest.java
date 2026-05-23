@@ -206,4 +206,15 @@ public class AuctionServiceTest {
         );
         assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
     }
+
+    @Test
+    @DisplayName("Tạo phiên đấu giá thất bại khi giá khởi điểm âm hoặc bằng 0")
+    void testCreateAuctionWithInvalidStartingPrice_Failure() {
+        assertThrows(IllegalArgumentException.class, () ->
+            auctionService.createAuction("New Auction", "Electronics", "Desc", new BigDecimal("-100"), seller.getId(), null, null)
+        );
+        assertThrows(IllegalArgumentException.class, () ->
+            auctionService.createAuction("New Auction", "Electronics", "Desc", BigDecimal.ZERO, seller.getId(), null, null)
+        );
+    }
 }

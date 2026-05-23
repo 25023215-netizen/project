@@ -44,6 +44,10 @@ public class ItemService {
                            Double startingPrice, Long sellerId,
                            String extraField1, String extraField2) {
 
+        if (startingPrice == null || startingPrice <= 0) {
+            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+        }
+
         // Factory Method: tạo đúng loại item
         Item item = ItemFactory.createItem(type);
         item.setName(name);
@@ -73,6 +77,10 @@ public class ItemService {
      */
     public Item updateItem(Long id, String name, String description, Double startingPrice,
                            String extraField1, String extraField2) {
+        if (startingPrice == null || startingPrice <= 0) {
+            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+        }
+
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 

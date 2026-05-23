@@ -126,6 +126,10 @@ public class AuctionService {
     public Auction createAuction(String title, String category, String description,
                                   BigDecimal startingPrice, Long sellerId,
                                   LocalDateTime startTime, LocalDateTime endTime) {
+        if (startingPrice == null || startingPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+        }
+
         User user = userRepository.findById(sellerId)
                 .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
         if (!(user instanceof Seller seller)) {

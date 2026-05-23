@@ -185,6 +185,7 @@
 }
 
 .dashboard-tabpane .tab-header-area {
+    -fx-background-color: transparent;
     -fx-padding: 0 0 4 0;
 }
 
