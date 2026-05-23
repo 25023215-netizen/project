@@ -34,6 +34,16 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<?> checkUserStatus(@RequestParam Long userId) {
+        try {
+            boolean isLocked = userService.isUserLocked(userId);
+            return ResponseEntity.ok(java.util.Map.of("locked", isLocked));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(org.springframework.web.bind.MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()

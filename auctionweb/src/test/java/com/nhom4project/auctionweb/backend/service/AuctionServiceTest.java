@@ -170,4 +170,40 @@ public class AuctionServiceTest {
         // Verify auction is NOT deleted
         assertTrue(auctionRepository.findById(testAuction.getId()).isPresent());
     }
+
+    @Test
+    @DisplayName("Đặt giá thất bại khi tài khoản bidder bị khóa")
+    void testPlaceBid_LockedBidder_Failure() {
+        bidder.setLocked(true);
+        userRepository.save(bidder);
+
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+            auctionService.placeBid(testAuction.getId(), bidder.getId(), new BigDecimal("1500000"))
+        );
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Tạo phiên đấu giá thất bại khi tài khoản seller bị khóa")
+    void testCreateAuction_LockedSeller_Failure() {
+        seller.setLocked(true);
+        userRepository.save(seller);
+
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+            auctionService.createAuction("New Auction", "Electronics", "Desc", new BigDecimal("100"), seller.getId(), null, null)
+        );
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Đăng ký Auto-bid thất bại khi tài khoản bidder bị khóa")
+    void testRegisterAutoBid_LockedBidder_Failure() {
+        bidder.setLocked(true);
+        userRepository.save(bidder);
+
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+            auctionService.registerAutoBid(testAuction.getId(), bidder.getId(), new BigDecimal("2000000"), new BigDecimal("100000"))
+        );
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
+    }
 }

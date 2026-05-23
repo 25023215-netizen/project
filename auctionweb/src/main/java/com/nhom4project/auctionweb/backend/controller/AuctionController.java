@@ -32,6 +32,11 @@ public class AuctionController {
         return auctionService.listAuctions();
     }
 
+    @GetMapping("/history")
+    public List<com.nhom4project.auctionweb.backend.model.AuctionHistory> getAuctionHistory() {
+        return auctionService.listAuctionHistories();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Auction> getAuction(@PathVariable Long id) {
         return auctionService.getAuctionById(id)

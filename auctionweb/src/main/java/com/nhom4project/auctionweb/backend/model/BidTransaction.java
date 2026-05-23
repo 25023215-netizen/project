@@ -1,13 +1,13 @@
 package com.nhom4project.auctionweb.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bid_transactions")
+@Table(name = "bid_transactions", indexes = {
+    @Index(name = "idx_bid_auction", columnList = "auction_id"),
+    @Index(name = "idx_bid_time", columnList = "bid_time")
+})
 public class BidTransaction extends BaseEntity {
     private Double amount;
     private LocalDateTime bidTime;

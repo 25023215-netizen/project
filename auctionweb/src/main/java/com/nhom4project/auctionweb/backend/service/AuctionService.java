@@ -113,6 +113,10 @@ public class AuctionService {
         return bidRepository.findByAuctionIdOrderByBidTimeDesc(auctionId);
     }
 
+    public List<AuctionHistory> listAuctionHistories() {
+        return auctionHistoryRepository.findAll();
+    }
+
     // ==================== AUCTION LIFECYCLE ====================
 
     /**
@@ -126,6 +130,9 @@ public class AuctionService {
                 .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
         if (!(user instanceof Seller seller)) {
             throw new IllegalArgumentException("User is not a Seller");
+        }
+        if (user.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
         }
 
         LocalDateTime start = startTime != null ? startTime : LocalDateTime.now();
@@ -169,6 +176,11 @@ public class AuctionService {
         
         // Permission check: Admin can end any, Seller can end their own
         if (role != Roles.ADMIN) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            if (user.isLocked()) {
+                throw new IllegalStateException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+            }
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
                 throw new IllegalStateException("Ban khong co quyen ket thuc phien dau gia nay");
             }
@@ -189,6 +201,11 @@ public class AuctionService {
 
         // Permission check: Admin can delete any, Seller can delete their own
         if (role != Roles.ADMIN) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            if (user.isLocked()) {
+                throw new IllegalStateException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+            }
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
                 throw new IllegalStateException("Ban khong co quyen xoa phien dau gia nay");
             }
@@ -292,6 +309,9 @@ public class AuctionService {
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
         }
+        if (user.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+        }
 
         // Không cho phép bidder hiện tại đặt giá lại khi vẫn là người dẫn đầu
         if (auction.getWinner() != null && auction.getWinner().getId().equals(bidder.getId())) {
@@ -356,6 +376,9 @@ public class AuctionService {
                 .orElseThrow(() -> new IllegalArgumentException("Bidder not found"));
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
+        }
+        if (user.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
         }
 
         if (maxBid.compareTo(auction.getCurrentPrice()) <= 0) {

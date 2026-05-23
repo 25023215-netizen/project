@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+
+<StackPane fx:controller="com.nhom4project.auctionweb.frontend.controller.LockedAccountController"
+           xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../style/locked_account.css"
+           style="-fx-background-color: linear-gradient(to bottom right, #ffebee, #ffcdd2);">
+    
+    <VBox alignment="CENTER" spacing="25" styleClass="lock-card">
+        <!-- Shield/Lock Warning Icon -->
+        <StackPane styleClass="icon-container">
+            <SVGPath content="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" 
+                     fill="#d32f2f" styleClass="warning-icon"/>
+        </StackPane>
+        
+        <VBox alignment="CENTER" spacing="12">
+            <Label text="TÀI KHOẢN BỊ KHÓA" styleClass="title-label"/>
+            <Label text="Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả" 
+                   styleClass="message-label" wrapText="true" textAlignment="CENTER"/>
+        </VBox>
+        
+        <Button text="Thoát ứng dụng" onAction="#onExit" styleClass="exit-button"/>
+    </VBox>
+</StackPane>

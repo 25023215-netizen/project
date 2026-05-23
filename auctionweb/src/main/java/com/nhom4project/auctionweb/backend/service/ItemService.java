@@ -57,6 +57,9 @@ public class ItemService {
         if (!(seller instanceof Seller)) {
             throw new IllegalArgumentException("User is not a Seller");
         }
+        if (seller.isLocked()) {
+            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+        }
         item.setSeller((Seller) seller);
 
         // Gán các thuộc tính riêng của từng loại

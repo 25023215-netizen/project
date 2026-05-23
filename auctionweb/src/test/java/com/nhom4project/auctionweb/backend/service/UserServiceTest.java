@@ -105,4 +105,27 @@ public class UserServiceTest {
 
         assertThrows(Exception.class, () -> userService.authenticate("bidder_test", "pass12345"));
     }
+
+    @Test
+    @DisplayName("Kiểm tra status khóa: tài khoản bình thường")
+    public void testIsUserLocked_NotLocked() throws Exception {
+        testRegisterBidder_Success();
+        User user = userRepository.findByUsername("bidder_test");
+        assertFalse(userService.isUserLocked(user.getId()));
+    }
+
+    @Test
+    @DisplayName("Kiểm tra status khóa: tài khoản bị khóa")
+    public void testIsUserLocked_Locked() throws Exception {
+        testRegisterBidder_Success();
+        User user = userRepository.findByUsername("bidder_test");
+        userService.toggleLockUser(user.getId());
+        assertTrue(userService.isUserLocked(user.getId()));
+    }
+
+    @Test
+    @DisplayName("Kiểm tra status khóa: tài khoản không tồn tại")
+    public void testIsUserLocked_NotFound() {
+        assertTrue(userService.isUserLocked(9999L));
+    }
 }

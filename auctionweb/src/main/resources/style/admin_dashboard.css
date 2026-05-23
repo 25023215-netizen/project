@@ -6,7 +6,7 @@
 
 /* Header */
 .header-bar {
-    -fx-background-color: linear-gradient(to right, #1e3a5f, #2d5a87);
+    -fx-background-color: #14213d;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
 }
 
@@ -73,14 +73,27 @@
 }
 
 /* Tabs */
+.admin-tabs {
+    -fx-background-color: transparent;
+}
+
 .admin-tabs .tab-header-area {
     -fx-padding: 5 0 0 0;
 }
 
+.admin-tabs .tab-header-background {
+    -fx-background-color: transparent;
+}
+
 .admin-tabs .tab {
-    -fx-background-color: #e5e7eb;
+    -fx-background-color: #cbd5e1;
     -fx-background-radius: 8 8 0 0;
     -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.admin-tabs .tab:hover {
+    -fx-background-color: #94a3b8;
 }
 
 .admin-tabs .tab:selected {
@@ -88,8 +101,13 @@
 }
 
 .admin-tabs .tab .tab-label {
+    -fx-text-fill: #475569;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
+}
+
+.admin-tabs .tab:selected .tab-label {
+    -fx-text-fill: #14213d;
 }
 
 .admin-tabs .tab-content-area {

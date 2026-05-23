@@ -6,7 +6,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "auction_sessions")
+@Table(name = "auction_sessions", indexes = {
+    @Index(name = "idx_auction_status", columnList = "status"),
+    @Index(name = "idx_auction_seller", columnList = "seller_id")
+})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Auction extends BaseEntity {
     @Version

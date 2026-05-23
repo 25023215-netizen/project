@@ -81,7 +81,14 @@ public class SigninController {
 
                             // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
                             if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
-                                String roleVN = "SELLER".equals(selectedRole) ? "Người bán" : "Người đấu giá";
+                                String roleVN;
+                                if ("SELLER".equals(selectedRole)) {
+                                    roleVN = "Người bán";
+                                } else if ("ADMIN".equals(selectedRole)) {
+                                    roleVN = "Quản trị viên";
+                                } else {
+                                    roleVN = "Người đấu giá";
+                                }
                                 statusLabel.setText("Tài khoản này không phải " + roleVN + "!");
                                 statusLabel.setStyle("-fx-text-fill: red;");
                                 signinButton.setDisable(false);
@@ -100,7 +107,8 @@ public class SigninController {
                         }
 
                         // Điều hướng theo Role
-                        if ("ADMIN".equals(selectedRole)) {
+                        String finalRole = SessionManager.getInstance().getRole();
+                        if ("ADMIN".equalsIgnoreCase(finalRole)) {
                             goToAdminDashboard(event);
                         } else {
                             goToDashboard(event);
