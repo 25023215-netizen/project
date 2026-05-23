@@ -76,13 +76,43 @@ public class SessionManager {
                     try {
                         Platform.runLater(() -> {
                             stopStatusCheck();
-                            Alert alert = new Alert(Alert.AlertType.WARNING);
-                            alert.setTitle("Thông báo");
-                            alert.setHeaderText("Tài khoản bị khóa");
-                            alert.setContentText("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
-                            alert.showAndWait();
-                            Platform.exit();
-                            System.exit(0);
+                            try {
+                                javafx.stage.Stage activeStage = null;
+                                java.util.List<javafx.stage.Window> windows = javafx.stage.Window.getWindows();
+                                for (javafx.stage.Window w : windows) {
+                                    if (w instanceof javafx.stage.Stage stage && stage.isShowing()) {
+                                        activeStage = stage;
+                                        break;
+                                    }
+                                }
+                                
+                                if (activeStage != null) {
+                                    SceneUtils.changeScene(activeStage, "/fxml/locked_account.fxml", "Tài khoản bị khóa", "/style/locked_account.css");
+                                    activeStage.setMinWidth(480);
+                                    activeStage.setMinHeight(380);
+                                    activeStage.setWidth(500);
+                                    activeStage.setHeight(400);
+                                    activeStage.centerOnScreen();
+                                    
+                                    // Đóng tất cả các window/stage khác để hoàn toàn khóa ứng dụng
+                                    for (javafx.stage.Window w : windows) {
+                                        if (w instanceof javafx.stage.Stage stage && stage != activeStage) {
+                                            stage.close();
+                                        }
+                                    }
+                                } else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                                    alert.setTitle("Thông báo");
+                                    alert.setHeaderText("Tài khoản bị khóa");
+                                    alert.setContentText("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                                    alert.showAndWait();
+                                    Platform.exit();
+                                    System.exit(0);
+                                }
+                            } catch (Exception ex) {
+                                Platform.exit();
+                                System.exit(0);
+                            }
                         });
                     } catch (IllegalStateException e) {
                         System.err.println("JavaFX Toolkit not initialized. Skipping UI logout alert.");
@@ -116,3 +146,7 @@ public class SessionManager {
     public String getFullname() { return fullname; }
     public String getRole() { return role; }
 }
+
+
+
+

@@ -109,4 +109,27 @@ public class ItemServiceTest {
         );
         assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
     }
+
+    @Test
+    @DisplayName("Lỗi: Tạo sản phẩm với giá khởi điểm âm hoặc bằng 0")
+    void testCreateItemWithInvalidStartingPrice_Failure() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            itemService.createItem("ELECTRONICS", "iPhone 15", "Apple Phone", -100.0, seller.getId(), "Apple", "15 Pro")
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            itemService.createItem("ELECTRONICS", "iPhone 15", "Apple Phone", 0.0, seller.getId(), "Apple", "15 Pro")
+        );
+    }
+
+    @Test
+    @DisplayName("Lỗi: Cập nhật sản phẩm với giá khởi điểm âm hoặc bằng 0")
+    void testUpdateItemWithInvalidStartingPrice_Failure() {
+        Item item = itemService.createItem("ELECTRONICS", "iPhone 15", "Apple Phone", 20000.0, seller.getId(), "Apple", "15 Pro");
+        assertThrows(IllegalArgumentException.class, () -> 
+            itemService.updateItem(item.getId(), "iPhone 15", "Apple Phone", -100.0, "Apple", "15 Pro")
+        );
+        assertThrows(IllegalArgumentException.class, () -> 
+            itemService.updateItem(item.getId(), "iPhone 15", "Apple Phone", 0.0, "Apple", "15 Pro")
+        );
+    }
 }

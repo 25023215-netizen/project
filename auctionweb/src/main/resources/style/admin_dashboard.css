@@ -6,7 +6,7 @@
 
 /* Header */
 .header-bar {
-    -fx-background-color: linear-gradient(to right, #1e3a5f, #2d5a87);
+    -fx-background-color: #14213d;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);
 }
 
@@ -73,7 +73,12 @@
 }
 
 /* Tabs */
+.admin-tabs {
+    -fx-background-color: transparent;
+}
+
 .admin-tabs .tab-header-area {
+    -fx-background-color: transparent;
     -fx-padding: 5 0 0 0;
 }
 
@@ -82,23 +87,30 @@
 }
 
 .admin-tabs .tab {
-    -fx-background-color: #e5e7eb;
+    -fx-background-color: #cbd5e1;
+    -fx-background-insets: 0 4 0 4;
     -fx-background-radius: 8 8 0 0;
     -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.admin-tabs .tab:hover {
+    -fx-background-color: #94a3b8;
 }
 
 .admin-tabs .tab:selected {
-    -fx-background-color: #1e3a5f;
+    -fx-background-color: white;
+    -fx-background-insets: 0 4 -1 4;
 }
 
 .admin-tabs .tab .tab-label {
+    -fx-text-fill: #475569;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-text-fill: #374151;
 }
 
 .admin-tabs .tab:selected .tab-label {
-    -fx-text-fill: white;
+    -fx-text-fill: #14213d;
 }
 
 .admin-tabs .tab-content-area {
@@ -128,10 +140,14 @@
     -fx-border-radius: 8;
 }
 
-.data-table .column-header {
-    -fx-background-color: #f8fafc;
-    -fx-border-color: #e5e7eb;
-    -fx-padding: 10 8;
+.data-table .column-header-background {
+    -fx-background-color: #eef2f7;
+}
+
+.data-table .column-header,
+.data-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 42;
 }
 
 .data-table .column-header .label {

@@ -57,9 +57,6 @@ public class AuctionService {
     private AuctionHistoryRepository auctionHistoryRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -116,20 +113,23 @@ public class AuctionService {
         return bidRepository.findByAuctionIdOrderByBidTimeDesc(auctionId);
     }
 
+    public List<AuctionHistory> listAuctionHistories() {
+        return auctionHistoryRepository.findAll();
+    }
+
     // ==================== AUCTION LIFECYCLE ====================
 
     /**
      * Tạo mới một phiên đấu giá.
+     * Giới hạn: mỗi phiên đấu giá chỉ kéo dài tối đa 1 giờ.
      */
     public Auction createAuction(String title, String category, String description,
                                   BigDecimal startingPrice, Long sellerId,
                                   LocalDateTime startTime, LocalDateTime endTime) {
-        return createAuction(title, category, description, startingPrice, sellerId, startTime, endTime, null);
-    }
+        if (startingPrice == null || startingPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+        }
 
-    public Auction createAuction(String title, String category, String description,
-                                  BigDecimal startingPrice, Long sellerId,
-                                  LocalDateTime startTime, LocalDateTime endTime, Long itemId) {
         User user = userRepository.findById(sellerId)
                 .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
         if (!(user instanceof Seller seller)) {
@@ -143,26 +143,7 @@ public class AuctionService {
         // Sử dụng endTime nếu được truyền vào, nếu không mặc định +24 giờ
         LocalDateTime end = endTime != null ? endTime : start.plusHours(24);
 
-        Auction auction = null;
-        if (itemId != null) {
-            Optional<Auction> existingOpt = auctionRepository.findByItemId(itemId);
-            if (existingOpt.isPresent()) {
-                auction = existingOpt.get();
-                if (auction.getStatus() != AuctionStatus.OPEN) {
-                    throw new IllegalStateException("Phiên đấu giá cho sản phẩm này đã được bắt đầu hoặc đã kết thúc!");
-                }
-            }
-        }
-
-        if (auction == null) {
-            auction = new Auction();
-            if (itemId != null) {
-                Item item = itemRepository.findById(itemId)
-                        .orElseThrow(() -> new IllegalArgumentException("Item not found"));
-                auction.setItem(item);
-            }
-        }
-
+        Auction auction = new Auction();
         auction.setTitle(title);
         auction.setCategory(category);
         auction.setDescription(description);
@@ -172,15 +153,10 @@ public class AuctionService {
         auction.setSeller(seller);
         auction.setStartTime(start);
         auction.setEndTime(end);
-        auction.setStatus(AuctionStatus.RUNNING); // Start immediately as RUNNING
+        auction.setStatus(AuctionStatus.OPEN);
 
         Auction saved = auctionRepository.save(auction);
-        
-        // Register in AuctionManager
-        AuctionManager.getInstance().registerAuction(saved);
-        
         self.broadcastAuctionList();
-        self.broadcastAuctionUpdate(buildAuctionPayload(saved));
         return saved;
     }
 
@@ -263,15 +239,11 @@ public class AuctionService {
         history.setWinningPrice(auction.getCurrentPrice());
         if (auction.getWinner() != null) {
             history.setWinnerId(auction.getWinner().getId());
-            String wName = (auction.getWinner().getFullname() != null && !auction.getWinner().getFullname().isBlank())
-                    ? auction.getWinner().getFullname() : auction.getWinner().getUsername();
-            history.setWinnerName(wName);
+            history.setWinnerName(auction.getWinner().getUsername());
         }
         if (auction.getSeller() != null) {
             history.setSellerId(auction.getSeller().getId());
-            String sName = (auction.getSeller().getFullname() != null && !auction.getSeller().getFullname().isBlank())
-                    ? auction.getSeller().getFullname() : auction.getSeller().getUsername();
-            history.setSellerName(sName);
+            history.setSellerName(auction.getSeller().getUsername());
         }
         history.setEndTime(auction.getEndTime());
         history.setDeletedAt(LocalDateTime.now());
@@ -321,14 +293,8 @@ public class AuctionService {
         Auction auction = findAuction(auctionId);
 
         // Kiểm tra trạng thái phiên
-        if (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.OPEN) {
-            throw new IllegalStateException("Phien dau gia khong hoat dong");
-        }
-
-        // Chuyển trạng thái khi bắt đầu đấu giá
-        if (auction.getStatus() == AuctionStatus.OPEN) {
-            auction.setStatus(AuctionStatus.RUNNING);
-            auction.setStartTime(LocalDateTime.now());
+        if (auction.getStatus() != AuctionStatus.RUNNING) {
+            throw new IllegalStateException("Phien dau gia khong dang chay");
         }
 
         // Kiểm tra thời gian
@@ -406,8 +372,8 @@ public class AuctionService {
     @Transactional
     public AutoBidConfig registerAutoBid(Long auctionId, Long bidderId, BigDecimal maxBid, BigDecimal increment) {
         Auction auction = findAuction(auctionId);
-        if (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.OPEN) {
-            throw new IllegalStateException("Phien dau gia khong hoat dong");
+        if (auction.getStatus() != AuctionStatus.RUNNING) {
+            throw new IllegalStateException("Phien dau gia khong dang chay");
         }
 
         User user = userRepository.findById(bidderId)
@@ -474,7 +440,7 @@ public class AuctionService {
         if (configs.isEmpty()) return;
 
         Auction auction = findAuction(auctionId);
-        if (auction.getStatus() != AuctionStatus.RUNNING && auction.getStatus() != AuctionStatus.OPEN) return;
+        if (auction.getStatus() != AuctionStatus.RUNNING) return;
 
         for (AutoBidConfig config : configs) {
             // Bỏ qua bidder vừa đặt giá (tránh bid chồng lên chính mình)

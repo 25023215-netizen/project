@@ -364,6 +364,12 @@ public class BackendControllerTest {
         mockMvc.perform(delete("/api/auctions/" + auction.getId() + "?userId=" + admin.getId() + "&role=ADMIN"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Auction deleted"));
+
+        // 4.14. Xem lịch sử đấu giá đã xóa (AuctionHistory)
+        mockMvc.perform(get("/api/auctions/history"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].title").value("Honda Civic 2024 Auction"));
     }
 
     // ============================================================

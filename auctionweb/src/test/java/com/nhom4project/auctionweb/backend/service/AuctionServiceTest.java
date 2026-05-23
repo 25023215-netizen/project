@@ -145,11 +145,9 @@ public class AuctionServiceTest {
         assertEquals("Test Auction", history.getTitle());
         assertEquals(0, new BigDecimal("1500000").compareTo(history.getWinningPrice()));
         assertEquals(bidder.getId(), history.getWinnerId());
-        String expectedWinner = (bidder.getFullname() != null && !bidder.getFullname().isBlank()) ? bidder.getFullname() : bidder.getUsername();
-        assertEquals(expectedWinner, history.getWinnerName());
+        assertEquals(bidder.getUsername(), history.getWinnerName());
         assertEquals(seller.getId(), history.getSellerId());
-        String expectedSeller = (seller.getFullname() != null && !seller.getFullname().isBlank()) ? seller.getFullname() : seller.getUsername();
-        assertEquals(expectedSeller, history.getSellerName());
+        assertEquals(seller.getUsername(), history.getSellerName());
         assertNotNull(history.getDeletedAt());
     }
 
@@ -207,5 +205,16 @@ public class AuctionServiceTest {
             auctionService.registerAutoBid(testAuction.getId(), bidder.getId(), new BigDecimal("2000000"), new BigDecimal("100000"))
         );
         assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Tạo phiên đấu giá thất bại khi giá khởi điểm âm hoặc bằng 0")
+    void testCreateAuctionWithInvalidStartingPrice_Failure() {
+        assertThrows(IllegalArgumentException.class, () ->
+            auctionService.createAuction("New Auction", "Electronics", "Desc", new BigDecimal("-100"), seller.getId(), null, null)
+        );
+        assertThrows(IllegalArgumentException.class, () ->
+            auctionService.createAuction("New Auction", "Electronics", "Desc", BigDecimal.ZERO, seller.getId(), null, null)
+        );
     }
 }

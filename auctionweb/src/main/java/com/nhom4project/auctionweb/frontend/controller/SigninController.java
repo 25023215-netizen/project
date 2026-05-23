@@ -4,7 +4,6 @@ import com.nhom4project.auctionweb.frontend.utils.BackendClient;
 import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
 import com.nhom4project.auctionweb.frontend.utils.SessionManager;
 import com.nhom4project.auctionweb.frontend.utils.ErrorLogger;
-import com.nhom4project.auctionweb.frontend.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -82,7 +81,14 @@ public class SigninController {
 
                             // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
                             if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
-                                String roleVN = "SELLER".equals(selectedRole) ? "Người bán" : "Người đấu giá";
+                                String roleVN;
+                                if ("SELLER".equals(selectedRole)) {
+                                    roleVN = "Người bán";
+                                } else if ("ADMIN".equals(selectedRole)) {
+                                    roleVN = "Quản trị viên";
+                                } else {
+                                    roleVN = "Người đấu giá";
+                                }
                                 statusLabel.setText("Tài khoản này không phải " + roleVN + "!");
                                 statusLabel.setStyle("-fx-text-fill: red;");
                                 signinButton.setDisable(false);
@@ -95,23 +101,17 @@ public class SigninController {
                                     user.optString("fullname", username),
                                     userRole
                             );
-
-                            // Điều hướng theo role thực tế trả về từ server
-                            if ("ADMIN".equalsIgnoreCase(userRole)) {
-                                goToAdminDashboard(event);
-                            } else {
-                                goToDashboard(event);
-                            }
-
                         } catch (Exception e) {
                             ErrorLogger.log("Lỗi parse thông tin user khi đăng nhập: " + username, e);
                             SessionManager.getInstance().setUser(0L, username, username, selectedRole);
-                            // Fallback: điều hướng theo lựa chọn người dùng (nếu parse lỗi)
-                            if ("ADMIN".equalsIgnoreCase(selectedRole)) {
-                                goToAdminDashboard(event);
-                            } else {
-                                goToDashboard(event);
-                            }
+                        }
+
+                        // Điều hướng theo Role
+                        String finalRole = SessionManager.getInstance().getRole();
+                        if ("ADMIN".equalsIgnoreCase(finalRole)) {
+                            goToAdminDashboard(event);
+                        } else {
+                            goToDashboard(event);
                         }
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
@@ -153,7 +153,7 @@ public class SigninController {
             SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
             stage.setMinWidth(980);
             stage.setMinHeight(680);
-            WindowUtil.maximizeStage(stage);
+            stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
             ErrorLogger.log("Lỗi mở màn hình Dashboard", e);
             statusLabel.setText("Khong the mo Dashboard!");
@@ -169,7 +169,7 @@ public class SigninController {
             SceneUtils.changeScene(stage, "/fxml/admin_dashboard.fxml", "Auction Web - Admin Dashboard", "/style/admin_dashboard.css");
             stage.setMinWidth(1024);
             stage.setMinHeight(700);
-            WindowUtil.maximizeStage(stage);
+            stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
             ErrorLogger.log("Lỗi mở màn hình Admin Dashboard", e);
             statusLabel.setText("Khong the mo Admin Dashboard!");

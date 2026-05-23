@@ -155,6 +155,18 @@ public class ItemManagementController {
             return;
         }
 
+        double startPrice;
+        try {
+            startPrice = Double.parseDouble(priceText);
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Gia khoi diem phai la so hop le!");
+            return;
+        }
+        if (startPrice <= 0) {
+            statusLabel.setText("Gia khoi diem phai lon hon 0!");
+            return;
+        }
+
         new Thread(() -> {
             try {
                 JSONObject body = new JSONObject();
@@ -223,6 +235,18 @@ public class ItemManagementController {
 
         if (name.isEmpty() || priceText.isEmpty()) {
             statusLabel.setText("Vui long nhap ten va gia!");
+            return;
+        }
+
+        double startPrice;
+        try {
+            startPrice = Double.parseDouble(priceText);
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Gia khoi diem phai la so hop le!");
+            return;
+        }
+        if (startPrice <= 0) {
+            statusLabel.setText("Gia khoi diem phai lon hon 0!");
             return;
         }
 
