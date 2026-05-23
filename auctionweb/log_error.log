@@ -1336,66 +1336,17 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 2026-05-23T00:10:32.888+07:00  INFO 11288 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Started BackendApplication in 15.988 seconds (process running for 16.2)
 2026-05-23T00:10:34.875+07:00  INFO 11288 --- [auctionweb] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2026-05-23T00:13:08.793+07:00  INFO 11288 --- [auctionweb] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-05-23T11:44:32.294+07:00  INFO 12372 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Starting BackendApplication using Java 25.0.2 with PID 12372 (D:\BTL\auctionweb\target\classes started by ASUS in D:\BTL\auctionweb)
-2026-05-23T11:44:32.296+07:00  INFO 12372 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : No active profile set, falling back to 1 default profile: "default"
-2026-05-23T11:44:33.253+07:00  INFO 12372 --- [auctionweb] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-23T11:44:33.253+07:00  INFO 12372 --- [auctionweb] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
-2026-05-23T11:44:33.303+07:00  INFO 12372 --- [auctionweb] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-23T11:44:33.409+07:00  INFO 12372 --- [auctionweb] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-23T11:44:33.456+07:00  INFO 12372 --- [auctionweb] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
-2026-05-23T11:44:33.482+07:00  INFO 12372 --- [auctionweb] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-23T11:44:33.679+07:00  INFO 12372 --- [auctionweb] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-23T11:44:35.910+07:00  INFO 12372 --- [auctionweb] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2c99c8d
-2026-05-23T11:44:35.914+07:00  INFO 12372 --- [auctionweb] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-23T11:44:36.380+07:00  WARN 12372 --- [auctionweb] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-23T11:44:37.098+07:00  INFO 12372 --- [auctionweb] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-23T11:44:45.284+07:00  INFO 12372 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Started BackendApplication in 13.315 seconds (process running for 13.585)
-2026-05-23T11:46:36.193+07:00  INFO 12372 --- [auctionweb] [http-nio-8080-exec-6] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-23T12:25:27.920+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-49] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:27.926+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-49] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30016ms.
-2026-05-23T12:25:27.927+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-49] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:27.927+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-49] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:30.124+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-52] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:30.125+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-52] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30011ms.
-2026-05-23T12:25:30.125+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-52] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:30.125+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-52] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:30.949+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-23] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:30.952+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-23] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30014ms.
-2026-05-23T12:25:30.953+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-23] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:30.955+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-23] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:31.903+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-56] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:31.904+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-22] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:31.904+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-56] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30005ms.
-2026-05-23T12:25:31.905+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-22] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30009ms.
-2026-05-23T12:25:31.905+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-56] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:31.906+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-22] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:31.907+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-56] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:31.909+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-22] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:33.399+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-17] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:33.400+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-17] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30014ms.
-2026-05-23T12:25:33.400+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-17] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:33.400+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-17] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:33.897+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-37] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:33.900+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-37] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30001ms.
-2026-05-23T12:25:33.901+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-37] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:33.902+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-37] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:38.138+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-27] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:38.138+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-61] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:38.141+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-61] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30010ms.
-2026-05-23T12:25:38.141+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-27] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30012ms.
-2026-05-23T12:25:38.142+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-61] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:38.142+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-27] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:38.143+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-61] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:38.143+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-27] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:44.844+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-53] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:44.845+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-53] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30003ms.
-2026-05-23T12:25:44.846+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-53] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:44.846+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-53] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:45.899+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-9] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:45.900+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-9] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30005ms.
-2026-05-23T12:25:45.902+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-9] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:45.904+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-9] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
-2026-05-23T12:25:51.907+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-18] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 42000
-2026-05-23T12:25:51.908+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-18] o.h.engine.jdbc.spi.SqlExceptionHelper   : HikariPool-1 - Connection is not available, request timed out after 30008ms.
-2026-05-23T12:25:51.909+07:00  WARN 12372 --- [auctionweb] [http-nio-8080-exec-18] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1226, SQLState: 42000
-2026-05-23T12:25:51.910+07:00 ERROR 12372 --- [auctionweb] [http-nio-8080-exec-18] o.h.engine.jdbc.spi.SqlExceptionHelper   : User 'uolgh3gglbfn7inw' has exceeded the 'max_user_connections' resource (current value: 5)
+2026-05-23T00:17:29.249+07:00  INFO 30636 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Starting BackendApplication using Java 25.0.2 with PID 30636 (D:\File_hoc\Project\BTL (3)\BTL\auctionweb\target\classes started by Meguminh in D:\File_hoc\Project\BTL (3)\BTL\auctionweb)
+2026-05-23T00:17:29.252+07:00  INFO 30636 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-05-23T00:17:31.077+07:00  INFO 30636 --- [auctionweb] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-23T00:17:31.077+07:00  INFO 30636 --- [auctionweb] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-05-23T00:17:31.167+07:00  INFO 30636 --- [auctionweb] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-23T00:17:31.370+07:00  INFO 30636 --- [auctionweb] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-23T00:17:31.464+07:00  INFO 30636 --- [auctionweb] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-05-23T00:17:31.515+07:00  INFO 30636 --- [auctionweb] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-05-23T00:17:31.901+07:00  INFO 30636 --- [auctionweb] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-23T00:17:34.712+07:00  INFO 30636 --- [auctionweb] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@365cef67
+2026-05-23T00:17:34.716+07:00  INFO 30636 --- [auctionweb] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-23T00:17:35.192+07:00  WARN 30636 --- [auctionweb] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-23T00:17:36.479+07:00  INFO 30636 --- [auctionweb] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-23T00:17:44.717+07:00  INFO 30636 --- [auctionweb] [main] c.n.a.backend.BackendApplication         : Started BackendApplication in 16.097 seconds (process running for 16.607)
