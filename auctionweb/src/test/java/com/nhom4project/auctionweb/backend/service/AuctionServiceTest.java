@@ -17,14 +17,16 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests cho AuctionService - Nhóm 4.
  */
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest(classes = com.nhom4project.auctionweb.backend.BackendApplication.class)
 public class AuctionServiceTest {
 
     @Autowired private AuctionService auctionService;
     @Autowired private AuctionRepository auctionRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private AuctionHistoryRepository auctionHistoryRepository;
+    @Autowired private BidRepository bidRepository;
+    @Autowired private AutoBidConfigRepository autoBidConfigRepository;
+    @Autowired private ItemRepository itemRepository;
 
     private Seller seller;
     private Bidder bidder;
@@ -32,6 +34,13 @@ public class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
+        auctionHistoryRepository.deleteAll();
+        bidRepository.deleteAll();
+        autoBidConfigRepository.deleteAll();
+        auctionRepository.deleteAll();
+        itemRepository.deleteAll();
+        userRepository.deleteAll();
+
         long ts = System.nanoTime();
         seller = new Seller();
         seller.setUsername("s_" + ts);

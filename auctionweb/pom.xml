@@ -166,9 +166,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.nhom4project.auctionweb.backend.BackendApplication</mainClass>
+                    <!-- MainLauncher khoi dong GUI + backend; them flag 'server' de chay server-only -->
+                    <mainClass>com.nhom4project.auctionweb.frontend.app.MainLauncher</mainClass>
                 </configuration>
             </plugin>
+
 
             <!-- ✅ Code Coverage (JaCoCo) - 100% Core Packages -->
             <plugin>
