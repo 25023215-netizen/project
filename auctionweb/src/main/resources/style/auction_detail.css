@@ -284,3 +284,17 @@
 .delete-button:hover {
     -fx-background-color: #b91c1c;
 }
+
+.start-button {
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-color: #2563eb;
+}
+
+.start-button:hover {
+    -fx-background-color: #1d4ed8;
+}

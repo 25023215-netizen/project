@@ -68,7 +68,7 @@ public class ItemManagementController {
                 nameField.setText(newSelection.nameProperty().get());
                 descField.setText(newSelection.descProperty().get());
                 // Loại bỏ định dạng phần nghìn để nhập liệu số thuần túy
-                priceField.setText(newSelection.priceProperty().get().replace(",", "").replace(".", ""));
+                priceField.setText(newSelection.priceProperty().get().replaceAll("[^\\d]", ""));
                 typeCombo.setValue(newSelection.typeProperty().get());
                 extra1Field.setText(newSelection.extra1Property().get());
                 extra2Field.setText(newSelection.extra2Property().get());
@@ -313,7 +313,7 @@ public class ItemManagementController {
                 body.put("title", finalTitle);
                 body.put("category", selected.typeProperty().get());
                 body.put("description", selected.descProperty().get());
-                body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replace(",", "").replace(".", "")));
+                body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replaceAll("[^\\d]", "")));
                 body.put("sellerId", SessionManager.getInstance().getUserId());
                 body.put("endTime", finalEndTime.toString());
 

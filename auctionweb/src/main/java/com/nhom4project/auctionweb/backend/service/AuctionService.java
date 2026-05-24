@@ -150,6 +150,13 @@ public class AuctionService {
         // Sử dụng endTime nếu được truyền vào, nếu không mặc định +24 giờ
         LocalDateTime end = endTime != null ? endTime : start.plusHours(24);
 
+        if (itemId != null) {
+            Optional<Auction> existingOpt = auctionRepository.findByItemId(itemId);
+            if (existingOpt.isPresent()) {
+                throw new IllegalStateException("Sản phẩm này đã được tạo phiên đấu giá");
+            }
+        }
+
         Auction auction = new Auction();
         auction.setTitle(title);
         auction.setCategory(category);
@@ -178,8 +185,19 @@ public class AuctionService {
         if (auction.getStatus() != AuctionStatus.OPEN) {
             throw new IllegalStateException("Chi co the bat dau phien dau gia o trang thai OPEN");
         }
+        
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime originalStart = auction.getStartTime();
+        LocalDateTime originalEnd = auction.getEndTime();
+        if (originalStart != null && originalEnd != null) {
+            java.time.Duration duration = java.time.Duration.between(originalStart, originalEnd);
+            auction.setEndTime(now.plus(duration));
+        } else {
+            auction.setEndTime(now.plusHours(24));
+        }
+        
         auction.setStatus(AuctionStatus.RUNNING);
-        auction.setStartTime(LocalDateTime.now());
+        auction.setStartTime(now);
         auctionRepository.save(auction);
         AuctionManager.getInstance().registerAuction(auction);
         self.broadcastAuctionUpdate(buildAuctionPayload(auction));

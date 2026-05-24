@@ -80,6 +80,7 @@
                         <VBox fx:id="managementCard" spacing="10" styleClass="management-card" managed="false" visible="false">
                             <Label text="Quản lý phiên đấu giá" styleClass="section-title"/>
                             <HBox spacing="10">
+                                <Button fx:id="startAuctionButton" text="Bắt đầu đấu giá" onAction="#onStartAuction" styleClass="start-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                                 <Button fx:id="endEarlyButton" text="Kết thúc sớm" onAction="#onEndAuctionEarly" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                                 <Button fx:id="deleteAuctionButton" text="Xóa phiên đấu giá" onAction="#onDeleteAuction" styleClass="delete-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                             </HBox>

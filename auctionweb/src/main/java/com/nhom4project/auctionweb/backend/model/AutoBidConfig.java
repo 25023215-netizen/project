@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
  * Ưu tiên theo thời điểm đăng ký (registeredAt).
  */
 @Entity
-@Table(name = "auto_bid_configs")
+@Table(name = "auto_bid_configs", indexes = {
+    @Index(name = "idx_autobid_auction_active", columnList = "auction_id, active"),
+    @Index(name = "idx_autobid_auction_bidder", columnList = "auction_id, bidder_id")
+})
 public class AutoBidConfig extends BaseEntity {
 
     @ManyToOne

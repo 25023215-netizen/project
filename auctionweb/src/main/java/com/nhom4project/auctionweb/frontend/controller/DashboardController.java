@@ -126,7 +126,7 @@ public class DashboardController {
 
     private void startAutoRefresh() {
         if (autoRefreshTimeline == null) {
-            autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> loadAuctions()));
+            autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> loadAuctions()));
             autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
             autoRefreshTimeline.play();
         }
@@ -200,26 +200,17 @@ public class DashboardController {
         }
     }
 
-    private void loadHistory() {
+    private void loadHistory(String mainBody) {
         CompletableFuture.runAsync(() -> {
             try {
-                HttpResponse<String> mainResp = BackendClient.getInstance().get("/auctions");
                 HttpResponse<String> histResp = BackendClient.getInstance().get("/auctions/history");
-                if (mainResp.statusCode() == 200) {
-                    String mainBody = mainResp.body();
-                    String histBody = (histResp.statusCode() == 200) ? histResp.body() : "[]";
-                    String uniqueKey = mainBody.hashCode() + "-" + histBody.hashCode();
-                    if (!uniqueKey.equals(lastHistoryResponseJson)) {
-                        lastHistoryResponseJson = uniqueKey;
-                        ObservableList<HistoryRow> parsed = parseHistory(mainBody, histBody);
-                        Platform.runLater(() -> {
-                            historyList.setAll(parsed);
-                            applyHistoryFilter();
-                        });
-                    }
-                } else {
+                String histBody = (histResp.statusCode() == 200) ? histResp.body() : "[]";
+                String uniqueKey = mainBody.hashCode() + "-" + histBody.hashCode();
+                if (!uniqueKey.equals(lastHistoryResponseJson)) {
+                    lastHistoryResponseJson = uniqueKey;
+                    ObservableList<HistoryRow> parsed = parseHistory(mainBody, histBody);
                     Platform.runLater(() -> {
-                        loadFallbackHistory();
+                        historyList.setAll(parsed);
                         applyHistoryFilter();
                     });
                 }
@@ -292,13 +283,13 @@ public class DashboardController {
     }
 
     private void loadAuctions() {
-        loadHistory();
         CompletableFuture.runAsync(() -> {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/auctions");
                 if (response.statusCode() == 200) {
                     String body = response.body();
-                    if (!body.equals(lastResponseJson)) {
+                    boolean bodyChanged = !body.equals(lastResponseJson);
+                    if (bodyChanged) {
                         lastResponseJson = body;
                         ObservableList<AuctionRow> parsed = parseAuctions(body);
                         Platform.runLater(() -> {
@@ -307,6 +298,9 @@ public class DashboardController {
                             applyFilter();
                             updateStats();
                         });
+                    }
+                    if (bodyChanged || lastHistoryResponseJson.isEmpty()) {
+                        loadHistory(body);
                     }
                 } else {
                     Platform.runLater(() -> {

@@ -83,28 +83,6 @@ public class ItemService {
 
         Item savedItem = itemRepository.save(item);
 
-        // Auto-create Auction in OPEN status
-        Auction auction = new Auction();
-        auction.setItem(savedItem);
-        auction.setTitle(savedItem.getName());
-        auction.setCategory(type);
-        auction.setDescription(savedItem.getDescription());
-        auction.setStartingPrice(java.math.BigDecimal.valueOf(savedItem.getStartingPrice()));
-        auction.setCurrentPrice(java.math.BigDecimal.valueOf(savedItem.getStartingPrice()));
-        auction.setBidCount(0);
-        auction.setSeller((Seller) seller);
-        auction.setStartTime(java.time.LocalDateTime.now());
-        auction.setEndTime(java.time.LocalDateTime.now().plusDays(3)); // default duration is 3 days
-        auction.setStatus(AuctionStatus.OPEN);
-        auctionRepository.save(auction);
-
-        // Broadcast refresh signal to clients
-        try {
-            messagingTemplate.convertAndSend("/topic/auctions", "refresh");
-        } catch (Exception e) {
-            // Ignore/Log
-        }
-
         return savedItem;
     }
 

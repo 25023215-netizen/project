@@ -226,4 +226,83 @@ public class AuctionServiceTest {
             auctionService.createAuction("New Auction", "Electronics", "Desc", BigDecimal.ZERO, seller.getId(), null, null)
         );
     }
+
+    @Test
+    @DisplayName("Tạo phiên đấu giá thất bại khi sản phẩm đã được tạo phiên đấu giá")
+    void testCreateAuction_ExistingAuction_Failure() {
+        Electronics item = new Electronics();
+        item.setName("Test Laptop");
+        item.setStartingPrice(15000000.0);
+        item.setCurrentPrice(15000000.0);
+        item.setSeller(seller);
+        item.setBrand("Brand");
+        item.setModelName("Model");
+        itemRepository.save(item);
+
+        Auction existingAuction = new Auction();
+        existingAuction.setTitle("Old Title");
+        existingAuction.setCategory("Electronics");
+        existingAuction.setDescription("Old Desc");
+        existingAuction.setStartingPrice(new BigDecimal("15000000"));
+        existingAuction.setCurrentPrice(new BigDecimal("15000000"));
+        existingAuction.setSeller(seller);
+        existingAuction.setItem(item);
+        existingAuction.setStatus(AuctionStatus.OPEN);
+        existingAuction.setStartTime(LocalDateTime.now());
+        existingAuction.setEndTime(LocalDateTime.now().plusDays(1));
+        auctionRepository.save(existingAuction);
+
+        BigDecimal newPrice = new BigDecimal("16000000");
+        LocalDateTime newEndTime = LocalDateTime.now().plusDays(2);
+        
+        Exception ex = assertThrows(IllegalStateException.class, () ->
+            auctionService.createAuction(
+                    "Updated Title", "Electronics", "Updated Desc",
+                    newPrice, seller.getId(), null, newEndTime, item.getId()
+            )
+        );
+        assertEquals("Sản phẩm này đã được tạo phiên đấu giá", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Đặt giá thất bại khi phiên đấu giá ở trạng thái OPEN")
+    void testPlaceBid_OpenStatus_Failure() {
+        testAuction.setStatus(AuctionStatus.OPEN);
+        auctionRepository.save(testAuction);
+
+        Exception ex = assertThrows(IllegalStateException.class, () ->
+            auctionService.placeBid(testAuction.getId(), bidder.getId(), new BigDecimal("1500000"))
+        );
+        assertEquals("Phien dau gia khong dang chay", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Bắt đầu phiên đấu giá từ OPEN sang RUNNING dịch chuyển endTime đúng thời lượng")
+    void testStartAuction_ShiftsEndTimeCorrectly() {
+        Auction openAuction = new Auction();
+        openAuction.setTitle("Open Auction Duration Test");
+        openAuction.setStatus(AuctionStatus.OPEN);
+        openAuction.setStartingPrice(new BigDecimal("200000"));
+        openAuction.setCurrentPrice(new BigDecimal("200000"));
+        openAuction.setSeller(seller);
+        
+        // Thời lượng gốc là 2 giờ (từ 1 giờ trước đến 1 giờ sau)
+        LocalDateTime originalStart = LocalDateTime.now().minusHours(1);
+        LocalDateTime originalEnd = originalStart.plusHours(2);
+        openAuction.setStartTime(originalStart);
+        openAuction.setEndTime(originalEnd);
+        auctionRepository.save(openAuction);
+        
+        auctionService.startAuction(openAuction.getId());
+        
+        Auction updated = auctionRepository.findById(openAuction.getId()).orElseThrow();
+        assertEquals(AuctionStatus.RUNNING, updated.getStatus());
+        
+        // startTime phải là lúc bấm bắt đầu (xấp xỉ now)
+        assertTrue(updated.getStartTime().isAfter(LocalDateTime.now().minusMinutes(1)));
+        
+        // endTime phải được dịch chuyển theo đúng thời lượng gốc (2 giờ từ startTime mới)
+        java.time.Duration actualDuration = java.time.Duration.between(updated.getStartTime(), updated.getEndTime());
+        assertTrue(Math.abs(actualDuration.toSeconds() - java.time.Duration.ofHours(2).toSeconds()) < 5);
+    }
 }

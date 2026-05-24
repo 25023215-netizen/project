@@ -87,6 +87,8 @@ public class AuctionDetailController {
     @FXML
     private VBox managementCard;
     @FXML
+    private Button startAuctionButton;
+    @FXML
     private Button endEarlyButton;
     @FXML
     private Button deleteAuctionButton;
@@ -508,9 +510,14 @@ public class AuctionDetailController {
             // Delete is for both Admin and Owner
             deleteAuctionButton.setVisible(true);
             deleteAuctionButton.setManaged(true);
+            // Start is for Owner
+            startAuctionButton.setVisible(isOwner);
+            startAuctionButton.setManaged(isOwner);
 
             // Disable end early if already finished
             endEarlyButton.setDisable(!"RUNNING".equals(status));
+            // Disable start if not OPEN
+            startAuctionButton.setDisable(!"OPEN".equals(status));
         } else {
             managementCard.setVisible(false);
             managementCard.setManaged(false);
@@ -544,10 +551,13 @@ public class AuctionDetailController {
             }
         }
 
-        // Disable bidding nếu auction không đang chạy hoặc mở
-        boolean isRunningOrOpen = "RUNNING".equals(status) || "OPEN".equals(status);
-        placeBidButton.setDisable(!isRunningOrOpen || !isBidder);
-        autoBidButton.setDisable(!isRunningOrOpen || !isBidder);
+        // Disable bidding nếu auction không đang chạy
+        boolean isRunning = "RUNNING".equals(status);
+        placeBidButton.setDisable(!isRunning || !isBidder);
+        autoBidButton.setDisable(!isRunning || !isBidder);
+        bidAmountField.setDisable(!isRunning || !isBidder);
+        maxBidField.setDisable(!isRunning || !isBidder);
+        incrementField.setDisable(!isRunning || !isBidder);
 
         if ("FINISHED".equals(status) && !isFinishedAlertShown) {
             isFinishedAlertShown = true;
@@ -765,6 +775,36 @@ public class AuctionDetailController {
                 });
             }
         }).start();
+    }
+
+    @FXML
+    private void onStartAuction() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn bắt đầu phiên đấu giá này?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                new Thread(() -> {
+                    try {
+                        HttpResponse<String> response = BackendClient.getInstance()
+                                .post("/auctions/" + auctionId + "/start", "");
+                        Platform.runLater(() -> {
+                            if (response.statusCode() == 200) {
+                                messageLabel.setText("Phiên đấu giá đã bắt đầu!");
+                                messageLabel.setStyle("-fx-text-fill: #22c55e;");
+                                loadAuctionDetail();
+                            } else {
+                                messageLabel.setText("Lỗi: " + response.body());
+                                messageLabel.setStyle("-fx-text-fill: #ef4444;");
+                            }
+                        });
+                    } catch (Exception e) {
+                        Platform.runLater(() -> {
+                            messageLabel.setText("Lỗi kết nối: " + e.getMessage());
+                            messageLabel.setStyle("-fx-text-fill: #ef4444;");
+                        });
+                    }
+                }).start();
+            }
+        });
     }
 
     @FXML
