@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -110,7 +112,7 @@ public class AuctionService {
     }
 
     public List<BidTransaction> getBidHistory(Long auctionId) {
-        return bidRepository.findByAuctionIdOrderByBidTimeDesc(auctionId);
+        return bidRepository.findByAuctionIdOrderByIdDesc(auctionId);
     }
 
     public List<AuctionHistory> listAuctionHistories() {
@@ -176,7 +178,7 @@ public class AuctionService {
         }
 
         Auction saved = auctionRepository.save(auction);
-        self.broadcastAuctionList();
+        runAfterCommit(() -> self.broadcastAuctionList());
         return saved;
     }
 
@@ -200,7 +202,7 @@ public class AuctionService {
         auction.setStartTime(now);
         auctionRepository.save(auction);
         AuctionManager.getInstance().registerAuction(auction);
-        self.broadcastAuctionUpdate(buildAuctionPayload(auction));
+        runAfterCommit(() -> self.broadcastAuctionUpdate(buildAuctionPayload(auction)));
     }
 
     /**
@@ -225,8 +227,10 @@ public class AuctionService {
         auction.setStatus(AuctionStatus.FINISHED);
         auctionRepository.save(auction);
         AuctionManager.getInstance().updateStatus(id, AuctionStatus.FINISHED);
-        self.broadcastAuctionUpdate(buildAuctionPayload(auction));
-        self.broadcastAuctionList();
+        runAfterCommit(() -> {
+            self.broadcastAuctionUpdate(buildAuctionPayload(auction));
+            self.broadcastAuctionList();
+        });
     }
 
     /**
@@ -287,7 +291,7 @@ public class AuctionService {
         autoBidConfigRepository.deleteByAuctionId(id);
 
         auctionRepository.delete(auction);
-        self.broadcastAuctionList();
+        runAfterCommit(() -> self.broadcastAuctionList());
     }
 
     // ==================== BIDDING (concurrent-safe) ====================
@@ -375,11 +379,11 @@ public class AuctionService {
         // Đăng ký vào AuctionManager
         AuctionManager.getInstance().registerAuction(auction);
 
-        // Observer Pattern: broadcast qua WebSocket bất đồng bộ (Async)
-        self.broadcastAuctionUpdate(buildAuctionPayload(auction));
-
-        // Kích hoạt Auto-bidding bất đồng bộ (Async) cho các bidder khác
-        self.processAutoBids(auctionId, bidderId);
+        // Observer Pattern & Auto-bidding: Chạy sau khi commit transaction để tránh race condition đọc stale data
+        runAfterCommit(() -> {
+            self.broadcastAuctionUpdate(buildAuctionPayload(auction));
+            self.processAutoBids(auctionId, bidderId);
+        });
 
         return true;
     }
@@ -442,8 +446,8 @@ public class AuctionService {
 
         AutoBidConfig saved = autoBidConfigRepository.save(config);
 
-        // Kích hoạt auto-bid ngay nếu giá hiện tại thấp hơn maxBid
-        self.processAutoBids(auctionId, null);
+        // Kích hoạt auto-bid ngay sau khi transaction đăng ký được commit
+        runAfterCommit(() -> self.processAutoBids(auctionId, null));
 
         return saved;
     }
@@ -574,6 +578,19 @@ public class AuctionService {
     private Auction findAuction(Long id) {
         return auctionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Auction not found: " + id));
+    }
+
+    private void runAfterCommit(Runnable runnable) {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    runnable.run();
+                }
+            });
+        } else {
+            runnable.run();
+        }
     }
 
     private Auction createAuction(String title, String category, String description,
