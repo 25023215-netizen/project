@@ -114,17 +114,17 @@ INSERT INTO users (fullname, email, username, password, role) VALUES
 -- Sản phẩm mẫu đang đấu giá (seller_id = 2 là seller1)
 INSERT INTO items (name, description, item_type, start_price, current_price, start_time, end_time, status, seller_id) VALUES
 ('iPhone 15 Pro Max 256GB',
- 'Máy mới 100%, chưa active, full box, màu Titan Đen.',
+ 'Brand-new, not activated, full box, black titanium.',
  'ELECTRONICS', 25000000, 25000000,
  NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 'RUNNING', 2),
 
-('Tranh Sơn Dầu – Hồ Gươm',
- 'Tranh vẽ tay bởi họa sĩ Nguyễn Minh, kích thước 80x60cm.',
+('Oil Painting - Hoan Kiem Lake',
+ 'Hand-painted by artist Nguyen Minh, 80x60cm.',
  'ART', 5000000, 5000000,
  NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), 'RUNNING', 2),
 
 ('Honda Wave Alpha 2023',
- 'Xe còn mới 95%, ít đi, bstp 59-X1 1234.',
+ '95% new condition, lightly used, license plate 59-X1 1234.',
  'VEHICLE', 15000000, 15000000,
  DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 4 DAY), 'OPEN', 2);
 

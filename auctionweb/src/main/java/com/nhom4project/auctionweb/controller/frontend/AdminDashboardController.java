@@ -84,10 +84,10 @@ public class AdminDashboardController {
                     setGraphic(new Label("-"));
                     return;
                 }
-                Button lockBtn = new Button(row[5].equals("Active") ? "🔒 Khóa" : "🔓 Mở khóa");
+                Button lockBtn = new Button(row[5].equals("Active") ? "🔒 Lock" : "🔓 Unlock");
                 lockBtn.getStyleClass().add("lock-btn");
                 lockBtn.setOnAction(e -> toggleLockUser(row[0]));
-                Button deleteBtn = new Button("🗑 Xóa");
+                Button deleteBtn = new Button("🗑 Delete");
                 deleteBtn.getStyleClass().add("delete-btn");
                 deleteBtn.setOnAction(e -> deleteUser(row[0]));
                 setGraphic(new HBox(5, lockBtn, deleteBtn));
@@ -112,16 +112,26 @@ public class AdminDashboardController {
                 String[] row = getTableRow().getItem();
                 String status = row[5];
                 if ("PENDING".equals(status)) {
-                    Button approveBtn = new Button("✅ Duyệt");
+                    Button approveBtn = new Button("✅ Approve");
                     approveBtn.getStyleClass().add("approve-btn");
                     approveBtn.setOnAction(e -> approveAuction(row[0]));
-                    Button rejectBtn = new Button("❌ Từ chối");
+                    Button rejectBtn = new Button("❌ Reject");
                     rejectBtn.getStyleClass().add("reject-btn");
                     rejectBtn.setOnAction(e -> rejectAuction(row[0]));
                     setGraphic(new HBox(5, approveBtn, rejectBtn));
                 } else {
                     setGraphic(new Label(status));
                 }
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+                
+                Button delBtn = new Button("🗑 Delete");
+                delBtn.getStyleClass().add("delete-btn");
+                delBtn.setOnAction(e -> deleteAuction(row[0]));
+                actions.getChildren().add(delBtn);
+                
+                setGraphic(actions);
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/AdminDashboardController.java
             }
         });
 
@@ -147,7 +157,7 @@ public class AdminDashboardController {
                     });
                 }
             } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải thống kê: " + e.getMessage()));
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Error loading stats: " + e.getMessage()));
             }
         }).start();
     }
@@ -169,6 +179,7 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/users");
                 if (response.statusCode() == 200) {
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
                     JsonNode root = mapper.readTree(response.body());
                     ObservableList<String[]> rows = FXCollections.observableArrayList();
                     for (JsonNode node : root) {
@@ -179,6 +190,26 @@ public class AdminDashboardController {
                                 node.path("email").asText(),
                                 node.path("role").asText(),
                                 node.path("locked").asBoolean() ? "Locked" : "Active"
+=======
+                    String body = response.body();
+                    if (!body.equals(lastUsersJson)) {
+                        lastUsersJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("username").asText(),
+                                    node.path("fullname").asText(),
+                                    node.path("email").asText(),
+                                    node.path("role").asText(),
+                                    node.path("locked").asBoolean() ? "Locked" : "Active"
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            userTable.setItems(rows);
+                            statusLabel.setText("Loaded " + rows.size() + " users.");
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/AdminDashboardController.java
                         });
                     }
                     javafx.application.Platform.runLater(() -> {
@@ -187,7 +218,7 @@ public class AdminDashboardController {
                     });
                 }
             } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải users: " + e.getMessage()));
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Error loading users: " + e.getMessage()));
             }
         }).start();
     }
@@ -197,6 +228,7 @@ public class AdminDashboardController {
             try {
                 HttpResponse<String> response = BackendClient.getInstance().get("/admin/auctions");
                 if (response.statusCode() == 200) {
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
                     JsonNode root = mapper.readTree(response.body());
                     ObservableList<String[]> rows = FXCollections.observableArrayList();
                     for (JsonNode node : root) {
@@ -208,6 +240,27 @@ public class AdminDashboardController {
                                 currencyFormat.format(price),
                                 String.valueOf(node.path("bidCount").asInt()),
                                 node.path("status").asText()
+=======
+                    String body = response.body();
+                    if (!body.equals(lastAuctionsJson)) {
+                        lastAuctionsJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("title").asText(),
+                                    node.path("category").asText(),
+                                    currencyFormat.format(price),
+                                    String.valueOf(node.path("bidCount").asInt()),
+                                    node.path("status").asText()
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            auctionTable.setItems(rows);
+                            statusLabel.setText("Loaded " + rows.size() + " auctions.");
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/AdminDashboardController.java
                         });
                     }
                     javafx.application.Platform.runLater(() -> {
@@ -216,7 +269,7 @@ public class AdminDashboardController {
                     });
                 }
             } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải auctions: " + e.getMessage()));
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Error loading auctions: " + e.getMessage()));
             }
         }).start();
     }
@@ -233,13 +286,13 @@ public class AdminDashboardController {
                     loadStats();
                 });
             } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi: " + e.getMessage()));
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
 
     private void deleteUser(String userId) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn xóa user này?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this user?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 new Thread(() -> {
@@ -251,7 +304,7 @@ public class AdminDashboardController {
                             loadStats();
                         });
                     } catch (Exception e) {
-                        javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi: " + e.getMessage()));
+                        javafx.application.Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
                     }
                 }).start();
             }
@@ -270,7 +323,7 @@ public class AdminDashboardController {
                     loadStats();
                 });
             } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi: " + e.getMessage()));
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
@@ -285,11 +338,37 @@ public class AdminDashboardController {
                     loadStats();
                 });
             } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi: " + e.getMessage()));
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/AdminDashboardController.java
+=======
+    private void deleteAuction(String auctionId) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this auction?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                new Thread(() -> {
+                    try {
+                        Long userId = SessionManager.getInstance().getUserId();
+                        String role = SessionManager.getInstance().getRole();
+                        HttpResponse<String> response = BackendClient.getInstance()
+                                .delete("/auctions/" + auctionId + "?userId=" + userId + "&role=" + role);
+                        javafx.application.Platform.runLater(() -> {
+                            statusLabel.setText(response.body());
+                            loadAuctions();
+                            loadStats();
+                        });
+                    } catch (Exception e) {
+                        javafx.application.Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
+                    }
+                }).start();
+            }
+        });
+    }
+
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/AdminDashboardController.java
     // ==================== Navigation ====================
 
     @FXML

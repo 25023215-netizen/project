@@ -61,7 +61,7 @@ public class UserService {
             throw new Exception("Invalid username or password!");
         }
         if (user.isLocked()) {
-            throw new Exception("Tai khoan da bi khoa boi Admin!");
+            throw new Exception("This account has been locked by an admin!");
         }
         return user;
     }

@@ -67,6 +67,7 @@ public class AuctionScheduler {
             }
         }
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
         // Tự động bắt đầu các phiên OPEN đã đến startTime
         List<Auction> openAuctions = auctionRepository.findByStatus(AuctionStatus.OPEN);
         for (Auction auction : openAuctions) {
@@ -78,6 +79,36 @@ public class AuctionScheduler {
                 try {
                     messagingTemplate.convertAndSend("/topic/auctions", "refresh");
                 } catch (Exception ignored) {}
+=======
+        Auction auction = auctionOpt.get();
+
+        // Kiểm tra quyền: chỉ admin hoặc chủ phiên được kết thúc sớm
+        if (!"ADMIN".equalsIgnoreCase(role) && !auction.getSeller().getId().equals(userId)) {
+            return ResponseEntity.status(403).body("You do not have permission to end this auction");
+        }
+
+        if (auction.getStatus() == AuctionStatus.RUNNING) {
+            auction.setStatus(AuctionStatus.FINISHED);
+            auctionRepository.save(auction);
+            AuctionManager.getInstance().updateStatus(auction.getId(), AuctionStatus.FINISHED);
+
+            log.info("Auction {} '{}' ended early by user {} (role={})",
+                    auction.getId(), auction.getTitle(), userId, role);
+
+            try {
+                messagingTemplate.convertAndSend("/topic/auctions/" + auction.getId(),
+                        Map.of(
+                                "auctionId", auction.getId(),
+                                "status", "FINISHED",
+                                "currentPrice", auction.getCurrentPrice(),
+                                "bidCount", auction.getBidCount(),
+                                "winnerId", auction.getWinner() != null ? auction.getWinner().getId() : "",
+                                "winnerName", auction.getWinner() != null ? auction.getWinner().getUsername() : ""
+                        ));
+                messagingTemplate.convertAndSend("/topic/auctions", "refresh");
+            } catch (Exception e) {
+                log.warn("Failed to broadcast auction end: {}", e.getMessage());
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionScheduler.java
             }
         }
     }
