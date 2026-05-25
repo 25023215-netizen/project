@@ -1,27 +1,20 @@
-package com.nhom4project.auctionweb.backend.service;
+package com.nhom4project.auctionweb.server.service;
 
-import com.nhom4project.auctionweb.backend.model.*;
-import com.nhom4project.auctionweb.backend.repository.*;
+import com.nhom4project.auctionweb.server.model.*;
+import com.nhom4project.auctionweb.server.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Service xử lý toàn bộ logic đấu giá.
@@ -31,7 +24,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * - Observer Pattern: broadcast qua WebSocket khi có thay đổi
  */
 @Service
-@Transactional
 public class AuctionService {
 
     private static final Logger log = LoggerFactory.getLogger(AuctionService.class);
@@ -56,23 +48,7 @@ public class AuctionService {
     private AutoBidConfigRepository autoBidConfigRepository;
 
     @Autowired
-    private AuctionHistoryRepository auctionHistoryRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
     private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
-    @Lazy
-    private AuctionService self;
-
-    private final ConcurrentHashMap<Long, ReentrantLock> auctionLocks = new ConcurrentHashMap<>();
-
-    private ReentrantLock getLockForAuction(Long auctionId) {
-        return auctionLocks.computeIfAbsent(auctionId, id -> new ReentrantLock());
-    }
 
     @PostConstruct
     public void seedAuctions() {
@@ -82,19 +58,22 @@ public class AuctionService {
 
         auctionRepository.save(createAuction(
                 "iPhone 15 Pro Max 256GB", "Electronics",
-                "May moi full box, mau Titan Den.",
+                "Brand-new full-box device in black titanium.",
                 new BigDecimal("20000000"), new BigDecimal("25000000"),
-                18, AuctionStatus.RUNNING, LocalDateTime.now().plusDays(2)));
+                18, AuctionStatus.RUNNING, LocalDateTime.now().plusDays(2)
+        ));
         auctionRepository.save(createAuction(
-                "Tranh Son Dau - Ho Guom", "Art",
-                "Tranh ve tay kich thuoc 80x60cm.",
+                "Oil Painting - Hoan Kiem Lake", "Art",
+                "Hand-painted artwork, 80x60cm.",
                 new BigDecimal("3000000"), new BigDecimal("5200000"),
-                9, AuctionStatus.RUNNING, LocalDateTime.now().plusDays(3)));
+                9, AuctionStatus.RUNNING, LocalDateTime.now().plusDays(3)
+        ));
         auctionRepository.save(createAuction(
                 "Honda Wave Alpha 2023", "Vehicle",
-                "Xe con moi 95%, bao duong tot.",
+                "Vehicle in 95% new condition with good maintenance.",
                 new BigDecimal("12000000"), new BigDecimal("15000000"),
-                4, AuctionStatus.OPEN, LocalDateTime.now().plusDays(4)));
+                4, AuctionStatus.OPEN, LocalDateTime.now().plusDays(4)
+        ));
     }
 
     // ==================== QUERIES ====================
@@ -112,11 +91,7 @@ public class AuctionService {
     }
 
     public List<BidTransaction> getBidHistory(Long auctionId) {
-        return bidRepository.findByAuctionIdOrderByIdDesc(auctionId);
-    }
-
-    public List<AuctionHistory> listAuctionHistories() {
-        return auctionHistoryRepository.findAll();
+        return bidRepository.findByAuctionIdOrderByBidTimeDesc(auctionId);
     }
 
     // ==================== AUCTION LIFECYCLE ====================
@@ -126,6 +101,10 @@ public class AuctionService {
      * Giới hạn: mỗi phiên đấu giá chỉ kéo dài tối đa 1 giờ.
      */
     public Auction createAuction(String title, String category, String description,
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+                                  BigDecimal startingPrice, Long sellerId,
+                                  LocalDateTime startTime, LocalDateTime endTime) {
+=======
             BigDecimal startingPrice, Long sellerId,
             LocalDateTime startTime, LocalDateTime endTime) {
         return createAuction(title, category, description, startingPrice, sellerId, startTime, endTime, null);
@@ -135,30 +114,37 @@ public class AuctionService {
             BigDecimal startingPrice, Long sellerId,
             LocalDateTime startTime, LocalDateTime endTime, Long itemId) {
         if (startingPrice == null || startingPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+            throw new IllegalArgumentException("Starting price must be greater than 0");
         }
 
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
         User user = userRepository.findById(sellerId)
                 .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
         if (!(user instanceof Seller seller)) {
             throw new IllegalArgumentException("User is not a Seller");
         }
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+=======
         if (user.isLocked()) {
             throw new IllegalArgumentException(
-                    "Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                    "This account has been locked and cannot perform any actions.");
         }
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
 
         LocalDateTime start = startTime != null ? startTime : LocalDateTime.now();
         // Sử dụng endTime nếu được truyền vào, nếu không mặc định +24 giờ
         LocalDateTime end = endTime != null ? endTime : start.plusHours(24);
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+=======
         if (itemId != null) {
             Optional<Auction> existingOpt = auctionRepository.findByItemId(itemId);
             if (existingOpt.isPresent()) {
-                throw new IllegalStateException("Sản phẩm này đã được tạo phiên đấu giá");
+                throw new IllegalStateException("This item already has an auction");
             }
         }
 
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
         Auction auction = new Auction();
         auction.setTitle(title);
         auction.setCategory(category);
@@ -171,45 +157,35 @@ public class AuctionService {
         auction.setEndTime(end);
         auction.setStatus(AuctionStatus.OPEN);
 
-        if (itemId != null) {
-            Item item = itemRepository.findById(itemId)
-                    .orElseThrow(() -> new IllegalArgumentException("Item not found"));
-            auction.setItem(item);
-        }
-
         Auction saved = auctionRepository.save(auction);
-        runAfterCommit(() -> self.broadcastAuctionList());
+        broadcastAuctionList();
         return saved;
     }
 
     public void startAuction(Long id) {
         Auction auction = findAuction(id);
         if (auction.getStatus() != AuctionStatus.OPEN) {
-            throw new IllegalStateException("Chi co the bat dau phien dau gia o trang thai OPEN");
+            throw new IllegalStateException("Only auctions in OPEN status can be started");
         }
-        
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime originalStart = auction.getStartTime();
-        LocalDateTime originalEnd = auction.getEndTime();
-        if (originalStart != null && originalEnd != null) {
-            java.time.Duration duration = java.time.Duration.between(originalStart, originalEnd);
-            auction.setEndTime(now.plus(duration));
-        } else {
-            auction.setEndTime(now.plusHours(24));
-        }
-        
         auction.setStatus(AuctionStatus.RUNNING);
-        auction.setStartTime(now);
+        auction.setStartTime(LocalDateTime.now());
         auctionRepository.save(auction);
         AuctionManager.getInstance().registerAuction(auction);
-        runAfterCommit(() -> self.broadcastAuctionUpdate(buildAuctionPayload(auction)));
+        broadcastAuctionUpdate(auction);
     }
 
     /**
      * Kết thúc phiên đấu giá thủ công.
      */
-    public void endAuction(Long id, Long userId, Roles role) {
+    public void endAuction(Long id) {
         Auction auction = findAuction(id);
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+        auction.setStatus(AuctionStatus.FINISHED);
+        auctionRepository.save(auction);
+        AuctionManager.getInstance().updateStatus(id, AuctionStatus.FINISHED);
+        broadcastAuctionUpdate(auction);
+        broadcastAuctionList();
+=======
 
         // Permission check: Admin can end any, Seller can end their own
         if (role != Roles.ADMIN) {
@@ -217,10 +193,10 @@ public class AuctionService {
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             if (user.isLocked()) {
                 throw new IllegalStateException(
-                        "Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                        "This account has been locked and cannot perform any actions.");
             }
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
-                throw new IllegalStateException("Ban khong co quyen ket thuc phien dau gia nay");
+                throw new IllegalStateException("You do not have permission to end this auction");
             }
         }
 
@@ -245,10 +221,10 @@ public class AuctionService {
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             if (user.isLocked()) {
                 throw new IllegalStateException(
-                        "Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                        "This account has been locked and cannot perform any actions.");
             }
             if (auction.getSeller() == null || !auction.getSeller().getId().equals(userId)) {
-                throw new IllegalStateException("Ban khong co quyen xoa phien dau gia nay");
+                throw new IllegalStateException("You do not have permission to delete this auction");
             }
 
             // Check if auction is expired (either finished or endTime has passed)
@@ -262,7 +238,7 @@ public class AuctionService {
                     && auction.getBidCount() > 0;
 
             if (isRunningAndHasBids) {
-                throw new IllegalStateException("Khong the xoa phien dau gia dang dien ra va co nguoi dat gia");
+                throw new IllegalStateException("Cannot delete a running auction that already has bids");
             }
         }
 
@@ -292,17 +268,26 @@ public class AuctionService {
 
         auctionRepository.delete(auction);
         runAfterCommit(() -> self.broadcastAuctionList());
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
     }
 
     // ==================== BIDDING (concurrent-safe) ====================
 
     /**
      * Đặt giá thầu - xử lý an toàn với Optimistic Locking + retry.
-     * Sử dụng Fine-grained Striped Lock theo ID phiên đấu giá thay vì khóa
-     * synchronized toàn cục.
-     * Tác vụ chạy ngầm được chuyển giao bất đồng bộ để tránh đệ quy đồng bộ nghẽn
-     * luồng.
+     * Đây là điểm then chốt xử lý Concurrent Bidding.
      */
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+    @Transactional
+    public synchronized boolean placeBid(Long auctionId, Long bidderId, BigDecimal amount) {
+        for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
+            try {
+                return doPlaceBid(auctionId, bidderId, amount);
+            } catch (ObjectOptimisticLockingFailureException e) {
+                log.warn("Optimistic lock conflict on auction {} (attempt {}), retrying...", auctionId, attempt + 1);
+                if (attempt == MAX_RETRIES - 1) {
+                    throw new IllegalStateException("Hệ thống đang bận, vui lòng thử lại sau");
+=======
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public boolean placeBid(Long auctionId, Long bidderId, BigDecimal amount) {
         ReentrantLock lock = getLockForAuction(auctionId);
@@ -315,37 +300,31 @@ public class AuctionService {
                     log.warn("Optimistic lock conflict on auction {} (attempt {}), retrying...", auctionId,
                             attempt + 1);
                     if (attempt == MAX_RETRIES - 1) {
-                        throw new IllegalStateException("Hệ thống đang bận, vui lòng thử lại sau");
+                        throw new IllegalStateException("The system is busy. Please try again later");
                     }
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
                 }
             }
-            return false;
-        } finally {
-            lock.unlock();
         }
+        return false;
     }
 
-    /**
-     * Thực hiện đặt giá thầu trong Transaction riêng để retry Optimistic Locking
-     * hoạt động đúng đắn.
-     */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public boolean doPlaceBid(Long auctionId, Long bidderId, BigDecimal amount) {
+    private boolean doPlaceBid(Long auctionId, Long bidderId, BigDecimal amount) {
         Auction auction = findAuction(auctionId);
 
         // Kiểm tra trạng thái phiên
         if (auction.getStatus() != AuctionStatus.RUNNING) {
-            throw new IllegalStateException("Phien dau gia khong dang chay");
+            throw new IllegalStateException("The auction is not running");
         }
 
         // Kiểm tra thời gian
         if (auction.getEndTime() != null && LocalDateTime.now().isAfter(auction.getEndTime())) {
-            throw new IllegalStateException("Phien dau gia da het thoi gian");
+            throw new IllegalStateException("The auction has ended");
         }
 
         // Kiểm tra giá
         if (amount.compareTo(auction.getCurrentPrice()) <= 0) {
-            throw new IllegalArgumentException("Gia dat phai cao hon gia hien tai: " + auction.getCurrentPrice());
+            throw new IllegalArgumentException("Bid amount must be higher than the current price: " + auction.getCurrentPrice());
         }
 
         // Lấy thông tin bidder
@@ -354,15 +333,19 @@ public class AuctionService {
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
         }
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+
+=======
         if (user.isLocked()) {
             throw new IllegalArgumentException(
-                    "Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                    "This account has been locked and cannot perform any actions.");
         }
 
         // Không cho phép bidder hiện tại đặt giá lại khi vẫn là người dẫn đầu
         if (auction.getWinner() != null && auction.getWinner().getId().equals(bidder.getId())) {
-            throw new IllegalStateException("Bạn đã là người giữ giá hiện tại");
+            throw new IllegalStateException("You are already the current highest bidder");
         }
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
         // Cập nhật auction
         auction.setCurrentPrice(amount);
         auction.setBidCount(auction.getBidCount() + 1);
@@ -379,11 +362,11 @@ public class AuctionService {
         // Đăng ký vào AuctionManager
         AuctionManager.getInstance().registerAuction(auction);
 
-        // Observer Pattern & Auto-bidding: Chạy sau khi commit transaction để tránh race condition đọc stale data
-        runAfterCommit(() -> {
-            self.broadcastAuctionUpdate(buildAuctionPayload(auction));
-            self.processAutoBids(auctionId, bidderId);
-        });
+        // Observer Pattern: broadcast qua WebSocket
+        broadcastAuctionUpdate(auction);
+
+        // Kích hoạt Auto-bidding cho các bidder khác
+        processAutoBids(auctionId, bidderId);
 
         return true;
     }
@@ -396,8 +379,7 @@ public class AuctionService {
      * tự động gia hạn thêm ANTI_SNIPE_EXTENSION_SECONDS giây.
      */
     private void applyAntiSniping(Auction auction) {
-        if (auction.getEndTime() == null)
-            return;
+        if (auction.getEndTime() == null) return;
 
         long secondsLeft = ChronoUnit.SECONDS.between(LocalDateTime.now(), auction.getEndTime());
         if (secondsLeft > 0 && secondsLeft <= ANTI_SNIPE_THRESHOLD_SECONDS) {
@@ -416,7 +398,7 @@ public class AuctionService {
     public AutoBidConfig registerAutoBid(Long auctionId, Long bidderId, BigDecimal maxBid, BigDecimal increment) {
         Auction auction = findAuction(auctionId);
         if (auction.getStatus() != AuctionStatus.RUNNING) {
-            throw new IllegalStateException("Phien dau gia khong dang chay");
+            throw new IllegalStateException("The auction is not running");
         }
 
         User user = userRepository.findById(bidderId)
@@ -424,13 +406,16 @@ public class AuctionService {
         if (!(user instanceof Bidder bidder)) {
             throw new IllegalArgumentException("User is not a Bidder");
         }
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionService.java
+=======
         if (user.isLocked()) {
             throw new IllegalArgumentException(
-                    "Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+                    "This account has been locked and cannot perform any actions.");
         }
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionService.java
 
         if (maxBid.compareTo(auction.getCurrentPrice()) <= 0) {
-            throw new IllegalArgumentException("Max bid phai cao hon gia hien tai");
+            throw new IllegalArgumentException("Max bid must be higher than the current price");
         }
 
         // Cập nhật hoặc tạo mới config
@@ -446,8 +431,8 @@ public class AuctionService {
 
         AutoBidConfig saved = autoBidConfigRepository.save(config);
 
-        // Kích hoạt auto-bid ngay sau khi transaction đăng ký được commit
-        runAfterCommit(() -> self.processAutoBids(auctionId, null));
+        // Kích hoạt auto-bid ngay nếu giá hiện tại thấp hơn maxBid
+        processAutoBids(auctionId, null);
 
         return saved;
     }
@@ -473,29 +458,24 @@ public class AuctionService {
 
     /**
      * Xử lý auto-bid (Proxy Bidding) cho tất cả config đang active.
-     * Chạy bất đồng bộ ngầm dưới background thread pool.
+     * Logic: Chỉ tăng giá vừa đủ để dẫn đầu (currentPrice + increment),
+     * nhưng không vượt quá maxBid. Nếu cần trả cao hơn maxBid -> deactivate.
      */
-    @Async("taskExecutor")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processAutoBids(Long auctionId, Long excludeBidderId) {
+    private void processAutoBids(Long auctionId, Long excludeBidderId) {
         List<AutoBidConfig> configs = autoBidConfigRepository
                 .findByAuctionIdAndActiveTrueOrderByRegisteredAtAsc(auctionId);
 
-        if (configs.isEmpty())
-            return;
+        if (configs.isEmpty()) return;
 
         Auction auction = findAuction(auctionId);
-        if (auction.getStatus() != AuctionStatus.RUNNING)
-            return;
+        if (auction.getStatus() != AuctionStatus.RUNNING) return;
 
         for (AutoBidConfig config : configs) {
             // Bỏ qua bidder vừa đặt giá (tránh bid chồng lên chính mình)
-            if (config.getBidder().getId().equals(excludeBidderId))
-                continue;
+            if (config.getBidder().getId().equals(excludeBidderId)) continue;
 
             // Bỏ qua nếu bidder đã đang dẫn đầu
-            if (auction.getWinner() != null && auction.getWinner().getId().equals(config.getBidder().getId()))
-                continue;
+            if (auction.getWinner() != null && auction.getWinner().getId().equals(config.getBidder().getId())) continue;
 
             // Tính giá bid tối thiểu cần thiết để dẫn đầu
             BigDecimal newBid = auction.getCurrentPrice().add(config.getIncrement());
@@ -514,13 +494,12 @@ public class AuctionService {
                 }
             }
 
-            // Đặt giá tự động thông qua self.placeBid để được ReentrantLock bảo vệ và retry
-            // nếu có conflict
+            // Đặt giá tự động
             try {
-                self.placeBid(auctionId, config.getBidder().getId(), newBid);
+                doPlaceBid(auctionId, config.getBidder().getId(), newBid);
                 log.info("Auto-bid: Bidder {} placed {} on auction {} (max: {})",
                         config.getBidder().getId(), newBid, auctionId, config.getMaxBid());
-                return; // Chỉ xử lý 1 auto-bid mỗi lần, trigger sẽ cascade bất đồng bộ
+                return; // Chỉ xử lý 1 auto-bid mỗi lần, trigger sẽ cascade
             } catch (Exception e) {
                 log.warn("Auto-bid failed for bidder {}: {}", config.getBidder().getId(), e.getMessage());
             }
@@ -539,35 +518,27 @@ public class AuctionService {
     }
 
     /**
-     * Tạo Map payload cho WebSocket để tránh lỗi LazyInitializationException trong
-     * luồng bất đồng bộ.
+     * Observer Pattern: broadcast thay đổi auction qua WebSocket.
+     * Tất cả client đang subscribe /topic/auctions/{id} sẽ nhận được ngay lập tức.
      */
-    private Map<String, Object> buildAuctionPayload(Auction auction) {
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("auctionId", auction.getId());
-        payload.put("currentPrice", auction.getCurrentPrice());
-        payload.put("bidCount", auction.getBidCount());
-        payload.put("status", auction.getStatus().name());
-        payload.put("endTime", auction.getEndTime() != null ? auction.getEndTime().toString() : null);
-        payload.put("winnerId", auction.getWinner() != null ? auction.getWinner().getId() : null);
-        payload.put("winnerName", auction.getWinner() != null ? auction.getWinner().getUsername() : null);
-        return payload;
-    }
-
-    /**
-     * Observer Pattern: broadcast thay đổi auction qua WebSocket bất đồng bộ.
-     */
-    @Async("taskExecutor")
-    public void broadcastAuctionUpdate(Map<String, Object> payload) {
+    private void broadcastAuctionUpdate(Auction auction) {
         try {
-            messagingTemplate.convertAndSend("/topic/auctions/" + payload.get("auctionId"), payload);
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("auctionId", auction.getId());
+            payload.put("currentPrice", auction.getCurrentPrice());
+            payload.put("bidCount", auction.getBidCount());
+            payload.put("status", auction.getStatus().name());
+            payload.put("endTime", auction.getEndTime() != null ? auction.getEndTime().toString() : null);
+            payload.put("winnerId", auction.getWinner() != null ? auction.getWinner().getId() : null);
+            payload.put("winnerName", auction.getWinner() != null ? auction.getWinner().getUsername() : null);
+
+            messagingTemplate.convertAndSend("/topic/auctions/" + auction.getId(), payload);
         } catch (Exception e) {
             log.warn("Failed to broadcast auction update: {}", e.getMessage());
         }
     }
 
-    @Async("taskExecutor")
-    public void broadcastAuctionList() {
+    private void broadcastAuctionList() {
         try {
             messagingTemplate.convertAndSend("/topic/auctions", "refresh");
         } catch (Exception e) {
@@ -580,22 +551,9 @@ public class AuctionService {
                 .orElseThrow(() -> new IllegalArgumentException("Auction not found: " + id));
     }
 
-    private void runAfterCommit(Runnable runnable) {
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    runnable.run();
-                }
-            });
-        } else {
-            runnable.run();
-        }
-    }
-
     private Auction createAuction(String title, String category, String description,
-            BigDecimal startingPrice, BigDecimal currentPrice,
-            int bidCount, AuctionStatus status, LocalDateTime endTime) {
+                                   BigDecimal startingPrice, BigDecimal currentPrice,
+                                   int bidCount, AuctionStatus status, LocalDateTime endTime) {
         Auction auction = new Auction();
         auction.setTitle(title);
         auction.setCategory(category);
@@ -610,3 +568,7 @@ public class AuctionService {
         return auction;
     }
 }
+
+
+
+

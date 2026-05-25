@@ -139,7 +139,7 @@ public class AuctionDetailController {
     public void initialize() {
         // Khởi tạo Series cho LineChart
         lineSeries = new XYChart.Series<>();
-        lineSeries.setName("Giá");
+        lineSeries.setName("Price");
         if (lineChart != null) {
             lineChart.getData().add(lineSeries);
             lineChart.setAnimated(false);
@@ -178,7 +178,7 @@ public class AuctionDetailController {
         autoBidButton.setDisable(!canBid);
 
         if (!canBid) {
-            userStatusLabel.setText("Bạn đang đăng nhập với quyền SELLER/ADMIN. Chỉ Bidder mới có thể đặt giá.");
+            userStatusLabel.setText("You are signed in as SELLER/ADMIN. Only bidders can place bids.");
             userStatusLabel.getStyleClass().add("status-not-bidder");
         }
 
@@ -264,7 +264,7 @@ public class AuctionDetailController {
                     Platform.runLater(() -> updateUI(node));
                 }
             } catch (Exception e) {
-                Platform.runLater(() -> messageLabel.setText("Loi tai du lieu: " + e.getMessage()));
+                Platform.runLater(() -> messageLabel.setText("Error loading data: " + e.getMessage()));
             }
         }).start();
     }
@@ -290,10 +290,10 @@ public class AuctionDetailController {
 
                         // Thêm giá khởi điểm làm điểm đầu tiên của biểu đồ
                         if (startingPrice != null) {
-                            String category = "Khởi điểm";
+                            String category = "Starting";
                             double value = startingPrice.doubleValue();
                             XYChart.Data<String, Number> lineData = new XYChart.Data<>(category, value);
-                            String tooltipText = String.format("Giá khởi điểm: %,.0f VND", value);
+                            String tooltipText = String.format("Starting Price: %,.0f VND", value);
                             addCustomSymbolAndLabel(lineData, value, tooltipText, false);
                             if (lineSeries != null)
                                 lineSeries.getData().add(lineData);
@@ -310,11 +310,11 @@ public class AuctionDetailController {
                                     : bidderUsername;
                             String time = bid.path("bidTime").asText("");
 
-                            items.add(0, String.format("%s - %,.0f VND boi %s", formatTime(time), amount, bidder));
+                            items.add(0, String.format("%s - %,.0f VND by %s", formatTime(time), amount, bidder));
 
-                            String category = "Lượt " + (bidIndex++);
+                            String category = "Bid " + (bidIndex++);
                             XYChart.Data<String, Number> lineData = new XYChart.Data<>(category, amount);
-                            String tooltipText = String.format("%s\nGiá: %,.0f VND\nNgười đặt: %s\nThời gian: %s",
+                            String tooltipText = String.format("%s\nPrice: %,.0f VND\nBidder: %s\nTime: %s",
                                     category, amount, bidder, formatTime(time));
                             addCustomSymbolAndLabel(lineData, amount, tooltipText, true);
                             if (lineSeries != null)
@@ -465,12 +465,12 @@ public class AuctionDetailController {
      */
     private void updateUI(JsonNode node) {
         titleLabel.setText(node.path("title").asText(""));
-        categoryLabel.setText("Loai: " + node.path("category").asText(""));
+        categoryLabel.setText("Category: " + node.path("category").asText(""));
         descriptionLabel.setText(node.path("description").asText(""));
 
         BigDecimal price = new BigDecimal(node.path("currentPrice").asText("0"));
         currentPriceLabel.setText(String.format("%,.0f VND", price));
-        bidCountLabel.setText(node.path("bidCount").asInt() + " luot dat gia");
+        bidCountLabel.setText(node.path("bidCount").asInt() + " bids");
 
         startingPrice = new BigDecimal(node.path("startingPrice").asText("0"));
 
@@ -486,7 +486,7 @@ public class AuctionDetailController {
         }
 
         String endTimeStr = node.path("endTime").asText("");
-        endTimeLabel.setText("Ket thuc: " + formatTime(endTimeStr));
+        endTimeLabel.setText("Ends: " + formatTime(endTimeStr));
         try {
             auctionEndTime = LocalDateTime.parse(endTimeStr);
         } catch (Exception ignored) {
@@ -529,24 +529,24 @@ public class AuctionDetailController {
             Long winnerId = winner.path("id").asLong();
             String winnerFullname = winner.path("fullname").asText("");
             String winnerName = !winnerFullname.isBlank() ? winnerFullname : winner.path("username").asText("");
-            winnerLabel.setText("Nguoi dan dau: " + winnerName);
+            winnerLabel.setText("Current leader: " + winnerName);
 
             if (isBidder) {
                 userStatusLabel.getStyleClass().removeAll("status-leading", "status-outbid", "status-not-bidder");
                 if (currentUserId != null && currentUserId.equals(winnerId)) {
                     // Nếu trùng, báo "BẠN ĐANG DẪN ĐẦU" (màu xanh)
-                    userStatusLabel.setText("★ BẠN ĐANG DẪN ĐẦU!");
+                    userStatusLabel.setText("★ YOU ARE LEADING!");
                     userStatusLabel.getStyleClass().add("status-leading");
                 } else {
                     // Nếu không trùng thì báo "BẠN ĐẠ BỊ VƯỢT MẶT" (màu đỏ)
-                    userStatusLabel.setText("⚠ BẠN ĐÃ BỊ VƯỢT MẶT! Hãy đặt giá cao hơn!");
+                    userStatusLabel.setText("⚠ YOU HAVE BEEN OUTBID! Place a higher bid.");
                     userStatusLabel.getStyleClass().add("status-outbid");
                 }
             }
         } else {
-            winnerLabel.setText("Chưa có người đặt giá");
+            winnerLabel.setText("No bids yet");
             if (isBidder) {
-                userStatusLabel.setText("Hãy là người đầu tiên đặt giá!");
+                userStatusLabel.setText("Be the first to place a bid!");
                 userStatusLabel.getStyleClass().removeAll("status-leading", "status-outbid");
             }
         }
@@ -566,10 +566,10 @@ public class AuctionDetailController {
                 String winnerName = !winnerFullname.isBlank() ? winnerFullname
                         : (winner != null ? winner.path("username").asText() : "");
                 String msg = (winner != null && !winner.isNull())
-                        ? "Phiên đấu giá kết thúc! Người thắng: " + winnerName
-                        : "Phiên đấu giá kết thúc mà không có người mua.";
+                        ? "Auction finished! Winner: " + winnerName
+                        : "Auction finished with no buyer.";
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Thông báo kết thúc");
+                alert.setTitle("Auction Finished");
                 alert.setHeaderText(null);
                 alert.setContentText(msg);
                 alert.show();
@@ -578,7 +578,7 @@ public class AuctionDetailController {
 
         // Cập nhật gợi ý giá bid tối thiểu (giả định buóc giá 50k nếu chưa biết)
         BigDecimal minNextBid = price.add(new BigDecimal("50000"));
-        minBidLabel.setText(String.format("Gợi ý: Đặt từ %,.0f VND", minNextBid));
+        minBidLabel.setText(String.format("Suggestion: Bid from %,.0f VND", minNextBid));
         if (bidAmountField.getText().isEmpty()) {
             bidAmountField.setText(minNextBid.toPlainString());
         }
@@ -629,7 +629,7 @@ public class AuctionDetailController {
             // Lấy số tiền người dùng nhập
             String amountText = bidAmountField.getText().trim();
             if (amountText.isEmpty()) {
-                messageLabel.setText("Vui lòng nhập số tiền!");
+                messageLabel.setText("Please enter an amount!");
                 return;
             }
 
@@ -637,7 +637,7 @@ public class AuctionDetailController {
             Long userId = SessionManager.getInstance().getUserId();
 
             placeBidButton.setDisable(true);
-            messageLabel.setText("Đang đặt giá...");
+            messageLabel.setText("Placing bid...");
 
             new Thread(() -> {
                 try {
@@ -652,27 +652,27 @@ public class AuctionDetailController {
                         // Tùy vào API trả về thành công (status 200) hay thất bại, hiện thông báo màu
                         // xanh (thành công) hoặc đỏ (lỗi).
                         if (response.statusCode() == 200) {
-                            messageLabel.setText("Đặt giá thành công!");
+                            messageLabel.setText("Bid placed successfully!");
                             messageLabel.setStyle("-fx-text-fill: #22c55e;");
                             bidAmountField.clear();
                             loadAuctionDetail();
                             loadBidHistory();
                         } else {
-                            messageLabel.setText("Lỗi: " + response.body());
+                            messageLabel.setText("Error: " + response.body());
                             messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         }
                         placeBidButton.setDisable(false);
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
-                        messageLabel.setText("Lỗi kết nối: " + e.getMessage());
+                        messageLabel.setText("Connection error: " + e.getMessage());
                         messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         placeBidButton.setDisable(false);
                     });
                 }
             }).start();
         } catch (NumberFormatException e) {
-            messageLabel.setText("Số tiền không hợp lệ!");
+            messageLabel.setText("Invalid amount!");
             messageLabel.setStyle("-fx-text-fill: #ef4444;");
         }
     }
@@ -690,7 +690,7 @@ public class AuctionDetailController {
             String incrementText = incrementField.getText().trim();
 
             if (maxBidText.isEmpty() || incrementText.isEmpty()) {
-                messageLabel.setText("Vui lòng nhập giá tối đa và bước giá!");
+                messageLabel.setText("Please enter a maximum bid and increment!");
                 return;
             }
 
@@ -699,7 +699,7 @@ public class AuctionDetailController {
             Long userId = SessionManager.getInstance().getUserId();
 
             autoBidButton.setDisable(true);
-            messageLabel.setText("Đang đăng ký auto-bid...");
+            messageLabel.setText("Registering auto-bid...");
 
             new Thread(() -> {
                 try {
@@ -713,26 +713,26 @@ public class AuctionDetailController {
 
                     Platform.runLater(() -> {
                         if (response.statusCode() == 200) {
-                            messageLabel.setText("Đăng ký auto-bid thành công!");
+                            messageLabel.setText("Auto-bid registered successfully!");
                             messageLabel.setStyle("-fx-text-fill: #22c55e;");
                             maxBidField.clear();
                             incrementField.clear();
                         } else {
-                            messageLabel.setText("Lỗi: " + response.body());
+                            messageLabel.setText("Error: " + response.body());
                             messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         }
                         autoBidButton.setDisable(false);
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
-                        messageLabel.setText("Lỗi kết nối: " + e.getMessage());
+                        messageLabel.setText("Connection error: " + e.getMessage());
                         messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         autoBidButton.setDisable(false);
                     });
                 }
             }).start();
         } catch (NumberFormatException e) {
-            messageLabel.setText("Số tiền không hợp lệ!");
+            messageLabel.setText("Invalid amount!");
             messageLabel.setStyle("-fx-text-fill: #ef4444;");
         }
     }
@@ -748,7 +748,7 @@ public class AuctionDetailController {
             return;
 
         stopAutoBidButton.setDisable(true);
-        messageLabel.setText("Đang dừng auto-bid...");
+        messageLabel.setText("Stopping auto-bid...");
 
         new Thread(() -> {
             try {
@@ -760,17 +760,17 @@ public class AuctionDetailController {
 
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        messageLabel.setText("Đã dừng auto-bid!");
+                        messageLabel.setText("Auto-bid stopped!");
                         messageLabel.setStyle("-fx-text-fill: #22c55e;");
                         checkAutoBidStatus();
                     } else {
-                        messageLabel.setText("Lỗi: " + response.body());
+                        messageLabel.setText("Error: " + response.body());
                     }
                     stopAutoBidButton.setDisable(false);
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    messageLabel.setText("Lỗi kết nối: " + e.getMessage());
+                    messageLabel.setText("Connection error: " + e.getMessage());
                     stopAutoBidButton.setDisable(false);
                 });
             }
@@ -779,7 +779,7 @@ public class AuctionDetailController {
 
     @FXML
     private void onStartAuction() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn bắt đầu phiên đấu giá này?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to start this auction?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 new Thread(() -> {
@@ -788,17 +788,17 @@ public class AuctionDetailController {
                                 .post("/auctions/" + auctionId + "/start", "");
                         Platform.runLater(() -> {
                             if (response.statusCode() == 200) {
-                                messageLabel.setText("Phiên đấu giá đã bắt đầu!");
+                                messageLabel.setText("Auction started!");
                                 messageLabel.setStyle("-fx-text-fill: #22c55e;");
                                 loadAuctionDetail();
                             } else {
-                                messageLabel.setText("Lỗi: " + response.body());
+                                messageLabel.setText("Error: " + response.body());
                                 messageLabel.setStyle("-fx-text-fill: #ef4444;");
                             }
                         });
                     } catch (Exception e) {
                         Platform.runLater(() -> {
-                            messageLabel.setText("Lỗi kết nối: " + e.getMessage());
+                            messageLabel.setText("Connection error: " + e.getMessage());
                             messageLabel.setStyle("-fx-text-fill: #ef4444;");
                         });
                     }
@@ -809,7 +809,7 @@ public class AuctionDetailController {
 
     @FXML
     private void onEndAuctionEarly() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn kết thúc phiên đấu giá này sớm?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to end this auction early?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 Long userId = SessionManager.getInstance().getUserId();
@@ -820,14 +820,14 @@ public class AuctionDetailController {
                                 .post("/auctions/" + auctionId + "/end?userId=" + userId + "&role=" + role, "");
                         Platform.runLater(() -> {
                             if (response.statusCode() == 200) {
-                                messageLabel.setText("Đã kết thúc phiên đấu giá!");
+                                messageLabel.setText("Auction ended!");
                                 loadAuctionDetail();
                             } else {
-                                messageLabel.setText("Lỗi: " + response.body());
+                                messageLabel.setText("Error: " + response.body());
                             }
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> messageLabel.setText("Lỗi kết nối: " + e.getMessage()));
+                        Platform.runLater(() -> messageLabel.setText("Connection error: " + e.getMessage()));
                     }
                 }).start();
             }
@@ -836,7 +836,7 @@ public class AuctionDetailController {
 
     @FXML
     private void onDeleteAuction() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn XÓA phiên đấu giá này?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to DELETE this auction?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 Long userId = SessionManager.getInstance().getUserId();
@@ -849,11 +849,11 @@ public class AuctionDetailController {
                             if (response.statusCode() == 200) {
                                 onBack(); // Go back after delete
                             } else {
-                                messageLabel.setText("Lỗi: " + response.body());
+                                messageLabel.setText("Error: " + response.body());
                             }
                         });
                     } catch (Exception e) {
-                        Platform.runLater(() -> messageLabel.setText("Lỗi kết nối: " + e.getMessage()));
+                        Platform.runLater(() -> messageLabel.setText("Connection error: " + e.getMessage()));
                     }
                 }).start();
             }

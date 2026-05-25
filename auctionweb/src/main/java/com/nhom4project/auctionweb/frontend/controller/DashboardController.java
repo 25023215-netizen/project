@@ -109,7 +109,7 @@ public class DashboardController {
         // Hiển thị thông tin user
         if (SessionManager.getInstance().isLoggedIn()) {
             if (userInfoLabel != null) {
-                userInfoLabel.setText("Xin chao, " + SessionManager.getInstance().getFullname()
+                userInfoLabel.setText("Hello, " + SessionManager.getInstance().getFullname()
                         + " (" + SessionManager.getInstance().getRole() + ")");
             }
         }
@@ -152,9 +152,9 @@ public class DashboardController {
         stopAutoRefresh();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
-            SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Quan ly san pham", "/style/item_management.css");
+            SceneUtils.changeScene(stage, "/fxml/item_management.fxml", "Item Management", "/style/item_management.css");
         } catch (Exception e) {
-            statusLabel.setText("Loi: " + e.getMessage());
+            statusLabel.setText("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -190,12 +190,12 @@ public class DashboardController {
         stopAutoRefresh();
         try {
             Stage stage = (Stage) auctionTable.getScene().getWindow();
-            AuctionDetailController controller = SceneUtils.changeSceneWithController(stage, "/fxml/auction_detail.fxml", "Chi tiet phien dau gia", "/style/auction_detail.css");
+            AuctionDetailController controller = SceneUtils.changeSceneWithController(stage, "/fxml/auction_detail.fxml", "Auction Detail", "/style/auction_detail.css");
             if (controller != null) {
                 controller.setAuctionId(auctionId);
             }
         } catch (Exception e) {
-            statusLabel.setText("Loi: " + e.getMessage());
+            statusLabel.setText("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -259,7 +259,7 @@ public class DashboardController {
             String winner = node.path("winnerName").asText("-");
             String seller = node.path("sellerName").asText("-");
             String endTime = formatEndTime(node.path("endTime").asText());
-            rows.add(new HistoryRow("[Đã xóa] " + title, category, currencyFormat.format(startPrice),
+            rows.add(new HistoryRow("[Deleted] " + title, category, currencyFormat.format(startPrice),
                     currencyFormat.format(winPrice), winner, seller, endTime));
         }
         return rows;
@@ -267,7 +267,7 @@ public class DashboardController {
 
     private void loadFallbackHistory() {
         historyList.setAll(
-                new HistoryRow("[Đã xóa] Bàn phím cơ Custom", "Electronics", "1.500.000 VND", "2.100.000 VND", "bidder1", "seller1", "20/05/2026 15:30"),
+                new HistoryRow("[Deleted] Custom Mechanical Keyboard", "Electronics", "1.500.000 VND", "2.100.000 VND", "bidder1", "seller1", "20/05/2026 15:30"),
                 new HistoryRow("Apple Watch Ultra", "Electronics", "15.000.000 VND", "18.500.000 VND", "vietanh", "seller2", "19/05/2026 18:00")
         );
     }
@@ -294,7 +294,7 @@ public class DashboardController {
                         ObservableList<AuctionRow> parsed = parseAuctions(body);
                         Platform.runLater(() -> {
                             auctions.setAll(parsed);
-                            statusLabel.setText("Da tai danh sach dau gia tu server.");
+                            statusLabel.setText("Loaded auction list from the server.");
                             applyFilter();
                             updateStats();
                         });
@@ -304,14 +304,14 @@ public class DashboardController {
                     }
                 } else {
                     Platform.runLater(() -> {
-                        loadFallbackAuctions("Server tra ve loi: " + response.statusCode());
+                        loadFallbackAuctions("Server returned an error: " + response.statusCode());
                         applyFilter();
                         updateStats();
                     });
                 }
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    loadFallbackAuctions("Dang hien thi du lieu mau vi chua ket noi duoc server.");
+                    loadFallbackAuctions("Showing sample data because the server is unavailable.");
                     applyFilter();
                     updateStats();
                 });
@@ -337,9 +337,9 @@ public class DashboardController {
 
     private void loadFallbackAuctions(String message) {
         auctions.setAll(
-                new AuctionRow(0L, "iPhone 15 Pro Max 256GB", "Electronics", "25.000.000 VND", "18", "RUNNING", "Con 2 ngay"),
-                new AuctionRow(0L, "Tranh Son Dau - Ho Guom", "Art", "5.200.000 VND", "9", "RUNNING", "Con 3 ngay"),
-                new AuctionRow(0L, "Honda Wave Alpha 2023", "Vehicle", "15.000.000 VND", "4", "OPEN", "Con 4 ngay")
+                new AuctionRow(0L, "iPhone 15 Pro Max 256GB", "Electronics", "25.000.000 VND", "18", "RUNNING", "2 days left"),
+                new AuctionRow(0L, "Oil Painting - Hoan Kiem Lake", "Art", "5.200.000 VND", "9", "RUNNING", "3 days left"),
+                new AuctionRow(0L, "Honda Wave Alpha 2023", "Vehicle", "15.000.000 VND", "4", "OPEN", "4 days left")
         );
         statusLabel.setText(message);
     }

@@ -1,10 +1,10 @@
-package com.nhom4project.auctionweb.frontend.controller;
+package com.nhom4project.auctionweb.controller.frontend;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhom4project.auctionweb.frontend.utils.BackendClient;
-import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
-import com.nhom4project.auctionweb.frontend.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.BackendClient;
+import com.nhom4project.auctionweb.client.utils.SessionManager;
+import com.nhom4project.auctionweb.client.utils.WindowUtil;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -41,7 +41,7 @@ public class ItemManagementController {
     @FXML private Label extra2Label;
     @FXML private Label statusLabel;
 
-
+    @FXML private TextField auctionTitleField;
     @FXML private TextField durationValueField;
     @FXML private ComboBox<String> durationUnitCombo;
 
@@ -62,22 +62,10 @@ public class ItemManagementController {
         typeCombo.setOnAction(e -> updateExtraFieldLabels());
         updateExtraFieldLabels();
 
-        // Đăng ký sự kiện chọn dòng trong bảng để tự động điền vào form
-        itemTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                nameField.setText(newSelection.nameProperty().get());
-                descField.setText(newSelection.descProperty().get());
-                // Loại bỏ định dạng phần nghìn để nhập liệu số thuần túy
-                priceField.setText(newSelection.priceProperty().get().replaceAll("[^\\d]", ""));
-                typeCombo.setValue(newSelection.typeProperty().get());
-                extra1Field.setText(newSelection.extra1Property().get());
-                extra2Field.setText(newSelection.extra2Property().get());
-            }
-        });
         loadItems();
 
-        durationUnitCombo.setItems(FXCollections.observableArrayList("Phut", "Gio", "Ngay"));
-        durationUnitCombo.setValue("Ngay");
+        durationUnitCombo.setItems(FXCollections.observableArrayList("Minutes", "Hours", "Days"));
+        durationUnitCombo.setValue("Days");
     }
 
     private void updateExtraFieldLabels() {
@@ -99,44 +87,24 @@ public class ItemManagementController {
                     Platform.runLater(() -> {
                         items.clear();
                         for (JsonNode node : root) {
-                            String type = guessType(node);
-                            String extra1 = "";
-                            String extra2 = "";
-                            if ("ELECTRONICS".equals(type)) {
-                                extra1 = node.path("brand").asText("");
-                                extra2 = node.path("modelName").asText("");
-                            } else if ("ART".equals(type)) {
-                                extra1 = node.path("artist").asText("");
-                                extra2 = node.path("medium").asText("");
-                            } else if ("VEHICLE".equals(type)) {
-                                extra1 = node.path("manufacturer").asText("");
-                                extra2 = node.path("releaseYear").asText("");
-                            }
-
                             items.add(new ItemRow(
                                     node.path("id").asText(),
                                     node.path("name").asText(),
-                                    type,
+                                    node.path("item_type").asText(guessType(node)),
                                     String.format("%,.0f", node.path("startingPrice").asDouble()),
-                                    node.path("description").asText(""),
-                                    extra1,
-                                    extra2
+                                    node.path("description").asText("")
                             ));
                         }
-                        statusLabel.setText("Da tai " + items.size() + " san pham");
+                        statusLabel.setText("Loaded " + items.size() + " items");
                     });
                 }
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
 
     private String guessType(JsonNode node) {
-        if (node.has("item_type")) {
-            String type = node.path("item_type").asText();
-            if (!type.isBlank()) return type.toUpperCase();
-        }
         if (node.has("brand")) return "ELECTRONICS";
         if (node.has("artist")) return "ART";
         if (node.has("manufacturer")) return "VEHICLE";
@@ -151,22 +119,25 @@ public class ItemManagementController {
         String type = typeCombo.getValue();
 
         if (name.isEmpty() || priceText.isEmpty()) {
-            statusLabel.setText("Vui long nhap ten va gia!");
+            statusLabel.setText("Please enter item name and price!");
             return;
         }
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+=======
         double startPrice;
         try {
             startPrice = Double.parseDouble(priceText);
         } catch (NumberFormatException e) {
-            statusLabel.setText("Gia khoi diem phai la so hop le!");
+            statusLabel.setText("Starting price must be a valid number!");
             return;
         }
         if (startPrice <= 0) {
-            statusLabel.setText("Gia khoi diem phai lon hon 0!");
+            statusLabel.setText("Starting price must be greater than 0!");
             return;
         }
 
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/ItemManagementController.java
         new Thread(() -> {
             try {
                 JSONObject body = new JSONObject();
@@ -181,15 +152,15 @@ public class ItemManagementController {
                 HttpResponse<String> response = BackendClient.getInstance().post("/items", body.toString());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        statusLabel.setText("Them san pham thanh cong!");
+                        statusLabel.setText("Item added successfully!");
                         clearForm();
                         loadItems();
                     } else {
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+                        statusLabel.setText("Loi: " + response.body());
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
@@ -198,7 +169,7 @@ public class ItemManagementController {
     private void onDeleteItem() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Vui long chon san pham can xoa!");
+            statusLabel.setText("Please select an item to delete!");
             return;
         }
 
@@ -208,14 +179,17 @@ public class ItemManagementController {
                         .delete("/items/" + selected.getId());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        statusLabel.setText("Da xoa san pham!");
+                        statusLabel.setText("Item deleted!");
                         loadItems();
                     } else {
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
+                        statusLabel.setText("Loi: " + response.body());
+=======
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
@@ -224,7 +198,7 @@ public class ItemManagementController {
     private void onUpdateItem() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Vui long chon san pham can cap nhat!");
+            statusLabel.setText("Please select an item to update!");
             return;
         }
 
@@ -234,7 +208,7 @@ public class ItemManagementController {
         String type = typeCombo.getValue();
 
         if (name.isEmpty() || priceText.isEmpty()) {
-            statusLabel.setText("Vui long nhap ten va gia!");
+            statusLabel.setText("Please enter item name and price!");
             return;
         }
 
@@ -242,11 +216,11 @@ public class ItemManagementController {
         try {
             startPrice = Double.parseDouble(priceText);
         } catch (NumberFormatException e) {
-            statusLabel.setText("Gia khoi diem phai la so hop le!");
+            statusLabel.setText("Starting price must be a valid number!");
             return;
         }
         if (startPrice <= 0) {
-            statusLabel.setText("Gia khoi diem phai lon hon 0!");
+            statusLabel.setText("Starting price must be greater than 0!");
             return;
         }
 
@@ -263,15 +237,16 @@ public class ItemManagementController {
                         .put("/items/" + selected.getId(), body.toString());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        statusLabel.setText("Cap nhat san pham thanh cong!");
+                        statusLabel.setText("Item updated successfully!");
                         clearForm();
                         loadItems();
                     } else {
                         statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/ItemManagementController.java
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
@@ -283,11 +258,13 @@ public class ItemManagementController {
     private void onCreateAuction() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Vui long chon san pham de tao phien dau gia!");
+            statusLabel.setText("Please select an item to create an auction!");
             return;
         }
 
-        String title = selected.nameProperty().get();
+        String title = auctionTitleField.getText().trim();
+        if (title.isEmpty()) title = selected.nameProperty().get();
+
         String finalTitle = title;
         
         int durationValue = 3;
@@ -298,9 +275,9 @@ public class ItemManagementController {
         String unit = durationUnitCombo.getValue();
         java.time.LocalDateTime endTime = java.time.LocalDateTime.now();
         switch (unit) {
-            case "Phut" -> endTime = endTime.plusMinutes(durationValue);
-            case "Gio" -> endTime = endTime.plusHours(durationValue);
-            case "Ngay" -> endTime = endTime.plusDays(durationValue);
+            case "Minutes" -> endTime = endTime.plusMinutes(durationValue);
+            case "Hours" -> endTime = endTime.plusHours(durationValue);
+            case "Days" -> endTime = endTime.plusDays(durationValue);
             default -> endTime = endTime.plusDays(durationValue);
         }
         
@@ -309,29 +286,32 @@ public class ItemManagementController {
         new Thread(() -> {
             try {
                 JSONObject body = new JSONObject();
-                body.put("itemId", Long.parseLong(selected.getId()));
                 body.put("title", finalTitle);
                 body.put("category", selected.typeProperty().get());
                 body.put("description", selected.descProperty().get());
-                body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replaceAll("[^\\d]", "")));
+                body.put("startingPrice", Double.parseDouble(selected.priceProperty().get().replace(",", "")));
                 body.put("sellerId", SessionManager.getInstance().getUserId());
                 body.put("endTime", finalEndTime.toString());
 
                 HttpResponse<String> response = BackendClient.getInstance().post("/auctions", body.toString());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
                         statusLabel.setText("Tao phien dau gia thanh cong!");
+=======
+                        statusLabel.setText("Auction created successfully!");
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Thong bao");
+                        alert.setTitle("Notification");
                         alert.setHeaderText(null);
-                        alert.setContentText("Tao phien dau gia thanh cong!");
+                        alert.setContentText("Auction created successfully!");
                         alert.showAndWait();
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/ItemManagementController.java
                     } else {
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+                        statusLabel.setText("Loi: " + response.body());
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
             }
         }).start();
     }
@@ -339,8 +319,13 @@ public class ItemManagementController {
     @FXML
     private void onBack() {
         try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/dashboard.fxml"));
             Stage stage = (Stage) itemTable.getScene().getWindow();
-            SceneUtils.changeScene(stage, "/fxml/dashboard.fxml", "Auction Web - Dashboard", "/style/dashboard.css");
+            Scene scene = new Scene(root, 1180, 760);
+            scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Auction Web - Dashboard");
+            WindowUtil.fitDashboard(stage);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -362,17 +347,13 @@ public class ItemManagementController {
         private final SimpleStringProperty type;
         private final SimpleStringProperty price;
         private final SimpleStringProperty desc;
-        private final SimpleStringProperty extra1;
-        private final SimpleStringProperty extra2;
 
-        public ItemRow(String id, String name, String type, String price, String desc, String extra1, String extra2) {
+        public ItemRow(String id, String name, String type, String price, String desc) {
             this.id = id;
             this.name = new SimpleStringProperty(name);
             this.type = new SimpleStringProperty(type);
             this.price = new SimpleStringProperty(price);
             this.desc = new SimpleStringProperty(desc);
-            this.extra1 = new SimpleStringProperty(extra1);
-            this.extra2 = new SimpleStringProperty(extra2);
         }
 
         public String getId() { return id; }
@@ -380,7 +361,9 @@ public class ItemManagementController {
         public SimpleStringProperty typeProperty() { return type; }
         public SimpleStringProperty priceProperty() { return price; }
         public SimpleStringProperty descProperty() { return desc; }
-        public SimpleStringProperty extra1Property() { return extra1; }
-        public SimpleStringProperty extra2Property() { return extra2; }
     }
 }
+
+
+
+

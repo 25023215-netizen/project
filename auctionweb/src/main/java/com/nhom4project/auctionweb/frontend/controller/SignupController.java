@@ -1,8 +1,6 @@
-package com.nhom4project.auctionweb.frontend.controller;
+package com.nhom4project.auctionweb.controller.frontend;
 
-import com.nhom4project.auctionweb.frontend.utils.BackendClient;
-import com.nhom4project.auctionweb.frontend.utils.SceneUtils;
-import com.nhom4project.auctionweb.frontend.utils.ErrorLogger;
+import com.nhom4project.auctionweb.client.utils.BackendClient;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -45,10 +43,10 @@ public class SignupController {
         
         signUpButton.setDisable(!isValid);
         if (!isValid && !fullname.isEmpty()) {
-            if (!email.contains("@")) statusLabel.setText("Email không hợp lệ");
-            else if (username.length() < 4) statusLabel.setText("Username >= 4 ký tự");
-            else if (password.length() < 8) statusLabel.setText("Password >= 8 ký tự");
-            else if (!password.equals(confirm)) statusLabel.setText("Mật khẩu không khớp");
+            if (!email.contains("@")) statusLabel.setText("Invalid email");
+            else if (username.length() < 4) statusLabel.setText("Username must be at least 4 characters");
+            else if (password.length() < 8) statusLabel.setText("Password must be at least 8 characters");
+            else if (!password.equals(confirm)) statusLabel.setText("Passwords do not match");
         } else {
             statusLabel.setText("");
         }
@@ -57,14 +55,19 @@ public class SignupController {
     @FXML
     private void onSignUp(ActionEvent event) {
         signUpButton.setDisable(true);
-        statusLabel.setText("Đang đăng ký...");
+        statusLabel.setText("Signing up...");
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
+        String selectedRole = roleComboBox.getValue().toUpperCase();
+=======
         String rawRole = roleComboBox.getValue();
         String tempRole = "BIDDER";
         if ("Người bán".equals(rawRole) || "Seller".equalsIgnoreCase(rawRole)) {
             tempRole = "SELLER";
         }
         final String selectedRole = tempRole;
+        final String selectedRoleLabel = "SELLER".equals(selectedRole) ? "Seller" : "Bidder";
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/SignupController.java
 
         new Thread(() -> {
             try {
@@ -79,18 +82,17 @@ public class SignupController {
 
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Đăng ký thành công! Bạn đã đăng ký làm " + selectedRole);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Registration successful! You registered as " + selectedRoleLabel + ".");
                         alert.showAndWait();
                         onGoToSignIn(event);
                     } else {
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
+                        statusLabel.setText("Lỗi: " + response.body());
                         signUpButton.setDisable(false);
                     }
                 });
             } catch (Exception e) {
-                ErrorLogger.log("Lỗi trong quá trình đăng ký tài khoản", e);
                 Platform.runLater(() -> {
-                    statusLabel.setText("Lỗi: " + e.getMessage());
+                    statusLabel.setText("Error: " + e.getMessage());
                     signUpButton.setDisable(false);
                 });
             }
@@ -100,8 +102,14 @@ public class SignupController {
     @FXML
     private void onGoToSignIn(ActionEvent event) {
         try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            SceneUtils.changeScene(stage, "/fxml/signin.fxml", "Đăng nhập", "/style/signin.css");
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng nhập");
+=======
+            SceneUtils.changeScene(stage, "/fxml/signin.fxml", "Sign In", "/style/signin.css");
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/SignupController.java
         } catch (Exception e) { e.printStackTrace(); }
     }
 

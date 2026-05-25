@@ -110,7 +110,7 @@ public class BackendControllerTest {
     public void testHomeHello() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Backend Auction Web đang chạy thành công!")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Auction Web Backend is running successfully!")));
     }
 
     // ============================================================

@@ -2,89 +2,167 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:controller="com.nhom4project.auctionweb.frontend.controller.ItemManagementController"
+<BorderPane fx:controller="com.nhom4project.auctionweb.controller.frontend.ItemManagementController"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@../style/item_management.css"
             styleClass="item-root">
 
     <top>
         <HBox spacing="16" styleClass="item-topbar">
-            <Button text="Quay lại bảng điều khiển" onAction="#onBack" styleClass="back-button"/>
-            <Label text="Quản lý sản phẩm" styleClass="page-title" HBox.hgrow="ALWAYS"/>
+<<<<<<< Updated upstream
+            <Button text="Quay lai Dashboard" onAction="#onBack" styleClass="back-button"/>
+            <Label text="Quan ly san pham" styleClass="page-title" HBox.hgrow="ALWAYS"/>
+=======
+            <Button text="Back to Dashboard" onAction="#onBack" styleClass="back-button"/>
+            <Label text="Item Management" styleClass="page-title" HBox.hgrow="ALWAYS"/>
+>>>>>>> Stashed changes
         </HBox>
     </top>
 
     <center>
+<<<<<<< Updated upstream
+        <HBox spacing="20" styleClass="item-content">
+            <!-- Left: Form -->
+            <ScrollPane prefWidth="420" maxHeight="Infinity" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll">
+                <VBox spacing="14" prefWidth="380" styleClass="form-panel">
+                    <Label text="Them san pham moi" styleClass="section-title"/>
+
+                <VBox spacing="4">
+                    <Label text="Loai san pham" styleClass="field-label"/>
+                    <ComboBox fx:id="typeCombo" maxWidth="Infinity" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Ten san pham" styleClass="field-label"/>
+                    <TextField fx:id="nameField" promptText="Nhap ten san pham" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Mo ta" styleClass="field-label"/>
+                    <TextArea fx:id="descField" promptText="Mo ta san pham" prefRowCount="3" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Gia khoi diem (VND)" styleClass="field-label"/>
+                    <TextField fx:id="priceField" promptText="Vi du: 1000000" styleClass="input-field"/>
+                </VBox>
+
+                <HBox spacing="10">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label fx:id="extra1Label" text="Brand:" styleClass="field-label"/>
+                        <TextField fx:id="extra1Field" styleClass="input-field"/>
+                    </VBox>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label fx:id="extra2Label" text="Model:" styleClass="field-label"/>
+                        <TextField fx:id="extra2Field" styleClass="input-field"/>
+=======
         <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
             <content>
                 <HBox spacing="20" styleClass="item-content">
                     <!-- Left: Form -->
                     <VBox spacing="14" prefWidth="380" styleClass="form-panel">
-                        <Label text="Thêm sản phẩm mới" styleClass="section-title"/>
+                        <Label text="Add New Item" styleClass="section-title"/>
 
                         <VBox spacing="4">
-                            <Label text="Loại sản phẩm" styleClass="field-label"/>
+                            <Label text="Item Type" styleClass="field-label"/>
                             <ComboBox fx:id="typeCombo" maxWidth="Infinity" styleClass="input-field"/>
                         </VBox>
                         <VBox spacing="4">
-                            <Label text="Tên sản phẩm" styleClass="field-label"/>
-                            <TextField fx:id="nameField" promptText="Nhập tên sản phẩm" styleClass="input-field"/>
+                            <Label text="Item Name" styleClass="field-label"/>
+                            <TextField fx:id="nameField" promptText="Enter item name" styleClass="input-field"/>
                         </VBox>
                         <VBox spacing="4">
-                            <Label text="Mô tả" styleClass="field-label"/>
-                            <TextArea fx:id="descField" promptText="Mô tả sản phẩm" prefRowCount="3" styleClass="input-field"/>
+                            <Label text="Description" styleClass="field-label"/>
+                            <TextArea fx:id="descField" promptText="Enter item description" prefRowCount="3" styleClass="input-field"/>
                         </VBox>
                         <VBox spacing="4">
-                            <Label text="Giá khởi điểm (VND)" styleClass="field-label"/>
-                            <TextField fx:id="priceField" promptText="Ví dụ: 1000000" styleClass="input-field"/>
+                            <Label text="Starting Price (VND)" styleClass="field-label"/>
+                            <TextField fx:id="priceField" promptText="Example: 1000000" styleClass="input-field"/>
                         </VBox>
 
                         <HBox spacing="10">
                             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label fx:id="extra1Label" text="Nhãn hiệu:" styleClass="field-label"/>
+                                <Label fx:id="extra1Label" text="Brand:" styleClass="field-label"/>
                                 <TextField fx:id="extra1Field" styleClass="input-field"/>
                             </VBox>
                             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label fx:id="extra2Label" text="Dòng máy/Đời:" styleClass="field-label"/>
+                                <Label fx:id="extra2Label" text="Model:" styleClass="field-label"/>
                                 <TextField fx:id="extra2Field" styleClass="input-field"/>
                             </VBox>
                         </HBox>
 
                         <HBox spacing="10">
-                            <Button text="Thêm sản phẩm" onAction="#onAddItem" styleClass="primary-button"/>
-                            <Button text="Xóa sản phẩm" onAction="#onDeleteItem" styleClass="danger-button"/>
+                            <Button text="Add Item" onAction="#onAddItem" styleClass="primary-button"/>
+                            <Button text="Delete Item" onAction="#onDeleteItem" styleClass="danger-button"/>
                         </HBox>
 
                         <!-- Tạo phiên đấu giá -->
                         <Separator/>
-                        <Label text="Tạo phiên đấu giá" styleClass="section-title"/>
+                        <Label text="Create Auction" styleClass="section-title"/>
 
                         <VBox spacing="4">
-                            <Label text="Thời gian đấu giá" styleClass="field-label"/>
+                            <Label text="Auction Duration" styleClass="field-label"/>
                             <HBox spacing="8">
                                 <TextField fx:id="durationValueField" text="3" prefWidth="100" styleClass="input-field"/>
                                 <ComboBox fx:id="durationUnitCombo" prefWidth="120" styleClass="input-field"/>
                             </HBox>
                         </VBox>
-                        <Button text="Tạo phiên đấu giá" onAction="#onCreateAuction" styleClass="primary-button"/>
+                        <Button text="Create Auction" onAction="#onCreateAuction" styleClass="primary-button"/>
 
                         <Label fx:id="statusLabel" text="" styleClass="status-label"/>
                     </VBox>
 
                     <!-- Right: Table -->
                     <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="table-panel">
-                        <Label text="Danh sách sản phẩm của bạn" styleClass="section-title"/>
+                        <Label text="Your Items" styleClass="section-title"/>
                         <TableView fx:id="itemTable" VBox.vgrow="ALWAYS" styleClass="item-table">
                             <columns>
-                                <TableColumn fx:id="nameColumn" text="Tên" prefWidth="200"/>
-                                <TableColumn fx:id="typeColumn" text="Loại" prefWidth="120"/>
-                                <TableColumn fx:id="priceColumn" text="Giá khởi điểm" prefWidth="150"/>
-                                <TableColumn fx:id="descColumn" text="Mô tả" prefWidth="250"/>
+                                <TableColumn fx:id="nameColumn" text="Name" prefWidth="200"/>
+                                <TableColumn fx:id="typeColumn" text="Type" prefWidth="120"/>
+                                <TableColumn fx:id="priceColumn" text="Starting Price" prefWidth="150"/>
+                                <TableColumn fx:id="descColumn" text="Description" prefWidth="250"/>
                             </columns>
                         </TableView>
+>>>>>>> Stashed changes
                     </VBox>
                 </HBox>
-            </content>
-        </ScrollPane>
+
+                <HBox spacing="10">
+                    <Button text="Them san pham" onAction="#onAddItem" styleClass="primary-button"/>
+                    <Button text="Xoa san pham" onAction="#onDeleteItem" styleClass="danger-button"/>
+                </HBox>
+
+                <!-- Tạo phiên đấu giá -->
+                <Separator/>
+                <Label text="Tao phien dau gia" styleClass="section-title"/>
+                <VBox spacing="4">
+                    <Label text="Tieu de phien (de trong = ten san pham)" styleClass="field-label"/>
+                    <TextField fx:id="auctionTitleField" promptText="Tieu de phien dau gia" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="4">
+                    <Label text="Thoi gian dau gia" styleClass="field-label"/>
+                    <HBox spacing="8">
+                        <TextField fx:id="durationValueField" text="3" prefWidth="100" styleClass="input-field"/>
+                        <ComboBox fx:id="durationUnitCombo" prefWidth="120" styleClass="input-field"/>
+                    </HBox>
+                </VBox>
+                <Button text="Tao phien dau gia" onAction="#onCreateAuction" styleClass="primary-button"/>
+
+                <Label fx:id="statusLabel" text="" styleClass="status-label"/>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Right: Table -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS" styleClass="table-panel">
+                <Label text="Danh sach san pham cua ban" styleClass="section-title"/>
+                <TableView fx:id="itemTable" VBox.vgrow="ALWAYS" styleClass="item-table">
+                    <columns>
+                        <TableColumn fx:id="nameColumn" text="Ten" prefWidth="200"/>
+                        <TableColumn fx:id="typeColumn" text="Loai" prefWidth="120"/>
+                        <TableColumn fx:id="priceColumn" text="Gia khoi diem" prefWidth="150"/>
+                        <TableColumn fx:id="descColumn" text="Mo ta" prefWidth="250"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
     </center>
 </BorderPane>
+
+

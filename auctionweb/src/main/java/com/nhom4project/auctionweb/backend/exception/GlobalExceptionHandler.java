@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
                 .findFirst()
-                .orElse("Dữ liệu không hợp lệ");
+                .orElse("Invalid data");
         return buildErrorResponse(HttpStatus.BAD_REQUEST, firstError);
     }
 
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Lỗi hệ thống: " + ex.getMessage());
+                "System error: " + ex.getMessage());
     }
 
     // ==================== Helper ====================

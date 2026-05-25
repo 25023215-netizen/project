@@ -1,22 +1,19 @@
-package com.nhom4project.auctionweb.backend.service;
+package com.nhom4project.auctionweb.server.service;
 
-import com.nhom4project.auctionweb.backend.model.*;
-import com.nhom4project.auctionweb.backend.repository.*;
+import com.nhom4project.auctionweb.server.model.*;
+import com.nhom4project.auctionweb.server.repository.ItemRepository;
+import com.nhom4project.auctionweb.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service quản lý sản phẩm đấu giá (Item).
  * Sử dụng Factory Method pattern để tạo đúng loại Item.
  */
 @Service
-@Transactional
 public class ItemService {
 
     @Autowired
@@ -24,18 +21,6 @@ public class ItemService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AuctionRepository auctionRepository;
-
-    @Autowired
-    private BidRepository bidRepository;
-
-    @Autowired
-    private AutoBidConfigRepository autoBidConfigRepository;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     public List<Item> listItems() {
         return itemRepository.findAll();
@@ -56,10 +41,13 @@ public class ItemService {
                            Double startingPrice, Long sellerId,
                            String extraField1, String extraField2) {
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/ItemService.java
+=======
         if (startingPrice == null || startingPrice <= 0) {
-            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+            throw new IllegalArgumentException("Starting price must be greater than 0");
         }
 
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/ItemService.java
         // Factory Method: tạo đúng loại item
         Item item = ItemFactory.createItem(type);
         item.setName(name);
@@ -73,17 +61,18 @@ public class ItemService {
         if (!(seller instanceof Seller)) {
             throw new IllegalArgumentException("User is not a Seller");
         }
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/ItemService.java
+=======
         if (seller.isLocked()) {
-            throw new IllegalArgumentException("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
+            throw new IllegalArgumentException("This account has been locked and cannot perform any actions.");
         }
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/ItemService.java
         item.setSeller((Seller) seller);
 
         // Gán các thuộc tính riêng của từng loại
         applyExtraFields(item, type, extraField1, extraField2);
 
-        Item savedItem = itemRepository.save(item);
-
-        return savedItem;
+        return itemRepository.save(item);
     }
 
     /**
@@ -91,10 +80,13 @@ public class ItemService {
      */
     public Item updateItem(Long id, String name, String description, Double startingPrice,
                            String extraField1, String extraField2) {
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/ItemService.java
+=======
         if (startingPrice == null || startingPrice <= 0) {
-            throw new IllegalArgumentException("Giá khởi điểm phải lớn hơn 0");
+            throw new IllegalArgumentException("Starting price must be greater than 0");
         }
 
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/ItemService.java
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
@@ -119,27 +111,7 @@ public class ItemService {
         if (!itemRepository.existsById(id)) {
             throw new IllegalArgumentException("Item not found");
         }
-
-        // First delete any associated Auction
-        auctionRepository.findByItemId(id).ifPresent(auction -> {
-            // Delete auto-bid configs
-            autoBidConfigRepository.deleteByAuctionId(auction.getId());
-            // Delete bids
-            bidRepository.deleteByAuctionId(auction.getId());
-            // Remove from manager
-            AuctionManager.getInstance().removeAuction(auction.getId());
-            // Delete the auction
-            auctionRepository.delete(auction);
-        });
-
         itemRepository.deleteById(id);
-
-        // Notify client to refresh dashboard
-        try {
-            messagingTemplate.convertAndSend("/topic/auctions", "refresh");
-        } catch (Exception e) {
-            // Ignore/Log
-        }
     }
 
     /**

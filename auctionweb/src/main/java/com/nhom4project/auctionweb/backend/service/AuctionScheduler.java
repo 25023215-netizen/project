@@ -1,8 +1,8 @@
-package com.nhom4project.auctionweb.backend.service;
+package com.nhom4project.auctionweb.server.service;
 
-import com.nhom4project.auctionweb.backend.model.Auction;
-import com.nhom4project.auctionweb.backend.model.AuctionStatus;
-import com.nhom4project.auctionweb.backend.repository.AuctionRepository;
+import com.nhom4project.auctionweb.server.model.Auction;
+import com.nhom4project.auctionweb.server.model.AuctionStatus;
+import com.nhom4project.auctionweb.server.repository.AuctionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Scheduler tự động kết thúc phiên đấu giá khi hết thời gian.
@@ -69,19 +66,25 @@ public class AuctionScheduler {
                 log.warn("Failed to broadcast auction end: {}", e.getMessage());
             }
         }
-    }
-    //Kết thúc phiên đầu giá sớm theo yêu cầu của client
-    public ResponseEntity<?> endAuctionEarly(Long auctionId, Long userId, String role) {
-        Optional<Auction> auctionOpt = auctionRepository.findById(auctionId);
-        if (auctionOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("Auction not found");
-        }
 
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/server/service/AuctionScheduler.java
+        // Tự động bắt đầu các phiên OPEN đã đến startTime
+        List<Auction> openAuctions = auctionRepository.findByStatus(AuctionStatus.OPEN);
+        for (Auction auction : openAuctions) {
+            if (auction.getStartTime() != null && !LocalDateTime.now().isBefore(auction.getStartTime())) {
+                auction.setStatus(AuctionStatus.RUNNING);
+                auctionRepository.save(auction);
+                AuctionManager.getInstance().registerAuction(auction);
+                log.info("Auction {} '{}' auto-started", auction.getId(), auction.getTitle());
+                try {
+                    messagingTemplate.convertAndSend("/topic/auctions", "refresh");
+                } catch (Exception ignored) {}
+=======
         Auction auction = auctionOpt.get();
 
         // Kiểm tra quyền: chỉ admin hoặc chủ phiên được kết thúc sớm
         if (!"ADMIN".equalsIgnoreCase(role) && !auction.getSeller().getId().equals(userId)) {
-            return ResponseEntity.status(403).body("Bạn không có quyền kết thúc phiên này");
+            return ResponseEntity.status(403).body("You do not have permission to end this auction");
         }
 
         if (auction.getStatus() == AuctionStatus.RUNNING) {
@@ -105,11 +108,12 @@ public class AuctionScheduler {
                 messagingTemplate.convertAndSend("/topic/auctions", "refresh");
             } catch (Exception e) {
                 log.warn("Failed to broadcast auction end: {}", e.getMessage());
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/backend/service/AuctionScheduler.java
             }
-
-            return ResponseEntity.ok("Auction ended early");
-        } else {
-            return ResponseEntity.badRequest().body("Auction is not running");
         }
     }
 }
+
+
+
+

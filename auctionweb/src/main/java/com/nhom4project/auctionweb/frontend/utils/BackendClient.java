@@ -1,4 +1,4 @@
-package com.nhom4project.auctionweb.frontend.utils;
+package com.nhom4project.auctionweb.client.utils;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -75,7 +75,6 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -85,7 +84,6 @@ public class BackendClient {
     public HttpResponse<String> get(String endpoint) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
-                .header("Accept", "application/json")
                 .GET()
                 .build();
 
@@ -96,7 +94,6 @@ public class BackendClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
@@ -106,24 +103,30 @@ public class BackendClient {
     public HttpResponse<String> delete(String endpoint) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))
-                .header("Accept", "application/json")
                 .DELETE()
                 .build();
 
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
+<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
+=======
 
     /**
      * Helper method để trích xuất thông báo lỗi rõ ràng từ HTTP response không thành công.
      */
     public static String getCleanErrorMessage(HttpResponse<String> response) {
         if (response == null) {
-            return "Không nhận được phản hồi từ máy chủ!";
+            return "No response received from the server!";
         }
         String body = response.body();
         if (body == null || body.trim().isEmpty()) {
-            return "Lỗi phản hồi rỗng từ máy chủ (Status: " + response.statusCode() + ")";
+            return "Empty response from the server (Status: " + response.statusCode() + ")";
         }
-        return "Lỗi: " + body.trim();
+        return "Error: " + body.trim();
     }
+>>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/utils/BackendClient.java
 }
+
+
+
+
