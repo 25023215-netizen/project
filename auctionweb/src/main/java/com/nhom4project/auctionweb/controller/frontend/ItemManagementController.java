@@ -64,8 +64,8 @@ public class ItemManagementController {
 
         loadItems();
 
-        durationUnitCombo.setItems(FXCollections.observableArrayList("Minutes", "Hours", "Days"));
-        durationUnitCombo.setValue("Days");
+        durationUnitCombo.setItems(FXCollections.observableArrayList("Phut", "Gio", "Ngay"));
+        durationUnitCombo.setValue("Ngay");
     }
 
     private void updateExtraFieldLabels() {
@@ -95,11 +95,11 @@ public class ItemManagementController {
                                     node.path("description").asText("")
                             ));
                         }
-                        statusLabel.setText("Loaded " + items.size() + " items");
+                        statusLabel.setText("Da tai " + items.size() + " san pham");
                     });
                 }
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
             }
         }).start();
     }
@@ -119,25 +119,10 @@ public class ItemManagementController {
         String type = typeCombo.getValue();
 
         if (name.isEmpty() || priceText.isEmpty()) {
-            statusLabel.setText("Please enter item name and price!");
+            statusLabel.setText("Vui long nhap ten va gia!");
             return;
         }
 
-<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
-=======
-        double startPrice;
-        try {
-            startPrice = Double.parseDouble(priceText);
-        } catch (NumberFormatException e) {
-            statusLabel.setText("Starting price must be a valid number!");
-            return;
-        }
-        if (startPrice <= 0) {
-            statusLabel.setText("Starting price must be greater than 0!");
-            return;
-        }
-
->>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/ItemManagementController.java
         new Thread(() -> {
             try {
                 JSONObject body = new JSONObject();
@@ -152,7 +137,7 @@ public class ItemManagementController {
                 HttpResponse<String> response = BackendClient.getInstance().post("/items", body.toString());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        statusLabel.setText("Item added successfully!");
+                        statusLabel.setText("Them san pham thanh cong!");
                         clearForm();
                         loadItems();
                     } else {
@@ -160,7 +145,7 @@ public class ItemManagementController {
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
             }
         }).start();
     }
@@ -169,7 +154,7 @@ public class ItemManagementController {
     private void onDeleteItem() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Please select an item to delete!");
+            statusLabel.setText("Vui long chon san pham can xoa!");
             return;
         }
 
@@ -179,74 +164,14 @@ public class ItemManagementController {
                         .delete("/items/" + selected.getId());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        statusLabel.setText("Item deleted!");
+                        statusLabel.setText("Da xoa san pham!");
                         loadItems();
                     } else {
-<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
                         statusLabel.setText("Loi: " + response.body());
-=======
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
-            }
-        }).start();
-    }
-
-    @FXML
-    private void onUpdateItem() {
-        ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            statusLabel.setText("Please select an item to update!");
-            return;
-        }
-
-        String name = nameField.getText().trim();
-        String desc = descField.getText().trim();
-        String priceText = priceField.getText().trim();
-        String type = typeCombo.getValue();
-
-        if (name.isEmpty() || priceText.isEmpty()) {
-            statusLabel.setText("Please enter item name and price!");
-            return;
-        }
-
-        double startPrice;
-        try {
-            startPrice = Double.parseDouble(priceText);
-        } catch (NumberFormatException e) {
-            statusLabel.setText("Starting price must be a valid number!");
-            return;
-        }
-        if (startPrice <= 0) {
-            statusLabel.setText("Starting price must be greater than 0!");
-            return;
-        }
-
-        new Thread(() -> {
-            try {
-                JSONObject body = new JSONObject();
-                body.put("name", name);
-                body.put("description", desc);
-                body.put("startingPrice", Double.parseDouble(priceText));
-                body.put("extraField1", extra1Field.getText().trim());
-                body.put("extraField2", extra2Field.getText().trim());
-
-                HttpResponse<String> response = BackendClient.getInstance()
-                        .put("/items/" + selected.getId(), body.toString());
-                Platform.runLater(() -> {
-                    if (response.statusCode() == 200) {
-                        statusLabel.setText("Item updated successfully!");
-                        clearForm();
-                        loadItems();
-                    } else {
-                        statusLabel.setText(BackendClient.getCleanErrorMessage(response));
->>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/ItemManagementController.java
-                    }
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
             }
         }).start();
     }
@@ -258,7 +183,7 @@ public class ItemManagementController {
     private void onCreateAuction() {
         ItemRow selected = itemTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            statusLabel.setText("Please select an item to create an auction!");
+            statusLabel.setText("Vui long chon san pham de tao phien dau gia!");
             return;
         }
 
@@ -275,9 +200,9 @@ public class ItemManagementController {
         String unit = durationUnitCombo.getValue();
         java.time.LocalDateTime endTime = java.time.LocalDateTime.now();
         switch (unit) {
-            case "Minutes" -> endTime = endTime.plusMinutes(durationValue);
-            case "Hours" -> endTime = endTime.plusHours(durationValue);
-            case "Days" -> endTime = endTime.plusDays(durationValue);
+            case "Phut" -> endTime = endTime.plusMinutes(durationValue);
+            case "Gio" -> endTime = endTime.plusHours(durationValue);
+            case "Ngay" -> endTime = endTime.plusDays(durationValue);
             default -> endTime = endTime.plusDays(durationValue);
         }
         
@@ -296,22 +221,13 @@ public class ItemManagementController {
                 HttpResponse<String> response = BackendClient.getInstance().post("/auctions", body.toString());
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/ItemManagementController.java
                         statusLabel.setText("Tao phien dau gia thanh cong!");
-=======
-                        statusLabel.setText("Auction created successfully!");
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Notification");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Auction created successfully!");
-                        alert.showAndWait();
->>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/ItemManagementController.java
                     } else {
                         statusLabel.setText("Loi: " + response.body());
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> statusLabel.setText("Error: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("Loi: " + e.getMessage()));
             }
         }).start();
     }

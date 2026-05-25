@@ -43,10 +43,10 @@ public class SignupController {
         
         signUpButton.setDisable(!isValid);
         if (!isValid && !fullname.isEmpty()) {
-            if (!email.contains("@")) statusLabel.setText("Invalid email");
-            else if (username.length() < 4) statusLabel.setText("Username must be at least 4 characters");
-            else if (password.length() < 8) statusLabel.setText("Password must be at least 8 characters");
-            else if (!password.equals(confirm)) statusLabel.setText("Passwords do not match");
+            if (!email.contains("@")) statusLabel.setText("Email không hợp lệ");
+            else if (username.length() < 4) statusLabel.setText("Username >= 4 ký tự");
+            else if (password.length() < 8) statusLabel.setText("Password >= 8 ký tự");
+            else if (!password.equals(confirm)) statusLabel.setText("Mật khẩu không khớp");
         } else {
             statusLabel.setText("");
         }
@@ -55,19 +55,9 @@ public class SignupController {
     @FXML
     private void onSignUp(ActionEvent event) {
         signUpButton.setDisable(true);
-        statusLabel.setText("Signing up...");
+        statusLabel.setText("Đang đăng ký...");
 
-<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
         String selectedRole = roleComboBox.getValue().toUpperCase();
-=======
-        String rawRole = roleComboBox.getValue();
-        String tempRole = "BIDDER";
-        if ("Người bán".equals(rawRole) || "Seller".equalsIgnoreCase(rawRole)) {
-            tempRole = "SELLER";
-        }
-        final String selectedRole = tempRole;
-        final String selectedRoleLabel = "SELLER".equals(selectedRole) ? "Seller" : "Bidder";
->>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/SignupController.java
 
         new Thread(() -> {
             try {
@@ -82,7 +72,7 @@ public class SignupController {
 
                 Platform.runLater(() -> {
                     if (response.statusCode() == 200) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Registration successful! You registered as " + selectedRoleLabel + ".");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Đăng ký thành công! Bạn đã đăng ký làm " + selectedRole);
                         alert.showAndWait();
                         onGoToSignIn(event);
                     } else {
@@ -92,7 +82,7 @@ public class SignupController {
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    statusLabel.setText("Error: " + e.getMessage());
+                    statusLabel.setText("Lỗi: " + e.getMessage());
                     signUpButton.setDisable(false);
                 });
             }
@@ -104,12 +94,8 @@ public class SignupController {
         try {
             javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/signin.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/controller/frontend/SignupController.java
             stage.setScene(new Scene(root));
             stage.setTitle("Đăng nhập");
-=======
-            SceneUtils.changeScene(stage, "/fxml/signin.fxml", "Sign In", "/style/signin.css");
->>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/controller/SignupController.java
         } catch (Exception e) { e.printStackTrace(); }
     }
 

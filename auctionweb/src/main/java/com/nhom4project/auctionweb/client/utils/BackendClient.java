@@ -108,23 +108,6 @@ public class BackendClient {
 
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
-<<<<<<< Updated upstream:auctionweb/src/main/java/com/nhom4project/auctionweb/client/utils/BackendClient.java
-=======
-
-    /**
-     * Helper method để trích xuất thông báo lỗi rõ ràng từ HTTP response không thành công.
-     */
-    public static String getCleanErrorMessage(HttpResponse<String> response) {
-        if (response == null) {
-            return "No response received from the server!";
-        }
-        String body = response.body();
-        if (body == null || body.trim().isEmpty()) {
-            return "Empty response from the server (Status: " + response.statusCode() + ")";
-        }
-        return "Error: " + body.trim();
-    }
->>>>>>> Stashed changes:auctionweb/src/main/java/com/nhom4project/auctionweb/frontend/utils/BackendClient.java
 }
 
 
