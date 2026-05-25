@@ -87,7 +87,7 @@ public class SessionManager {
                                 }
                                 
                                 if (activeStage != null) {
-                                    SceneUtils.changeScene(activeStage, "/fxml/locked_account.fxml", "Account Locked", "/style/locked_account.css");
+                                    SceneUtils.changeScene(activeStage, "/fxml/locked_account.fxml", "Tài khoản bị khóa", "/style/locked_account.css");
                                     activeStage.setMinWidth(480);
                                     activeStage.setMinHeight(380);
                                     activeStage.setWidth(500);
@@ -102,9 +102,9 @@ public class SessionManager {
                                     }
                                 } else {
                                     Alert alert = new Alert(Alert.AlertType.WARNING);
-                                    alert.setTitle("Notification");
-                                    alert.setHeaderText("Account locked");
-                                    alert.setContentText("This account has been locked and cannot perform any actions.");
+                                    alert.setTitle("Thông báo");
+                                    alert.setHeaderText("Tài khoản bị khóa");
+                                    alert.setContentText("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả");
                                     alert.showAndWait();
                                     Platform.exit();
                                     System.exit(0);

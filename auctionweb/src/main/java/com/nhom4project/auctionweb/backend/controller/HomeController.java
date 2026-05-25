@@ -8,7 +8,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String hello() {
-        return "<h1>Auction Web Backend is running successfully!</h1><p>Database connected. Security is temporarily disabled.</p>";
+        return "<h1>Backend Auction Web đang chạy thành công!</h1><p>Database đã kết nối, Security đã tạm tắt.</p>";
     }
 }
 

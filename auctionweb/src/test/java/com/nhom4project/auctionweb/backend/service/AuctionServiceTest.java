@@ -174,7 +174,7 @@ public class AuctionServiceTest {
         Exception ex = assertThrows(IllegalStateException.class, () -> 
             auctionService.deleteAuction(testAuction.getId(), seller.getId(), Roles.SELLER)
         );
-        assertEquals("Cannot delete a running auction that already has bids", ex.getMessage());
+        assertEquals("Khong the xoa phien dau gia dang dien ra va co nguoi dat gia", ex.getMessage());
 
         // Verify auction is NOT deleted
         assertTrue(auctionRepository.findById(testAuction.getId()).isPresent());
@@ -189,7 +189,7 @@ public class AuctionServiceTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () ->
             auctionService.placeBid(testAuction.getId(), bidder.getId(), new BigDecimal("1500000"))
         );
-        assertEquals("This account has been locked and cannot perform any actions.", ex.getMessage());
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
     }
 
     @Test
@@ -201,7 +201,7 @@ public class AuctionServiceTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () ->
             auctionService.createAuction("New Auction", "Electronics", "Desc", new BigDecimal("100"), seller.getId(), null, null)
         );
-        assertEquals("This account has been locked and cannot perform any actions.", ex.getMessage());
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
     }
 
     @Test
@@ -213,7 +213,7 @@ public class AuctionServiceTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () ->
             auctionService.registerAutoBid(testAuction.getId(), bidder.getId(), new BigDecimal("2000000"), new BigDecimal("100000"))
         );
-        assertEquals("This account has been locked and cannot perform any actions.", ex.getMessage());
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
     }
 
     @Test
@@ -261,7 +261,7 @@ public class AuctionServiceTest {
                     newPrice, seller.getId(), null, newEndTime, item.getId()
             )
         );
-        assertEquals("This item already has an auction", ex.getMessage());
+        assertEquals("Sản phẩm này đã được tạo phiên đấu giá", ex.getMessage());
     }
 
     @Test
@@ -273,7 +273,7 @@ public class AuctionServiceTest {
         Exception ex = assertThrows(IllegalStateException.class, () ->
             auctionService.placeBid(testAuction.getId(), bidder.getId(), new BigDecimal("1500000"))
         );
-        assertEquals("The auction is not running", ex.getMessage());
+        assertEquals("Phien dau gia khong dang chay", ex.getMessage());
     }
 
     @Test

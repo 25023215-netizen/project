@@ -79,7 +79,7 @@ public class DataInitializer implements CommandLineRunner {
         if (itemRepository.count() == 0 && auctionRepository.count() == 0) {
             Electronics laptop = new Electronics();
             laptop.setName("Gaming Laptop ROG Strix");
-            laptop.setDescription("High-performance gaming laptop, RTX 4060, 16GB RAM");
+            laptop.setDescription("Laptop gaming hieu nang cao, RTX 4060, 16GB RAM");
             laptop.setStartingPrice(25000000.0);
             laptop.setCurrentPrice(25000000.0);
             laptop.setSeller(seller);
@@ -88,8 +88,8 @@ public class DataInitializer implements CommandLineRunner {
             itemRepository.save(laptop);
 
             Art painting = new Art();
-            painting.setName("Oil Painting - Hoan Kiem Lake");
-            painting.setDescription("Hand-painted canvas artwork, 80x60cm");
+            painting.setName("Tranh Son Dau - Ho Guom");
+            painting.setDescription("Tranh ve tay tren canvas, kich thuoc 80x60cm");
             painting.setStartingPrice(3000000.0);
             painting.setCurrentPrice(3000000.0);
             painting.setSeller(seller);
@@ -99,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Vehicle bike = new Vehicle();
             bike.setName("Honda Wave Alpha 2023");
-            bike.setDescription("Motorbike in 95% new condition, regularly maintained, lightly used");
+            bike.setDescription("Xe may con moi 95%, bao duong dinh ky, it su dung");
             bike.setStartingPrice(12000000.0);
             bike.setCurrentPrice(12000000.0);
             bike.setSeller(seller);
@@ -124,7 +124,7 @@ public class DataInitializer implements CommandLineRunner {
             auctionRepository.save(a1);
 
             Auction a2 = new Auction();
-            a2.setTitle("Oil Painting - Hoan Kiem Lake");
+            a2.setTitle("Tranh Son Dau - Ho Guom");
             a2.setCategory("Art");
             a2.setDescription(painting.getDescription());
             a2.setStartingPrice(new BigDecimal("3000000"));

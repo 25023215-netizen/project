@@ -4,7 +4,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <!-- Root container: StackPane để center nội dung -->
-<StackPane fx:controller="com.nhom4project.auctionweb.controller.frontend.SigninController"
+<StackPane fx:controller="com.nhom4project.auctionweb.frontend.controller.SigninController"
            xmlns:fx="http://javafx.com/fxml"
            stylesheets="@../style/signin.css"
            style="-fx-background-color: linear-gradient(to bottom right, #e3f2fd, #f3e5f5);">
@@ -12,61 +12,45 @@
     <VBox alignment="CENTER" spacing="25" styleClass="form-card">
         <!-- Header section với title -->
         <VBox alignment="CENTER" spacing="10">
-            <Label text="Welcome Back" styleClass="title-label"/>
+            <Label text="Chào mừng quay trở lại" styleClass="title-label"/>
         </VBox>
         <!-- Container chứa các input fields -->
         <VBox spacing="15" styleClass="form-container">
             <!-- Role selection -->
             <VBox spacing="5">
-<<<<<<< Updated upstream
-                <Label text="Login as" styleClass="field-label"/>
-=======
-                <Label text="Sign in as" styleClass="field-label"/>
->>>>>>> Stashed changes
+                <Label text="Đăng nhập dưới vai trò" styleClass="field-label"/>
                 <ComboBox fx:id="roleComboBox" styleClass="input-field" maxWidth="Infinity">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Bidder"/>
-                            <String fx:value="Seller"/>
+                            <String fx:value="Người đấu giá"/>
+                            <String fx:value="Người bán"/>
                         </FXCollections>
                     </items>
-                    <value><String fx:value="Bidder"/></value>
+                    <value><String fx:value="Người đấu giá"/></value>
                 </ComboBox>
             </VBox>
             <!-- Username field với label -->
             <VBox spacing="5">
-                <Label text="Username" styleClass="field-label"/>
-<<<<<<< Updated upstream
-                <TextField fx:id="userNameField" promptText="Enter your username" styleClass="input-field"/>
-=======
-                <TextField fx:id="userNameField" promptText="Enter username" styleClass="input-field"/>
->>>>>>> Stashed changes
+                <Label text="Tên đăng nhập" styleClass="field-label"/>
+                <TextField fx:id="userNameField" promptText="Nhập tên đăng nhập" styleClass="input-field"/>
             </VBox>
             <!-- Password field với label -->
             <VBox spacing="5">
-                <Label text="Password" styleClass="field-label"/>
-<<<<<<< Updated upstream
-                <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="input-field"/>
-=======
-                <PasswordField fx:id="passwordField" promptText="Enter password" styleClass="input-field"/>
->>>>>>> Stashed changes
+                <Label text="Mật khẩu" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField" promptText="Nhập mật khẩu" styleClass="input-field"/>
             </VBox>
             <!-- Label hiển thị lỗi validation -->
             <Label fx:id="statusLabel" styleClass="error-label"/>
         </VBox>
         <!-- Container chứa các buttons -->
         <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container">
-            <Button fx:id="signinButton" text="Sign In" onAction="#onSignIn" disable="true" styleClass="primary-button"/>
-<<<<<<< Updated upstream
-            <Button text="Cancel" onAction="#onCancel" styleClass="secondary-button"/>
-=======
-            <Button text="Exit" onAction="#onCancel" styleClass="secondary-button"/>
->>>>>>> Stashed changes
+            <Button fx:id="signinButton" text="Đăng nhập" onAction="#onSignIn" disable="true" styleClass="primary-button"/>
+            <Button text="Thoát" onAction="#onCancel" styleClass="secondary-button"/>
         </HBox>
         <!-- Chuyển hướng sang màn hình Đăng ký -->
         <HBox alignment="CENTER" style="-fx-padding: 0 0 10 0;">
-            <Label text="New here? "/>
-            <Hyperlink text="Sign up now" onAction="#onGoToSignUp"/>
+            <Label text="Lần đầu tham gia? "/>
+            <Hyperlink text="Đăng ký ngay" onAction="#onGoToSignUp"/>
         </HBox>
     </VBox>
 </StackPane>

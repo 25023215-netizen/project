@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane fx:controller="com.nhom4project.auctionweb.controller.frontend.AdminDashboardController"
+<BorderPane fx:controller="com.nhom4project.auctionweb.frontend.controller.AdminDashboardController"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@../style/admin_dashboard.css"
             styleClass="root-pane">
@@ -12,52 +12,40 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-bar">
             <padding><Insets top="15" right="25" bottom="15" left="25"/></padding>
-<<<<<<< Updated upstream
-            <Label text="🛡 Admin Dashboard" styleClass="header-title"/>
+            <Label text="🛡 Bảng quản trị hệ thống" styleClass="header-title"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="adminInfoLabel" text="Admin" styleClass="admin-info"/>
+            <Label fx:id="adminInfoLabel" text="Quản trị viên" styleClass="admin-info"/>
             <Button text="Đăng xuất" onAction="#onLogout" styleClass="logout-btn"/>
-=======
-            <Label text="🛡 System Admin Dashboard" styleClass="header-title"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="adminInfoLabel" text="Administrator" styleClass="admin-info"/>
-            <Button text="Sign Out" onAction="#onLogout" styleClass="logout-btn"/>
->>>>>>> Stashed changes
         </HBox>
     </top>
 
     <!-- CENTER: Main content -->
     <center>
-        <VBox spacing="20" styleClass="main-content">
-            <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="scroll-pane-content">
+            <content>
+                <VBox spacing="20" styleClass="main-content">
+                    <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
 
-<<<<<<< Updated upstream
-            <!-- Stats Cards -->
-            <HBox spacing="15" styleClass="stats-row">
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                    <Label text="Tổng Users" styleClass="stat-title"/>
-                    <Label fx:id="totalUsersLabel" text="0" styleClass="stat-value"/>
-=======
                     <!-- Stats Cards -->
                     <HBox spacing="15" styleClass="stats-row">
                         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Total Users" styleClass="stat-title"/>
+                            <Label text="Tổng thành viên" styleClass="stat-title"/>
                             <Label fx:id="totalUsersLabel" text="0" styleClass="stat-value"/>
                         </VBox>
                         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Auctions" styleClass="stat-title"/>
+                            <Label text="Phiên Đấu Giá" styleClass="stat-title"/>
                             <Label fx:id="totalAuctionsLabel" text="0" styleClass="stat-value"/>
                         </VBox>
                         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Running" styleClass="stat-title"/>
+                            <Label text="Đang diễn ra" styleClass="stat-title"/>
                             <Label fx:id="runningAuctionsLabel" text="0" styleClass="stat-value"/>
                         </VBox>
                         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Revenue" styleClass="stat-title"/>
+                            <Label text="Doanh thu" styleClass="stat-title"/>
                             <Label fx:id="totalRevenueLabel" text="0 VND" styleClass="stat-value revenue"/>
                         </VBox>
                         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Highest Bid" styleClass="stat-title"/>
+                            <Label text="Đặt giá cao nhất" styleClass="stat-title"/>
                             <Label fx:id="highestBidLabel" text="0 VND" styleClass="stat-value"/>
                         </VBox>
                     </HBox>
@@ -65,36 +53,36 @@
                     <!-- Tab sections -->
                     <TabPane VBox.vgrow="ALWAYS" styleClass="admin-tabs">
                         <!-- Tab: Quản lý Users -->
-                        <Tab text="👤 User Management" closable="false">
+                        <Tab text="👤 Quản lý người dùng" closable="false">
                             <VBox spacing="10">
                                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                                 <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="data-table">
                                     <columns>
                                         <TableColumn fx:id="userIdCol" text="ID" prefWidth="60"/>
                                         <TableColumn fx:id="userNameCol" text="Username" prefWidth="150"/>
-                                        <TableColumn fx:id="userFullnameCol" text="Full Name" prefWidth="180"/>
+                                        <TableColumn fx:id="userFullnameCol" text="Họ tên" prefWidth="180"/>
                                         <TableColumn fx:id="userEmailCol" text="Email" prefWidth="200"/>
                                         <TableColumn fx:id="userRoleCol" text="Role" prefWidth="100"/>
-                                        <TableColumn fx:id="userStatusCol" text="Status" prefWidth="100"/>
-                                        <TableColumn fx:id="userActionCol" text="Actions" prefWidth="180"/>
+                                        <TableColumn fx:id="userStatusCol" text="Trạng thái" prefWidth="100"/>
+                                        <TableColumn fx:id="userActionCol" text="Hành động" prefWidth="180"/>
                                     </columns>
                                 </TableView>
                             </VBox>
                         </Tab>
 
                         <!-- Tab: Quản lý Auctions -->
-                        <Tab text="🔨 Auction Management" closable="false">
+                        <Tab text="🔨 Quản lý đấu giá" closable="false">
                             <VBox spacing="10">
                                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                                 <TableView fx:id="auctionTable" VBox.vgrow="ALWAYS" styleClass="data-table">
                                     <columns>
                                         <TableColumn fx:id="auctionIdCol" text="ID" prefWidth="60"/>
-                                        <TableColumn fx:id="auctionTitleCol" text="Title" prefWidth="200"/>
-                                        <TableColumn fx:id="auctionCategoryCol" text="Category" prefWidth="120"/>
-                                        <TableColumn fx:id="auctionPriceCol" text="Current Price" prefWidth="150"/>
-                                        <TableColumn fx:id="auctionBidsCol" text="Bids" prefWidth="80"/>
-                                        <TableColumn fx:id="auctionStatusCol" text="Status" prefWidth="100"/>
-                                        <TableColumn fx:id="auctionActionCol" text="Actions" prefWidth="180"/>
+                                        <TableColumn fx:id="auctionTitleCol" text="Tiêu đề" prefWidth="200"/>
+                                        <TableColumn fx:id="auctionCategoryCol" text="Danh mục" prefWidth="120"/>
+                                        <TableColumn fx:id="auctionPriceCol" text="Giá hiện tại" prefWidth="150"/>
+                                        <TableColumn fx:id="auctionBidsCol" text="Lượt bid" prefWidth="80"/>
+                                        <TableColumn fx:id="auctionStatusCol" text="Trạng thái" prefWidth="100"/>
+                                        <TableColumn fx:id="auctionActionCol" text="Hành động" prefWidth="180"/>
                                     </columns>
                                 </TableView>
                             </VBox>
@@ -103,73 +91,8 @@
 
                     <!-- Status bar -->
                     <Label fx:id="statusLabel" text="" styleClass="status-bar"/>
->>>>>>> Stashed changes
                 </VBox>
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                    <Label text="Phiên Đấu Giá" styleClass="stat-title"/>
-                    <Label fx:id="totalAuctionsLabel" text="0" styleClass="stat-value"/>
-                </VBox>
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                    <Label text="Đang Diễn Ra" styleClass="stat-title"/>
-                    <Label fx:id="runningAuctionsLabel" text="0" styleClass="stat-value"/>
-                </VBox>
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                    <Label text="Doanh Thu" styleClass="stat-title"/>
-                    <Label fx:id="totalRevenueLabel" text="0 VND" styleClass="stat-value revenue"/>
-                </VBox>
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                    <Label text="Bid Cao Nhất" styleClass="stat-title"/>
-                    <Label fx:id="highestBidLabel" text="0 VND" styleClass="stat-value"/>
-                </VBox>
-            </HBox>
-
-            <!-- Tab sections -->
-            <TabPane VBox.vgrow="ALWAYS" styleClass="admin-tabs">
-                <!-- Tab: Quản lý Users -->
-                <Tab text="👤 Quản lý Users" closable="false">
-                    <VBox spacing="10">
-                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Button text="🔄 Làm mới" onAction="#onRefreshUsers" styleClass="action-btn"/>
-                        </HBox>
-                        <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="data-table">
-                            <columns>
-                                <TableColumn fx:id="userIdCol" text="ID" prefWidth="60"/>
-                                <TableColumn fx:id="userNameCol" text="Username" prefWidth="150"/>
-                                <TableColumn fx:id="userFullnameCol" text="Họ tên" prefWidth="180"/>
-                                <TableColumn fx:id="userEmailCol" text="Email" prefWidth="200"/>
-                                <TableColumn fx:id="userRoleCol" text="Role" prefWidth="100"/>
-                                <TableColumn fx:id="userStatusCol" text="Trạng thái" prefWidth="100"/>
-                                <TableColumn fx:id="userActionCol" text="Hành động" prefWidth="180"/>
-                            </columns>
-                        </TableView>
-                    </VBox>
-                </Tab>
-
-                <!-- Tab: Quản lý Auctions -->
-                <Tab text="🔨 Quản lý Đấu Giá" closable="false">
-                    <VBox spacing="10">
-                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Button text="🔄 Làm mới" onAction="#onRefreshAuctions" styleClass="action-btn"/>
-                        </HBox>
-                        <TableView fx:id="auctionTable" VBox.vgrow="ALWAYS" styleClass="data-table">
-                            <columns>
-                                <TableColumn fx:id="auctionIdCol" text="ID" prefWidth="60"/>
-                                <TableColumn fx:id="auctionTitleCol" text="Tiêu đề" prefWidth="200"/>
-                                <TableColumn fx:id="auctionCategoryCol" text="Danh mục" prefWidth="120"/>
-                                <TableColumn fx:id="auctionPriceCol" text="Giá hiện tại" prefWidth="150"/>
-                                <TableColumn fx:id="auctionBidsCol" text="Lượt bid" prefWidth="80"/>
-                                <TableColumn fx:id="auctionStatusCol" text="Trạng thái" prefWidth="100"/>
-                                <TableColumn fx:id="auctionActionCol" text="Hành động" prefWidth="180"/>
-                            </columns>
-                        </TableView>
-                    </VBox>
-                </Tab>
-            </TabPane>
-
-            <!-- Status bar -->
-            <Label fx:id="statusLabel" text="" styleClass="status-bar"/>
-        </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

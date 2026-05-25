@@ -107,7 +107,7 @@ public class ItemServiceTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () -> 
             itemService.createItem("ELECTRONICS", "iPhone 15", "Apple Phone", 20000000.0, seller.getId(), "Apple", "15 Pro")
         );
-        assertEquals("This account has been locked and cannot perform any actions.", ex.getMessage());
+        assertEquals("Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả", ex.getMessage());
     }
 
     @Test

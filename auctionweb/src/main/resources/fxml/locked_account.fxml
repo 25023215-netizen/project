@@ -16,11 +16,11 @@
         </StackPane>
         
         <VBox alignment="CENTER" spacing="12">
-            <Label text="ACCOUNT LOCKED" styleClass="title-label"/>
-            <Label text="This account has been locked and cannot perform any actions." 
+            <Label text="TÀI KHOẢN BỊ KHÓA" styleClass="title-label"/>
+            <Label text="Tài khoản này đã bị khoá và sẽ không thể thực hiện được hành động gì cả" 
                    styleClass="message-label" wrapText="true" textAlignment="CENTER"/>
         </VBox>
         
-        <Button text="Exit Application" onAction="#onExit" styleClass="exit-button"/>
+        <Button text="Thoát ứng dụng" onAction="#onExit" styleClass="exit-button"/>
     </VBox>
 </StackPane>

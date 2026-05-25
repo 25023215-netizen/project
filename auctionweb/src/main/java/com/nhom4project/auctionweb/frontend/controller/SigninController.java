@@ -62,7 +62,7 @@ public class SigninController {
         final String selectedRole = tempRole;
         signinButton.setDisable(true);
         statusLabel.setStyle("-fx-text-fill: #64748b;");
-        statusLabel.setText("Signing in...");
+        statusLabel.setText("Đang đăng nhập...");
 
         new Thread(() -> {
             try {
@@ -81,15 +81,15 @@ public class SigninController {
 
                             // Nếu là ADMIN thì không cần so khớp với selectedRole, cho phép đăng nhập thẳng.
                             if (!"ADMIN".equalsIgnoreCase(userRole) && !userRole.equalsIgnoreCase(selectedRole)) {
-                                String roleLabel;
+                                String roleVN;
                                 if ("SELLER".equals(selectedRole)) {
-                                    roleLabel = "Seller";
+                                    roleVN = "Người bán";
                                 } else if ("ADMIN".equals(selectedRole)) {
-                                    roleLabel = "Admin";
+                                    roleVN = "Quản trị viên";
                                 } else {
-                                    roleLabel = "Bidder";
+                                    roleVN = "Người đấu giá";
                                 }
-                                statusLabel.setText("This account is not a " + roleLabel + " account!");
+                                statusLabel.setText("Tài khoản này không phải " + roleVN + "!");
                                 statusLabel.setStyle("-fx-text-fill: red;");
                                 signinButton.setDisable(false);
                                 return;
@@ -122,7 +122,7 @@ public class SigninController {
             } catch (Exception e) {
                 ErrorLogger.log("Lỗi kết nối khi đăng nhập: " + username, e);
                 Platform.runLater(() -> {
-                    statusLabel.setText("Unable to connect to the server. Make sure the backend is running.");
+                    statusLabel.setText("Không thể kết nối tới máy chủ! Hãy chắc chắn backend đã chạy.");
                     statusLabel.setStyle("-fx-text-fill: red;");
                     signinButton.setDisable(false);
                 });
@@ -140,7 +140,7 @@ public class SigninController {
     private void onGoToSignUp(ActionEvent event) {
         try {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            SceneUtils.changeScene(stage, "/fxml/signup.fxml", "User Registration", "/style/signup.css");
+            SceneUtils.changeScene(stage, "/fxml/signup.fxml", "Dang ky nguoi dung", "/style/signup.css");
         } catch (Exception e) {
             ErrorLogger.log("Lỗi chuyển đổi sang màn hình Đăng ký", e);
             e.printStackTrace();
@@ -156,7 +156,7 @@ public class SigninController {
             stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
             ErrorLogger.log("Lỗi mở màn hình Dashboard", e);
-            statusLabel.setText("Could not open Dashboard!");
+            statusLabel.setText("Khong the mo Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
             signinButton.setDisable(false);
             e.printStackTrace();
@@ -172,7 +172,7 @@ public class SigninController {
             stage.setMaximized(true); // Phóng to toàn bộ cửa sổ ứng dụng
         } catch (Exception e) {
             ErrorLogger.log("Lỗi mở màn hình Admin Dashboard", e);
-            statusLabel.setText("Could not open Admin Dashboard!");
+            statusLabel.setText("Khong the mo Admin Dashboard!");
             statusLabel.setStyle("-fx-text-fill: red;");
             signinButton.setDisable(false);
             e.printStackTrace();

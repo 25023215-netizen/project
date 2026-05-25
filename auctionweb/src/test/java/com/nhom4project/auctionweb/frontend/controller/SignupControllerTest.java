@@ -81,7 +81,7 @@ public class SignupControllerTest {
         confirmPasswordField.setText("pass12345");
 
         assertTrue(signUpButton.isDisable());
-        assertEquals("Invalid email", statusLabel.getText());
+        assertEquals("Email không hợp lệ", statusLabel.getText());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class SignupControllerTest {
         confirmPasswordField.setText("pass12345");
 
         assertTrue(signUpButton.isDisable());
-        assertEquals("Username must be at least 4 characters", statusLabel.getText());
+        assertEquals("Username >= 4 ký tự", statusLabel.getText());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SignupControllerTest {
         confirmPasswordField.setText("pass");
 
         assertTrue(signUpButton.isDisable());
-        assertEquals("Password must be at least 8 characters", statusLabel.getText());
+        assertEquals("Password >= 8 ký tự", statusLabel.getText());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class SignupControllerTest {
         confirmPasswordField.setText("password456"); // mismatch
 
         assertTrue(signUpButton.isDisable());
-        assertEquals("Passwords do not match", statusLabel.getText());
+        assertEquals("Mật khẩu không khớp", statusLabel.getText());
     }
 
     @Test
