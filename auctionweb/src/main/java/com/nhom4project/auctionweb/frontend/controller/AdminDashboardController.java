@@ -88,6 +88,17 @@ public class AdminDashboardController {
 
         // Setup User table columns
         userIdCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        userIdCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getTableRow().getIndex() + 1));
+                }
+            }
+        });
         userNameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         userFullnameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[2]));
         userEmailCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[3]));
@@ -119,6 +130,17 @@ public class AdminDashboardController {
 
         // Setup Auction table columns
         auctionIdCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        auctionIdCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getTableRow().getIndex() + 1));
+                }
+            }
+        });
         auctionTitleCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         auctionCategoryCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[2]));
         auctionPriceCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[3]));
@@ -157,6 +179,17 @@ public class AdminDashboardController {
 
         // Setup History table columns
         historyIdCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        historyIdCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getTableRow().getIndex() + 1));
+                }
+            }
+        });
         historyTitleCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
         historyCategoryCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[2]));
         historyStartPriceCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[3]));
@@ -428,7 +461,7 @@ public class AdminDashboardController {
     private void loadHistory() {
         new Thread(() -> {
             try {
-                HttpResponse<String> response = BackendClient.getInstance().get("/auctions/history");
+                HttpResponse<String> response = BackendClient.getInstance().get("/admin/auctions/history/all");
                 if (response.statusCode() == 200) {
                     String body = response.body();
                     if (!body.equals(lastHistoryJson)) {

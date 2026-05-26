@@ -119,6 +119,46 @@ public class AuctionService {
         return auctionHistoryRepository.findAll();
     }
 
+    public List<AuctionHistory> listAllAuctionHistoriesForAdmin() {
+        List<AuctionHistory> histories = new ArrayList<>(auctionHistoryRepository.findAll());
+        
+        List<Auction> allAuctions = auctionRepository.findAll();
+        for (Auction auction : allAuctions) {
+            if (auction.getStatus() == AuctionStatus.FINISHED || 
+                auction.getStatus() == AuctionStatus.PAID || 
+                auction.getStatus() == AuctionStatus.CANCELED) {
+                
+                AuctionHistory h = new AuctionHistory();
+                h.setId(-auction.getId()); 
+                h.setAuctionId(auction.getId());
+                h.setTitle(auction.getTitle());
+                h.setCategory(auction.getCategory());
+                h.setDescription(auction.getDescription());
+                h.setStartingPrice(auction.getStartingPrice());
+                h.setWinningPrice(auction.getCurrentPrice());
+                if (auction.getWinner() != null) {
+                    h.setWinnerId(auction.getWinner().getId());
+                    h.setWinnerName(auction.getWinner().getFullname());
+                }
+                if (auction.getSeller() != null) {
+                    h.setSellerId(auction.getSeller().getId());
+                    h.setSellerName(auction.getSeller().getFullname());
+                }
+                h.setEndTime(auction.getEndTime());
+                histories.add(h);
+            }
+        }
+        
+        histories.sort((h1, h2) -> {
+            if (h1.getEndTime() == null && h2.getEndTime() == null) return 0;
+            if (h1.getEndTime() == null) return 1;
+            if (h2.getEndTime() == null) return -1;
+            return h2.getEndTime().compareTo(h1.getEndTime());
+        });
+        
+        return histories;
+    }
+
     // ==================== AUCTION LIFECYCLE ====================
 
     /**
@@ -276,11 +316,11 @@ public class AuctionService {
         history.setWinningPrice(auction.getCurrentPrice());
         if (auction.getWinner() != null) {
             history.setWinnerId(auction.getWinner().getId());
-            history.setWinnerName(auction.getWinner().getUsername());
+            history.setWinnerName(auction.getWinner().getFullname());
         }
         if (auction.getSeller() != null) {
             history.setSellerId(auction.getSeller().getId());
-            history.setSellerName(auction.getSeller().getUsername());
+            history.setSellerName(auction.getSeller().getFullname());
         }
         history.setEndTime(auction.getEndTime());
         history.setDeletedAt(LocalDateTime.now());

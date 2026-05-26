@@ -6,6 +6,8 @@ import com.nhom4project.auctionweb.backend.repository.AuctionRepository;
 import com.nhom4project.auctionweb.backend.repository.BidRepository;
 import com.nhom4project.auctionweb.backend.service.AuctionService;
 import com.nhom4project.auctionweb.backend.service.UserService;
+import com.nhom4project.auctionweb.backend.repository.ItemRepository;
+import com.nhom4project.auctionweb.backend.repository.AutoBidConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,12 @@ public class AdminController {
 
     @Autowired
     private AuctionHistoryRepository auctionHistoryRepository;
+
+    @Autowired
+    private AutoBidConfigRepository autoBidConfigRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     // ==================== User Management ====================
 
@@ -139,9 +147,32 @@ public class AdminController {
         return ResponseEntity.ok(auctionService.getBidHistory(id));
     }
 
+    @GetMapping("/auctions/history/all")
+    public ResponseEntity<?> getAllAuctionHistories() {
+        return ResponseEntity.ok(auctionService.listAllAuctionHistoriesForAdmin());
+    }
+
+    @GetMapping("/clear-data")
+    public ResponseEntity<?> clearDataExceptUsers() {
+        try {
+            auctionHistoryRepository.deleteAll();
+            autoBidConfigRepository.deleteAll();
+            bidRepository.deleteAll();
+            auctionRepository.deleteAll();
+            itemRepository.deleteAll();
+            com.nhom4project.auctionweb.backend.service.AuctionManager.getInstance().getActiveAuctions().clear();
+            return ResponseEntity.ok("Cleared all data except users!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error clearing data: " + e.getMessage());
+        }
+    }
+
     @DeleteMapping("/auctions/history/{id}")
     public ResponseEntity<?> deleteAuctionHistory(@PathVariable Long id) {
         try {
+            if (id < 0) {
+                return ResponseEntity.badRequest().body("Lỗi: Phiên đấu giá này vẫn đang tồn tại trong hệ thống. Hãy xóa nó ở tab Quản lý Đấu giá trước khi xóa lịch sử!");
+            }
             if (!auctionHistoryRepository.existsById(id)) {
                 return ResponseEntity.notFound().build();
             }
