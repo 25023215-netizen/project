@@ -49,16 +49,7 @@ auctionweb/
 ## 5. Hướng dẫn chạy Server/Client theo thứ tự cụ thể
 Dự án được thiết kế đặc biệt thông qua lớp `MainLauncher` để khởi động cả **Backend** và **Frontend** cùng một lúc chỉ với **một thao tác chạy duy nhất**. MainLauncher sẽ cấp phát một luồng nền khởi động Spring Boot trước, rồi mới bật giao diện JavaFX.
 
-**Cách 1: Chạy qua IDE (Khuyên dùng để đọc và dev code)**
-1. Mở project `auctionweb` bằng IDE (IntelliJ IDEA, Eclipse, hoặc VS Code).
-2. Đợi Maven tải xong toàn bộ thư viện.
-3. Chạy file class chính tại: `src/main/java/com/nhom4project/auctionweb/frontend/app/MainLauncher.java`.
-
-**Cách 2: Chạy thông qua Terminal / Command Prompt bằng Maven**
-1. Mở Terminal tại thư mục `auctionweb` (nơi chứa file `pom.xml`).
-2. Gõ lệnh: `mvn spring-boot:run`
-
-**Cách 3: Chạy ứng dụng đã đóng gói (.jar) trên môi trường thực tế**
+**Chạy ứng dụng đã đóng gói (.jar) trên môi trường thực tế**
 1. Mở Terminal tại thư mục `auctionweb`.
 2. Đóng gói dự án: `mvn clean package -DskipTests`
 3. Khởi chạy hệ thống: `java -jar target/auctionweb-0.0.1-SNAPSHOT.jar`
