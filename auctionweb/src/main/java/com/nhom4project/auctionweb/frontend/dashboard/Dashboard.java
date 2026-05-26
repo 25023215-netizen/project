@@ -15,6 +15,7 @@ public class Dashboard extends Application {
         scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
         primaryStage.setTitle("Auction Web - Dashboard");
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show();
         WindowUtil.fitDashboard(primaryStage);
     }

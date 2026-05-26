@@ -29,6 +29,7 @@ public class App extends Application {
             
             primaryStage.setTitle("Online Auction System - Sign In");
             primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
