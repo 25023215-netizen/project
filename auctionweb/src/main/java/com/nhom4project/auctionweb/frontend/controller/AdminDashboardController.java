@@ -34,9 +34,21 @@ public class AdminDashboardController {
     @FXML private Label totalUsersLabel;
     @FXML private Label totalAuctionsLabel;
     @FXML private Label runningAuctionsLabel;
-    @FXML private Label totalRevenueLabel;
     @FXML private Label highestBidLabel;
     @FXML private Label statusLabel;
+
+    // History Table
+    @FXML private TextField historySearchField;
+    @FXML private TableView<String[]> historyTable;
+    @FXML private TableColumn<String[], String> historyIdCol;
+    @FXML private TableColumn<String[], String> historyTitleCol;
+    @FXML private TableColumn<String[], String> historyCategoryCol;
+    @FXML private TableColumn<String[], String> historyStartPriceCol;
+    @FXML private TableColumn<String[], String> historyWinPriceCol;
+    @FXML private TableColumn<String[], String> historyWinnerCol;
+    @FXML private TableColumn<String[], String> historySellerCol;
+    @FXML private TableColumn<String[], String> historyEndTimeCol;
+    @FXML private TableColumn<String[], String> historyActionCol;
 
     // User Table
     @FXML private TableView<String[]> userTable;
@@ -64,6 +76,9 @@ public class AdminDashboardController {
     private String lastUsersJson = "";
     private String lastAuctionsJson = "";
     private String lastStatsJson = "";
+    private final ObservableList<String[]> historyList = FXCollections.observableArrayList();
+    private final ObservableList<String[]> filteredHistoryList = FXCollections.observableArrayList();
+    private String lastHistoryJson = "";
 
     @FXML
     public void initialize() {
@@ -140,9 +155,38 @@ public class AdminDashboardController {
             }
         });
 
+        // Setup History table columns
+        historyIdCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[0]));
+        historyTitleCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[1]));
+        historyCategoryCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[2]));
+        historyStartPriceCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[3]));
+        historyWinPriceCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[4]));
+        historyWinnerCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[5]));
+        historySellerCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[6]));
+        historyEndTimeCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()[7]));
+        historyActionCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                    return;
+                }
+                String[] row = getTableRow().getItem();
+                Button delBtn = new Button("🗑 Xóa");
+                delBtn.getStyleClass().add("delete-btn");
+                delBtn.setOnAction(e -> deleteHistory(row[0]));
+                setGraphic(delBtn);
+            }
+        });
+
+        historyTable.setItems(filteredHistoryList);
+        historySearchField.textProperty().addListener((obs, oldVal, newVal) -> applyHistoryFilter());
+
         loadStats();
         loadUsers();
         loadAuctions();
+        loadHistory();
         startAutoRefresh();
     }
 
@@ -152,6 +196,7 @@ public class AdminDashboardController {
                 loadStats();
                 loadUsers();
                 loadAuctions();
+                loadHistory();
             }));
             autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
             autoRefreshTimeline.play();
@@ -180,7 +225,6 @@ public class AdminDashboardController {
                             totalUsersLabel.setText(String.valueOf(stats.path("totalUsers").asInt()));
                             totalAuctionsLabel.setText(String.valueOf(stats.path("totalAuctions").asInt()));
                             runningAuctionsLabel.setText(String.valueOf(stats.path("runningAuctions").asInt()));
-                            totalRevenueLabel.setText(currencyFormat.format(new BigDecimal(stats.path("totalRevenue").asText("0"))));
                             highestBidLabel.setText(currencyFormat.format(new BigDecimal(stats.path("highestBid").asText("0"))));
                         });
                     }
@@ -372,5 +416,95 @@ public class AdminDashboardController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // ==================== History Actions ====================
+
+    @FXML
+    private void onRefreshHistory() {
+        loadHistory();
+    }
+
+    private void loadHistory() {
+        new Thread(() -> {
+            try {
+                HttpResponse<String> response = BackendClient.getInstance().get("/auctions/history");
+                if (response.statusCode() == 200) {
+                    String body = response.body();
+                    if (!body.equals(lastHistoryJson)) {
+                        lastHistoryJson = body;
+                        JsonNode root = mapper.readTree(body);
+                        ObservableList<String[]> rows = FXCollections.observableArrayList();
+                        for (JsonNode node : root) {
+                            BigDecimal startPrice = new BigDecimal(node.path("startingPrice").asText("0"));
+                            BigDecimal winPrice = new BigDecimal(node.path("winningPrice").asText("0"));
+                            
+                            // Format End Time nicely
+                            String endTimeStr = node.path("endTime").asText();
+                            String formattedEndTime = "-";
+                            if (endTimeStr != null && !endTimeStr.isBlank()) {
+                                try {
+                                    java.time.LocalDateTime time = java.time.LocalDateTime.parse(endTimeStr);
+                                    formattedEndTime = time.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                                } catch (Exception ignored) {
+                                    formattedEndTime = endTimeStr;
+                                }
+                            }
+
+                            rows.add(new String[]{
+                                    String.valueOf(node.path("id").asLong()),
+                                    node.path("title").asText(),
+                                    node.path("category").asText(),
+                                    currencyFormat.format(startPrice),
+                                    currencyFormat.format(winPrice),
+                                    node.path("winnerName").asText("-"),
+                                    node.path("sellerName").asText("-"),
+                                    formattedEndTime
+                            });
+                        }
+                        javafx.application.Platform.runLater(() -> {
+                            historyList.setAll(rows);
+                            applyHistoryFilter();
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi tải lịch sử: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+    private void applyHistoryFilter() {
+        String keyword = historySearchField.getText() == null ? "" : historySearchField.getText().trim().toLowerCase();
+        ObservableList<String[]> filtered = FXCollections.observableArrayList();
+        for (String[] row : historyList) {
+            if (keyword.isEmpty()
+                    || row[1].toLowerCase().contains(keyword) // Title
+                    || row[2].toLowerCase().contains(keyword) // Category
+                    || row[5].toLowerCase().contains(keyword) // Winner
+                    || row[6].toLowerCase().contains(keyword)) { // Seller
+                filtered.add(row);
+            }
+        }
+        filteredHistoryList.setAll(filtered);
+    }
+
+    private void deleteHistory(String historyId) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc muốn xóa lịch sử đấu giá này?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                new Thread(() -> {
+                    try {
+                        HttpResponse<String> response = BackendClient.getInstance().delete("/admin/auctions/history/" + historyId);
+                        javafx.application.Platform.runLater(() -> {
+                            statusLabel.setText(response.body());
+                            loadHistory();
+                        });
+                    } catch (Exception e) {
+                        javafx.application.Platform.runLater(() -> statusLabel.setText("Lỗi: " + e.getMessage()));
+                    }
+                }).start();
+            }
+        });
     }
 }

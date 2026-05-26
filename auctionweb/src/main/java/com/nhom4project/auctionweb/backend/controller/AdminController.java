@@ -1,6 +1,7 @@
 package com.nhom4project.auctionweb.backend.controller;
 
 import com.nhom4project.auctionweb.backend.model.*;
+import com.nhom4project.auctionweb.backend.repository.AuctionHistoryRepository;
 import com.nhom4project.auctionweb.backend.repository.AuctionRepository;
 import com.nhom4project.auctionweb.backend.repository.BidRepository;
 import com.nhom4project.auctionweb.backend.service.AuctionService;
@@ -31,6 +32,9 @@ public class AdminController {
 
     @Autowired
     private BidRepository bidRepository;
+
+    @Autowired
+    private AuctionHistoryRepository auctionHistoryRepository;
 
     // ==================== User Management ====================
 
@@ -113,12 +117,7 @@ public class AdminController {
         stats.put("finishedAuctions", auctions.stream().filter(a -> a.getStatus() == AuctionStatus.FINISHED).count());
         stats.put("pendingAuctions", auctions.stream().filter(a -> a.getStatus() == AuctionStatus.PENDING).count());
 
-        // Doanh thu (tổng giá trị các phiên đã kết thúc)
-        BigDecimal totalRevenue = auctions.stream()
-                .filter(a -> a.getStatus() == AuctionStatus.FINISHED || a.getStatus() == AuctionStatus.PAID)
-                .map(Auction::getCurrentPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        stats.put("totalRevenue", totalRevenue);
+
 
         // Bid cao nhất
         BigDecimal highestBid = auctions.stream()
@@ -138,5 +137,18 @@ public class AdminController {
     @GetMapping("/auctions/{id}/bids")
     public ResponseEntity<?> getBidHistory(@PathVariable Long id) {
         return ResponseEntity.ok(auctionService.getBidHistory(id));
+    }
+
+    @DeleteMapping("/auctions/history/{id}")
+    public ResponseEntity<?> deleteAuctionHistory(@PathVariable Long id) {
+        try {
+            if (!auctionHistoryRepository.existsById(id)) {
+                return ResponseEntity.notFound().build();
+            }
+            auctionHistoryRepository.deleteById(id);
+            return ResponseEntity.ok("Auction history deleted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit/Integration Test cho DataInitializer - Nhóm 4.
  * Kiểm tra xem dữ liệu mẫu có được khởi tạo chính xác khi DB trống hay không.
  */
-@SpringBootTest
+@SpringBootTest(classes = com.nhom4project.auctionweb.backend.BackendApplication.class)
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class DataInitializerTest {

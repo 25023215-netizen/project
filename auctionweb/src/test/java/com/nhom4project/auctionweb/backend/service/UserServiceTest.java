@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit Test cho UserService - Nhóm 4.
  */
-@SpringBootTest
+@SpringBootTest(classes = com.nhom4project.auctionweb.backend.BackendApplication.class)
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserServiceTest {

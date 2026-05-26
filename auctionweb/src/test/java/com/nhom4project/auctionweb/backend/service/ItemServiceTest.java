@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit Test cho ItemService - Nhóm 4.
  * Kiểm tra các tính năng: CRUD sản phẩm, xử lý ngoại lệ và logic Seller.
  */
-@SpringBootTest
+@SpringBootTest(classes = com.nhom4project.auctionweb.backend.BackendApplication.class)
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ItemServiceTest {

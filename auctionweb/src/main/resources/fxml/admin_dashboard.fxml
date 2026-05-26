@@ -41,10 +41,6 @@
                             <Label fx:id="runningAuctionsLabel" text="0" styleClass="stat-value"/>
                         </VBox>
                         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Doanh thu" styleClass="stat-title"/>
-                            <Label fx:id="totalRevenueLabel" text="0 VND" styleClass="stat-value revenue"/>
-                        </VBox>
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
                             <Label text="Đặt giá cao nhất" styleClass="stat-title"/>
                             <Label fx:id="highestBidLabel" text="0 VND" styleClass="stat-value"/>
                         </VBox>
@@ -83,6 +79,30 @@
                                         <TableColumn fx:id="auctionBidsCol" text="Lượt bid" prefWidth="80"/>
                                         <TableColumn fx:id="auctionStatusCol" text="Trạng thái" prefWidth="100"/>
                                         <TableColumn fx:id="auctionActionCol" text="Hành động" prefWidth="180"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </Tab>
+
+                        <!-- Tab: Lịch sử đấu giá -->
+                        <Tab text="📜 Lịch sử đấu giá" closable="false">
+                            <VBox spacing="10">
+                                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <TextField fx:id="historySearchField" promptText="Tìm kiếm lịch sử..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                                    <Button text="🔄 Làm mới" onAction="#onRefreshHistory" styleClass="action-btn"/>
+                                </HBox>
+                                <TableView fx:id="historyTable" VBox.vgrow="ALWAYS" styleClass="data-table">
+                                    <columns>
+                                        <TableColumn fx:id="historyIdCol" text="ID" prefWidth="60"/>
+                                        <TableColumn fx:id="historyTitleCol" text="Tiêu đề" prefWidth="180"/>
+                                        <TableColumn fx:id="historyCategoryCol" text="Danh mục" prefWidth="120"/>
+                                        <TableColumn fx:id="historyStartPriceCol" text="Giá khởi điểm" prefWidth="130"/>
+                                        <TableColumn fx:id="historyWinPriceCol" text="Giá chung cuộc" prefWidth="130"/>
+                                        <TableColumn fx:id="historyWinnerCol" text="Người thắng" prefWidth="120"/>
+                                        <TableColumn fx:id="historySellerCol" text="Người bán" prefWidth="120"/>
+                                        <TableColumn fx:id="historyEndTimeCol" text="Thời gian kết thúc" prefWidth="150"/>
+                                        <TableColumn fx:id="historyActionCol" text="Hành động" prefWidth="100"/>
                                     </columns>
                                 </TableView>
                             </VBox>

@@ -63,6 +63,9 @@ public class BackendControllerTest {
     @Autowired
     private com.nhom4project.auctionweb.backend.service.ItemService itemService;
 
+    @Autowired
+    private AuctionHistoryRepository auctionHistoryRepository;
+
     private Seller seller;
     private Bidder bidder;
     private Admin admin;
@@ -370,6 +373,17 @@ public class BackendControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].title").value("Honda Civic 2024 Auction"));
+
+        // 4.15. Xóa lịch sử đấu giá bởi Admin
+        java.util.List<AuctionHistory> histories = auctionHistoryRepository.findAll();
+        assertFalse(histories.isEmpty());
+        Long historyId = histories.get(0).getId();
+
+        mockMvc.perform(delete("/api/admin/auctions/history/" + historyId))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Auction history deleted successfully!"));
+
+        assertFalse(auctionHistoryRepository.existsById(historyId));
     }
 
     // ============================================================
