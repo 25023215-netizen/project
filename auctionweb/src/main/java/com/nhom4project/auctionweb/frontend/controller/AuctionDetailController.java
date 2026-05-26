@@ -178,7 +178,7 @@ public class AuctionDetailController {
         autoBidButton.setDisable(!canBid);
 
         if (!canBid) {
-            userStatusLabel.setText("Bạn đang đăng nhập với quyền SELLER/ADMIN. Chỉ Bidder mới có thể đặt giá.");
+            userStatusLabel.setText("Bạn đang đăng nhập với quyền SELLER. Chỉ Bidder mới có thể đặt giá.");
             userStatusLabel.getStyleClass().add("status-not-bidder");
         }
 
