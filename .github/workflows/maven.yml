@@ -21,28 +21,6 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-<<<<<<< HEAD
-    - name: Install xvfb (skipped in debug)
-      run: |
-        echo 'Skipping apt-get install step for debug; previous runs failed here.'
-        echo 'If tests need Xvfb, re-enable this step.'
-
-    - name: Build and Test with Maven (Xvfb)
-      working-directory: ./auctionweb
-      run: |
-        set -eux
-        echo 'Start Xvfb on :99'
-        Xvfb :99 -screen 0 1280x1024x24 &
-        export DISPLAY=:99
-        echo 'Environment dump:'
-        env | sort
-        echo 'Maven version:'
-        mvn -v
-        echo 'Run mvn with debug flags (temporarily skipping tests to isolate apt/Xvfb issues)'
-        mvn -B -X -e -Djava.awt.headless=true -DskipTests clean package | tee mvn-test.log
-        echo 'mvn exit code:' $?
-        tail -n +1 mvn-test.log | sed -n '1,200p'
-=======
     - name: Install xvfb
       run: |
         sudo apt-get update
@@ -51,4 +29,3 @@ jobs:
     - name: Build and Test with Maven
       working-directory: ./auctionweb
       run: xvfb-run --auto-servernum mvn -B clean test -Dprism.order=sw
->>>>>>> f722d627f510dd91cb2323c2d79d99f63b52b9b8
