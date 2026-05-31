@@ -64,5 +64,5 @@ Dự án được thiết kế đặc biệt thông qua lớp `MainLauncher` đ�
 *   [x] **Theo dõi lịch sử:** Lưu trữ minh bạch toàn bộ các lượt đặt giá (`BidTransaction`) và kết quả chung cuộc (`AuctionHistory`).
 
 ## 7. Link báo cáo PDF và video demo
-*   **Báo cáo PDF:** [Nhóm của bạn hãy chèn link file báo cáo thiết kế PDF tại đây]
-*   **Video Demo:** [Nhóm của bạn hãy chèn link Video Demo sản phẩm tại đây]
+*   **Báo cáo PDF:** https://drive.google.com/file/d/11uNxirOh61G7LRBBN5YNPtYmC6PsIh1J/view?usp=sharing
+*   **Video Demo:** https://drive.google.com/file/d/1a9WHu-4DSoHKaRNMIIVFTTiLb3Wqfs39/view?usp=sharing
